@@ -1,12 +1,15 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import { Link } from 'expo-router'
 
-const Page = () => {
+const Home = () => {
   return (
-    <View>
-      <Text>Page</Text>
+      <View>
+          <Link href="/(pokemon)/test">
+              <Text>Open test page</Text>
+          </Link>
     </View>
   )
 }
 
-export default Page
+export default Home
