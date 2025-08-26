@@ -24,7 +24,7 @@ const Home = () => {
   return (
     <ScrollView>
       {pokemon.map((p) => (
-        <Link href={`/(pokemon)/${p.id}`} asChild>
+        <Link href={`/(pokemon)/${p.id}`} key={p.id} asChild>
           <TouchableOpacity>
             <View style={styles.item}>
               <Image source={{uri: p.image}} style={styles.preview} />

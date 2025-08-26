@@ -2,7 +2,10 @@ export interface Pokemon {
   name: string;
     url: string;
     id: number;
-    image: string
+    image: string;
+    sprites?: any;
+    abilities?: any;
+    stats?: any;
 }
 
 export const getPokemon = async (limit = 150): Promise<Pokemon[]> => {
@@ -15,4 +18,10 @@ export const getPokemon = async (limit = 150): Promise<Pokemon[]> => {
       index + 1
     }.png`,
   }));
+};
+
+export const getPokemonDetails = async (id: string): Promise<Pokemon> => {
+  const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const data = await resp.json();
+  return data;
 };
