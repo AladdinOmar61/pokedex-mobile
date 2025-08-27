@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, useWindowDimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { getPokemonDetails, Pokemon } from "@/api/pokeapi";
 
 const Details = () => {
+  const {width, height} = useWindowDimensions();
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
 
@@ -35,14 +37,14 @@ const Details = () => {
     <View style={{ padding: 10 }}>
       {pokemonDetails && (
         <>
-          <View style={[styles.card, {display: 'flex', flexDirection: 'row', justifyContent: 'center'}]}>
+          <View style={[styles.card, {display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}]}>
             <Image
               source={{ uri: pokemonDetails.sprites.front_default }}
-              style={{ width: 200, height: 200 }}
+              style={{ width: width / 2.33, height: 200, padding: 5 }}
             />
             <Image
               source={{ uri: pokemonDetails.sprites.front_shiny }}
-              style={{ width: 200, height: 200 }}
+              style={{ width: width / 2.33, height: 200, padding: 5 }}
             />
           </View>
           <View style={styles.card}></View>
@@ -54,8 +56,8 @@ const Details = () => {
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: '#fff',
     padding: 10,
-    margin: 10,
   },
 });
 
