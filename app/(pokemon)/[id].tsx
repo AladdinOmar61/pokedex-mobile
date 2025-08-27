@@ -12,7 +12,7 @@ const Details = () => {
     url: "",
     id: 0,
     image: "",
-    sprites: null,
+    sprites: "",
     abilities: null,
     stats: null,
   });
@@ -35,9 +35,13 @@ const Details = () => {
     <View style={{ padding: 10 }}>
       {pokemonDetails && (
         <>
-          <View style={styles.card}>
+          <View style={[styles.card, {display: 'flex', flexDirection: 'row', justifyContent: 'center'}]}>
             <Image
               source={{ uri: pokemonDetails.sprites.front_default }}
+              style={{ width: 200, height: 200 }}
+            />
+            <Image
+              source={{ uri: pokemonDetails.sprites.front_shiny }}
               style={{ width: 200, height: 200 }}
             />
           </View>
@@ -50,7 +54,6 @@ const Details = () => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     padding: 10,
     margin: 10,
   },
