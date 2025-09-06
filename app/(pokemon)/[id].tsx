@@ -20,16 +20,19 @@ const Details = () => {
   const pokeDetails = async () => {
     const pokeDetailsResp = await getPokemonDetails(id!);
     setPokemonDetails(pokeDetailsResp);
-    navigation.setOptions({
-      title:
-        pokemonDetails.name.charAt(0).toUpperCase() +
-        pokemonDetails.name.slice(1),
-    });
+    if (pokemonDetails) {
+      navigation.setOptions({
+        title:
+          pokemonDetails.name.charAt(0).toUpperCase() +
+          pokemonDetails.name.slice(1),
+        headerTitleAlign: 'center'
+      });
+    }
   };
 
   useEffect(() => {
     pokeDetails();
-  }, [id]);
+  }, [pokemonDetails, id]);
 
   return (
     <View style={{ padding: 10 }}>
