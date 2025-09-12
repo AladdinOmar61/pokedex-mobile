@@ -2,18 +2,31 @@ import { View, Text, StyleSheet, Image, useWindowDimensions } from "react-native
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { getPokemonDetails, Pokemon } from "@/api/pokeapi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from '@expo/vector-icons';
 
 const Details = () => {
-  const {width, height} = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
+  const [isFavorited, setIsFavorited] = useState<boolean>(false);
 
-  const pokeDetails = async () => {
-    const pokeDetailsResp = await getPokemonDetails(id!);
-    setPokemonDetails(pokeDetailsResp);
+  useEffect(() => {
+    const pokeDetails = async () => {
+      const pokeDetailsResp = await getPokemonDetails(id!);
+      setPokemonDetails(pokeDetailsResp);
+
+      const isFavorite = await AsyncStorage.getItem(`favorite-${id}`);
+      setIsFavorited(isFavorite === 'true');
+      console.log("isFavorite:", isFavorite);
+    };
+    pokeDetails();
+  }, [id]);
+
+  useEffect(() => {
     if (pokemonDetails) {
       navigation.setOptions({
         title:
@@ -22,11 +35,22 @@ const Details = () => {
         headerTitleAlign: 'center'
       });
     }
-  };
+  }, [pokemonDetails, navigation])
 
   useEffect(() => {
-    pokeDetails();
-  }, [pokemonDetails, id]);
+    navigation.setOptions({
+      headerRight: () => (
+        <Text onPress={toggleFavorite}>
+          <Ionicons name={isFavorited ? 'star' : 'star-outline'} size={22} color='white' />
+        </Text>
+      )
+    })
+  }, [isFavorited])
+
+  const toggleFavorite = async () => {
+    await AsyncStorage.setItem(`favorite-${id}`, !isFavorited ? 'true' : 'false');
+    setIsFavorited(!isFavorited);
+  }
 
   return (
     <View style={{ padding: 10 }}>
@@ -34,15 +58,15 @@ const Details = () => {
         <>
           <View style={styles.card}>
             <Text style={styles.pokemonName}>#{pokemonDetails.id} {pokemonDetails.name}</Text>
-          <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Image
-              source={{ uri: pokemonDetails.sprites.front_default }}
-              style={{ width: width / 2.33, height: 200, padding: 5, aspectRatio: "1/1" }}
-            />
-            <Image
-              source={{ uri: pokemonDetails.sprites.front_shiny }}
-              style={{ width: width / 2.33, height: 200, padding: 5, aspectRatio: "1/1" }}
-            />
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+              <Image
+                source={{ uri: pokemonDetails.sprites.front_default }}
+                style={{ width: width / 2.33, height: 200, padding: 5, aspectRatio: "1/1" }}
+              />
+              <Image
+                source={{ uri: pokemonDetails.sprites.front_shiny }}
+                style={{ width: width / 2.33, height: 200, padding: 5, aspectRatio: "1/1" }}
+              />
             </View>
           </View>
           <View style={styles.card}>

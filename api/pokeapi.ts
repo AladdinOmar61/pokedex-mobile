@@ -9,7 +9,7 @@ export interface Pokemon {
   type: string;
 }
 
-export const getPokemon = async (limit = 150): Promise<Pokemon[]> => {
+export const getPokemon = async (limit = -1): Promise<Pokemon[]> => {
   const resp = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`);
   const data = await resp.json();
   return data.results.map((item: Pokemon, index: number) => ({
