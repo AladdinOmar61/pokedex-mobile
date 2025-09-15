@@ -1,61 +1,87 @@
-import { View, Text, ScrollView, Touchable, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'expo-router'
-import { getPokemon, Pokemon } from '@/api/pokeapi'
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
+import React from 'react'
+import { Link } from 'expo-router';
 
 const Home = () => {
 
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-
-  const retrievePokemon = async () => {
-    try {
-      const pokeResp = await getPokemon();
-      setPokemon(pokeResp);
-    } catch (err) {
-      console.error("Could not retrieve pokemon", err);
-    }
-  }
-
-  useEffect(() => {
-    retrievePokemon();
-  }, [])
+  const { width, height } = useWindowDimensions();
 
   return (
-    <ScrollView>
-      {pokemon.map((p) => (
-        <Link href={`/(pokemon)/${p.id}`} key={p.id} asChild>
+    <View>
+      <ScrollView>
+        <Link href="/(pokemon)/all" asChild>
           <TouchableOpacity>
-            <View style={styles.item}>
-              <Image source={{uri: p.image}} style={styles.preview} />
-              <Text style={styles.itemText}>{p.name}</Text>
-              <Ionicons name='chevron-forward' size={24} />
+            <View style={[styles.genGridItem, { width: width - 6 }]}>
+              <Text>All</Text>
             </View>
           </TouchableOpacity>
         </Link>
-      ))}
-    </ScrollView>
+        <View style={styles.genGrid}>
+          <Link href={`(pokemon)/generations/${1}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 1</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${2}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 2</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${3}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 3</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${4}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 4</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${5}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 5</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${6}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 6</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${7}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 7</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${8}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 8</Text></View>
+            </TouchableOpacity>
+          </Link>
+          <Link href={`(pokemon)/generations/${9}`} asChild>
+            <TouchableOpacity>
+              <View style={[styles.genGridItem, { width: width / 2.1 }]}><Text>Gen 9</Text></View>
+            </TouchableOpacity>
+          </Link>
+        </View>
+      </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  item: {
-    padding: 10,
-    height: 100,
+  genGrid: {
+    display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'black',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
-  preview: {
-    width: 100,
-    height: 100
-  },
-  itemText: {
-    fontSize: 18,
-    textTransform: 'capitalize',
-    flex: 1
+
+  genGridItem: {
+    height: 150,
+    borderWidth: 1,
+    borderColor: 'black',
+    margin: 3
   }
 })
 

@@ -21,7 +21,6 @@ const Details = () => {
 
       const isFavorite = await AsyncStorage.getItem(`favorite-${id}`);
       setIsFavorited(isFavorite === 'true');
-      console.log("isFavorite:", isFavorite);
     };
     pokeDetails();
   }, [id]);
