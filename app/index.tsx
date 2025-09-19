@@ -1,14 +1,18 @@
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Home = () => {
 
   const { width, height } = useWindowDimensions();
+  // const tabHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
 
   return (
     <View>
-      <ScrollView>
+      <ScrollView style={{marginBottom: insets.bottom}}>
         <Link href="/(pokemon)/all" asChild>
           <TouchableOpacity>
             <View style={[styles.genGridItem, { width: width - 6 }]}>

@@ -1,20 +1,22 @@
-import { View, Text, ScrollView, Touchable, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
-import { getPokemonFromGen, Pokemon, GenPokemonEntry } from '@/api/pokeapi'
+import { getAllPokemonFromGen, GenPokemonEntry } from '@/api/pokeapi'
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AllPokemon = () => {
 
     const { gen } = useLocalSearchParams<{ gen: string }>();
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
 
 
     const [genPokemon, setGenPokemon] = useState<GenPokemonEntry[]>([]);
 
     const retrievePokemonFromGen = async () => {
         try {
-            const genPokeResp = await getPokemonFromGen(gen!);
+            const genPokeResp = await getAllPokemonFromGen(gen!);
             setGenPokemon(genPokeResp);
         } catch (err) {
             console.error("Could not retrieve pokemon", err);
@@ -35,7 +37,7 @@ const AllPokemon = () => {
     }, [genPokemon, navigation])
 
     return (
-        <ScrollView>
+        <ScrollView style={{marginBottom: insets.bottom}}>
             {genPokemon ? (
 
                 genPokemon.map((p) => {

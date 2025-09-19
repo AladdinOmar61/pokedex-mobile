@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 const Details = () => {
   const { width } = useWindowDimensions();
 
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
@@ -16,14 +16,14 @@ const Details = () => {
 
   useEffect(() => {
     const pokeDetails = async () => {
-      const pokeDetailsResp = await getPokemonDetails(id!);
+      const pokeDetailsResp = await getPokemonDetails(pokemon!);
       setPokemonDetails(pokeDetailsResp);
 
-      const isFavorite = await AsyncStorage.getItem(`favorite-${id}`);
+      const isFavorite = await AsyncStorage.getItem(`favorite-${pokemon}`);
       setIsFavorited(isFavorite === 'true');
     };
     pokeDetails();
-  }, [id]);
+  }, [pokemon]);
 
   useEffect(() => {
     if (pokemonDetails) {
@@ -47,7 +47,7 @@ const Details = () => {
   }, [isFavorited])
 
   const toggleFavorite = async () => {
-    await AsyncStorage.setItem(`favorite-${id}`, !isFavorited ? 'true' : 'false');
+    await AsyncStorage.setItem(`favorite-${pokemon}`, !isFavorited ? 'true' : 'false');
     setIsFavorited(!isFavorited);
   }
 
