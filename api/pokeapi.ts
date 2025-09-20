@@ -6,13 +6,35 @@ export interface Pokemon {
   sprites?: any;
   abilities?: any;
   stats?: any;
-  type: string;
+  types: PokemonTypes[];
 }
 
 export interface GenPokemonEntry {
   name: string;
   url: string;
   image: string;
+}
+
+export interface PokemonTypes {
+  slot: number;
+  type: Type;
+}
+
+interface Type {
+  name: string;
+  url: string;
+}
+
+interface TypeInfo {
+  sprites: Generation;
+}
+
+export interface Generation {
+  gameName: GameName;
+}
+
+interface GameName {
+  nameIcon: string;
 }
 
 // All Pokemon
@@ -34,6 +56,12 @@ export const getPokemonDetails = async (id: string): Promise<Pokemon> => {
   return data;
 };
 
+export const getPokemonType = async (typeUrl: string): Promise<TypeInfo> => {
+  const resp = await fetch(typeUrl);
+  const data = await resp.json();
+  return data;
+}
+
 export const getAllPokemonFromGen = async (gen: string): Promise<GenPokemonEntry[]> => {
   const resp = await fetch(`https://pokeapi.co/api/v2/generation/${gen}`);
   const data = await resp.json();
@@ -48,5 +76,3 @@ export const getAllPokemonFromGen = async (gen: string): Promise<GenPokemonEntry
       };
     }).sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
 };
-
-//https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, useWindowDimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { getPokemonDetails, Pokemon } from "@/api/pokeapi";
+import { getPokemonDetails, Pokemon, getPokemonType, Generation } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -13,6 +13,7 @@ const Details = () => {
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
+  const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
   useEffect(() => {
     const pokeDetails = async () => {
@@ -35,6 +36,34 @@ const Details = () => {
       });
     }
   }, [pokemonDetails, navigation])
+
+  useEffect(() => {
+    const grabPokemonType = async () => {
+      let typeBucket = [];
+      if (pokemonDetails) {
+        for (let i = 0; i < pokemonDetails.types.length; i++) {
+          const pokemonTypeResp = await getPokemonType(pokemonDetails.types[i].type.url);
+          typeBucket.push(pokemonTypeResp.sprites);
+        }
+        setPokemonType(typeBucket);
+      }
+
+    }
+    grabPokemonType();
+  }, [pokemonDetails])
+
+  useEffect(() => {
+    if (pokemonType) {
+      if (
+        pokemonType &&
+        pokemonType[0] &&
+        (pokemonType[0] as any)["generation-v"] &&
+        (pokemonType[0]) as any["generation-v"]["black-white"]
+      ) {
+        console.log("this is the type info:", (pokemonType[0] as any)["generation-v"]["black-white"].name_icon);
+      }
+    }
+  }, [pokemonType])
 
   useEffect(() => {
     navigation.setOptions({
@@ -66,6 +95,13 @@ const Details = () => {
                 source={{ uri: pokemonDetails.sprites.front_shiny }}
                 style={{ width: width / 2.33, height: 200, padding: 5, aspectRatio: "1/1" }}
               />
+            </View>
+            <View>
+              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
+                {pokemonType.map((item, index) => (
+                  <Image key={index} style={{ width: 60, height: 20 }} source={{ uri: (item as any)["generation-v"]["black-white"].name_icon }} />
+                ))}
+              </View>
             </View>
           </View>
           <View style={styles.card}>
