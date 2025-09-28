@@ -15,6 +15,8 @@ const Details = () => {
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
+  const maxVal = 255;
+
   useEffect(() => {
     const pokeDetails = async () => {
       const pokeDetailsResp = await getPokemonDetails(pokemon!);
@@ -107,7 +109,12 @@ const Details = () => {
           <View style={styles.card}>
             <Text style={{ fontSize: 16 }}>Stats:</Text>
             {pokemonDetails.stats.map((item: any) => (
+              <>
               <Text key={item.stat.name}>{item.stat.name}: {item.base_stat}</Text>
+                <View style={{ height: 5, width: `${(item.base_stat / maxVal) * 100}%`, backgroundColor: item.base_stat <= 30 ? "red" : item.base_stat >= 30 && item.base_stat <= 80 ? "orange" : item.base_stat >= 80 && item.base_stat <= 140 ? "green" : item.base_stat >= 140 && item.base_stat <= 170 ? "#4af" : "turquoise" }}>
+                  
+              </View>
+              </>
             ))}
           </View>
         </>
