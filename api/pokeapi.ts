@@ -45,8 +45,9 @@ export const getPokemon = async (limit = -1): Promise<Pokemon[]> => {
   return data.results.map((item: Pokemon, index: number) => ({
     ...item,
     id: index + 1,
-    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1
-      }.png`,
+    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+      index + 1
+    }.png`,
   }));
 };
 
@@ -60,13 +61,15 @@ export const getPokemonType = async (typeUrl: string): Promise<TypeInfo> => {
   const resp = await fetch(typeUrl);
   const data = await resp.json();
   return data;
-}
+};
 
-export const getAllPokemonFromGen = async (gen: string): Promise<GenPokemonEntry[]> => {
+export const getAllPokemonFromGen = async (
+  gen: string
+): Promise<GenPokemonEntry[]> => {
   const resp = await fetch(`https://pokeapi.co/api/v2/generation/${gen}`);
   const data = await resp.json();
-  return data.pokemon_species.map(
-    (item: GenPokemonEntry) => {
+  return data.pokemon_species
+    .map((item: GenPokemonEntry) => {
       const extractedNum = item.url.match(/\/(\d+)\/$/);
       const finalNum = extractedNum ? extractedNum[1] : null;
       return {
@@ -74,5 +77,12 @@ export const getAllPokemonFromGen = async (gen: string): Promise<GenPokemonEntry
         image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${finalNum}.png`,
         num: finalNum,
       };
-    }).sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
+    })
+    .sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
+};
+
+export const getEvolutions = async (id: string) => {
+  const resp = await fetch(`https://pokeapi.co/api/v2/evolution-trigger/${id}`);
+  const data = resp.json();
+  return data;
 };

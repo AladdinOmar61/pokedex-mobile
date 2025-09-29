@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, useWindowDimensions } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { getPokemonDetails, Pokemon, getPokemonType, Generation } from "@/api/pokeapi";
+import { getPokemonDetails, Pokemon, getPokemonType, Generation, getEvolutions } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -48,22 +48,19 @@ const Details = () => {
           typeBucket.push(pokemonTypeResp.sprites);
         }
         setPokemonType(typeBucket);
+        const pokeEvos = await getEvolutions(pokemonDetails.name);
+        console.log(pokeEvos);
       }
-
     }
     grabPokemonType();
   }, [pokemonDetails])
 
   useEffect(() => {
     if (pokemonType) {
-      if (
         pokemonType &&
         pokemonType[0] &&
         (pokemonType[0] as any)["generation-v"] &&
         (pokemonType[0]) as any["generation-v"]["black-white"]
-      ) {
-        console.log("this is the type info:", (pokemonType[0] as any)["generation-v"]["black-white"].name_icon);
-      }
     }
   }, [pokemonType])
 
@@ -99,7 +96,7 @@ const Details = () => {
               />
             </View>
             <View>
-              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
+              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
                 {pokemonType.map((item, index) => (
                   <Image key={index} style={{ width: 60, height: 20 }} source={{ uri: (item as any)["generation-v"]["black-white"].name_icon }} />
                 ))}
@@ -109,12 +106,12 @@ const Details = () => {
           <View style={styles.card}>
             <Text style={{ fontSize: 16 }}>Stats:</Text>
             {pokemonDetails.stats.map((item: any) => (
-              <>
-              <Text key={item.stat.name}>{item.stat.name}: {item.base_stat}</Text>
+              <View key={item.stat.name}>
+                <Text>{item.stat.name}: {item.base_stat}</Text>
                 <View style={{ height: 5, width: `${(item.base_stat / maxVal) * 100}%`, backgroundColor: item.base_stat <= 30 ? "red" : item.base_stat >= 30 && item.base_stat <= 80 ? "orange" : item.base_stat >= 80 && item.base_stat <= 140 ? "green" : item.base_stat >= 140 && item.base_stat <= 170 ? "#4af" : "turquoise" }}>
-                  
+
+                </View>
               </View>
-              </>
             ))}
           </View>
         </>
