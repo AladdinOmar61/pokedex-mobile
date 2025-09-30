@@ -82,7 +82,7 @@ export const getAllPokemonFromGen = async (
 };
 
 export const getEvolutions = async (id: string) => {
-  const resp = await fetch(`https://pokeapi.co/api/v2/evolution-trigger/${id}`);
+  const resp = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${id}`);
   const data = resp.json();
   return data;
 };

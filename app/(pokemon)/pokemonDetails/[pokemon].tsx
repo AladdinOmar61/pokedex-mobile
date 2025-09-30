@@ -48,8 +48,6 @@ const Details = () => {
           typeBucket.push(pokemonTypeResp.sprites);
         }
         setPokemonType(typeBucket);
-        const pokeEvos = await getEvolutions(pokemonDetails.name);
-        console.log(pokeEvos);
       }
     }
     grabPokemonType();
