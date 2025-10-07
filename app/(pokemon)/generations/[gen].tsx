@@ -1,13 +1,19 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
-import { getAllPokemonFromGen, GenPokemonEntry } from '@/api/pokeapi'
+import { GenPokemonEntry } from '@/api/pokeapi'
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import pokeApi from '@/api/pokeapi';
 
 const AllPokemon = () => {
 
     const { gen } = useLocalSearchParams<{ gen: string }>();
+
+    const {
+        getAllPokemonFromGen
+    } = pokeApi();
+
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 export interface Pokemon {
   name: string;
   url: string;
@@ -7,6 +9,12 @@ export interface Pokemon {
   abilities?: any;
   stats?: any;
   types: PokemonTypes[];
+  species: Species;
+}
+
+interface Species {
+  name: string;
+  url: string;
 }
 
 export interface GenPokemonEntry {
@@ -38,8 +46,10 @@ interface GameName {
 }
 
 export interface Chain {
-  evolves_to: [];
+  is_baby: boolean;
+  species: Species;
   evolution_details: EvolutionDetails[];
+  evolves_to: Chain;
 }
 
 export interface EvolutionDetails {
@@ -61,6 +71,7 @@ export interface EvolutionDetails {
   trade_species: null;
   trigger: Trigger;
   turn_upside_down: boolean;
+  evolves_to?: EvolutionDetails;
 }
 
 interface Trigger {
@@ -68,52 +79,79 @@ interface Trigger {
   url: string;
 }
 
-// All Pokemon
+const pokeApi = () => {
+  let pokemonData: Pokemon = { name: "", url: "", image: "", id: 0, types: [], species: {name: "", url: ""} };
 
-export const getPokemon = async (limit = -1): Promise<Pokemon[]> => {
-  const resp = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`);
-  const data = await resp.json();
-  return data.results.map((item: Pokemon, index: number) => ({
-    ...item,
-    id: index + 1,
-    image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-      index + 1
-    }.png`,
-  }));
+  // All Pokemon
+
+  const getPokemon = async (limit = -1): Promise<Pokemon[]> => {
+    const resp = await fetch(
+      `https://pokeapi.co/api/v2/pokemon?limit=${limit}`
+    );
+    const data = await resp.json();
+    return data.results.map((item: Pokemon, index: number) => ({
+      ...item,
+      id: index + 1,
+      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+        index + 1
+      }.png`,
+    }));
+  };
+
+  const getPokemonDetails = async (id: string): Promise<Pokemon> => {
+    const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const data = await resp.json();
+    // pokemonData = data;
+    // console.log("pokemon data from getPokemonDetails:", pokemonData);
+    return data;
+  };
+
+  const getPokemonType = async (typeUrl: string): Promise<TypeInfo> => {
+    const resp = await fetch(typeUrl);
+    const data = await resp.json();
+    return data;
+  };
+
+  const getAllPokemonFromGen = async (
+    gen: string
+  ): Promise<GenPokemonEntry[]> => {
+    const resp = await fetch(`https://pokeapi.co/api/v2/generation/${gen}`);
+    const data = await resp.json();
+    return data.pokemon_species
+      .map((item: GenPokemonEntry) => {
+        const extractedNum = item.url.match(/\/(\d+)\/$/);
+        const finalNum = extractedNum ? extractedNum[1] : null;
+        return {
+          ...item,
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${finalNum}.png`,
+          num: finalNum,
+        };
+      })
+      .sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
+  };
+
+  const getEvolutions = async (id: string) => {
+    const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const data = await resp.json();
+    const speciesResp = await fetch(data.species.url);
+    const speciesData = await speciesResp.json();
+    const evoResp = await fetch(speciesData.evolution_chain.url);
+    const evoData = await evoResp.json();
+    return evoData;
+  };
+
+  const getPokemonSpecies = async (url: string) => {
+    const resp = await fetch(url);
+    const data = await resp.json();
+  }
+
+  return {
+    getPokemon,
+    getPokemonDetails,
+    getPokemonType,
+    getAllPokemonFromGen,
+    getEvolutions,
+  };
 };
 
-export const getPokemonDetails = async (id: string): Promise<Pokemon> => {
-  const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-  const data = await resp.json();
-  return data;
-};
-
-export const getPokemonType = async (typeUrl: string): Promise<TypeInfo> => {
-  const resp = await fetch(typeUrl);
-  const data = await resp.json();
-  return data;
-};
-
-export const getAllPokemonFromGen = async (
-  gen: string
-): Promise<GenPokemonEntry[]> => {
-  const resp = await fetch(`https://pokeapi.co/api/v2/generation/${gen}`);
-  const data = await resp.json();
-  return data.pokemon_species
-    .map((item: GenPokemonEntry) => {
-      const extractedNum = item.url.match(/\/(\d+)\/$/);
-      const finalNum = extractedNum ? extractedNum[1] : null;
-      return {
-        ...item,
-        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${finalNum}.png`,
-        num: finalNum,
-      };
-    })
-    .sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
-};
-
-export const getEvolutions = async (id: string) => {
-  const resp = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${id}`);
-  const data = resp.json();
-  return data;
-};
+export default pokeApi;

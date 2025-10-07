@@ -8,24 +8,28 @@ import {
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
-  getPokemonDetails,
   Pokemon,
-  getPokemonType,
   Generation,
-  getEvolutions,
-  Chain
+  Chain,
 } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import pokeApi from "@/api/pokeapi";
 
 const Details = () => {
   const { width } = useWindowDimensions();
+
+  const {
+    getPokemonDetails,
+    getPokemonType,
+    getEvolutions,
+  } = pokeApi();
 
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
-  const [pokemonEvos, setPokemonEvos] = useState<Chain[]>([]);
+  const [pokemonEvos, setPokemonEvos] = useState<Chain>();
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
@@ -45,15 +49,15 @@ const Details = () => {
   useEffect(() => {
     const pokeEvos = async () => {
       const evos = await getEvolutions(pokemon!);
-      setPokemonEvos(evos.chain);
-      console.log(pokemonEvos);
+      setPokemonEvos(evos.chain.evolves_to[0]);
+      console.log(pokemonEvos?.evolution_details);
     };
     pokeEvos();
   }, []);
 
   useEffect(() => {
     if (pokemonEvos) {
-      console.log(pokemonEvos);
+      console.log("POKEMON EVOS:", pokemonEvos.evolution_details[0]);
     }
   }, [pokemonEvos])
 
@@ -197,6 +201,22 @@ const Details = () => {
                 ></View>
               </View>
             ))}
+          </View>
+          <View style={styles.card}>
+            <View>
+              <Image
+                source={{ uri: pokemonDetails.sprites.front_default }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  padding: 5,
+                  aspectRatio: "1/1",
+                }}
+              />
+                  {pokemonEvos?.evolution_details[0].min_level &&
+                <Text>{pokemonEvos.evolution_details[0].min_level}</Text>
+                  }
+                </View>
           </View>
         </>
       )}
