@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Image,
   useWindowDimensions,
+  ActivityIndicator
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -217,6 +218,7 @@ const Details = () => {
           </View>
           <View style={[styles.card, {width: '100%'}]}>
             <Text style={{ fontSize: 16 }}>Evolution Chain:</Text>
+            {baseEvo && baseEvo !== "" && evo1Img && evo1Img !== "" && evo2Img && evo2Img !== "" ? (
             <View style={styles.evolutionSection}>
               <Image
                 source={{ uri: baseEvo && baseEvo }}
@@ -271,6 +273,9 @@ const Details = () => {
               )}
               
             </View>
+            ) : 
+            <ActivityIndicator />
+            }
           </View>
         </>
       )}
