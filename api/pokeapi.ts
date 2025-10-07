@@ -49,7 +49,7 @@ export interface Chain {
   is_baby: boolean;
   species: Species;
   evolution_details: EvolutionDetails[];
-  evolves_to: Chain;
+  evolves_to: Chain[];
 }
 
 export interface EvolutionDetails {
@@ -101,8 +101,6 @@ const pokeApi = () => {
   const getPokemonDetails = async (id: string): Promise<Pokemon> => {
     const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await resp.json();
-    // pokemonData = data;
-    // console.log("pokemon data from getPokemonDetails:", pokemonData);
     return data;
   };
 

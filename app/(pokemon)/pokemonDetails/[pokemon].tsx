@@ -7,11 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import {
-  Pokemon,
-  Generation,
-  Chain,
-} from "@/api/pokeapi";
+import { Pokemon, Generation, Chain } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
@@ -19,17 +15,16 @@ import pokeApi from "@/api/pokeapi";
 const Details = () => {
   const { width } = useWindowDimensions();
 
-  const {
-    getPokemonDetails,
-    getPokemonType,
-    getEvolutions,
-  } = pokeApi();
+  const { getPokemonDetails, getPokemonType, getEvolutions } = pokeApi();
 
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
   const [pokemonEvos, setPokemonEvos] = useState<Chain>();
+  const [baseEvo, setBaseEvo] = useState<string>("");
+  const [evo1Img, setEvo1Img] = useState<string>("");
+  const [evo2Img, setEvo2Img] = useState<string>("");
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
@@ -49,17 +44,35 @@ const Details = () => {
   useEffect(() => {
     const pokeEvos = async () => {
       const evos = await getEvolutions(pokemon!);
-      setPokemonEvos(evos.chain.evolves_to[0]);
-      console.log(pokemonEvos?.evolution_details);
+      setPokemonEvos(evos.chain);
     };
     pokeEvos();
   }, []);
 
   useEffect(() => {
     if (pokemonEvos) {
-      console.log("POKEMON EVOS:", pokemonEvos.evolution_details[0]);
+      const speciesUrl = pokemonEvos?.species.url.match(/\/(\d+)\/$/);
+      const speciesNum = speciesUrl ? speciesUrl[1] : null;
+      const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+      setBaseEvo(speciesImg);
+      if (pokemonEvos.evolves_to.length > 0) {
+        const speciesUrl =
+          pokemonEvos?.evolves_to[0].species.url.match(/\/(\d+)\/$/);
+        const speciesNum = speciesUrl ? speciesUrl[1] : null;
+        const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+        setEvo1Img(speciesImg);
+      }
+      if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
+        const speciesUrl =
+          pokemonEvos?.evolves_to[0].evolves_to[0].species.url.match(
+            /\/(\d+)\/$/
+          );
+        const speciesNum = speciesUrl ? speciesUrl[1] : null;
+        const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+        setEvo2Img(speciesImg);
+      }
     }
-  }, [pokemonEvos])
+  }, [pokemonEvos]);
 
   useEffect(() => {
     if (pokemonDetails) {
@@ -168,7 +181,7 @@ const Details = () => {
                     key={index}
                     style={{ width: 60, height: 20 }}
                     source={{
-                      uri: (item as any)["generation-v"]["black-white"]
+                      uri: item && (item as any)["generation-v"]["black-white"]
                         .name_icon,
                     }}
                   />
@@ -202,10 +215,11 @@ const Details = () => {
               </View>
             ))}
           </View>
-          <View style={styles.card}>
-            <View>
+          <View style={[styles.card, {width: '100%'}]}>
+            <Text style={{ fontSize: 16 }}>Evolution Chain:</Text>
+            <View style={styles.evolutionSection}>
               <Image
-                source={{ uri: pokemonDetails.sprites.front_default }}
+                source={{ uri: baseEvo && baseEvo }}
                 style={{
                   width: 100,
                   height: 100,
@@ -213,10 +227,50 @@ const Details = () => {
                   aspectRatio: "1/1",
                 }}
               />
-                  {pokemonEvos?.evolution_details[0].min_level &&
-                <Text>{pokemonEvos.evolution_details[0].min_level}</Text>
-                  }
+              <View style={{ display: "flex", alignItems: "center" }}>
+                <Ionicons name="arrow-forward" size={20} />
+                {pokemonEvos?.evolves_to[0].evolution_details[0].min_level && (
+                  <Text>
+                    Lvl{" "}
+                    {pokemonEvos.evolves_to[0].evolution_details[0].min_level}
+                  </Text>
+                )}
+              </View>
+              <Image
+                source={{ uri: evo1Img && evo1Img }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  padding: 5,
+                  aspectRatio: "1/1",
+                }}
+              />
+              {pokemonEvos?.evolves_to[0].evolves_to && pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
+                <>
+                <View style={{ display: "flex", alignItems: "center" }}>
+                  <Ionicons name="arrow-forward" size={20} />
+                  <Text>
+                    Lvl{" "}
+                    {
+                      pokemonEvos?.evolves_to[0].evolves_to[0]
+                        .evolution_details[0].min_level
+                    }
+                  </Text>
                 </View>
+
+                <Image
+                source={{ uri: evo2Img && evo2Img }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  padding: 5,
+                  aspectRatio: "1/1",
+                }}
+              />
+              </>
+              )}
+              
+            </View>
           </View>
         </>
       )}
@@ -234,6 +288,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     textTransform: "capitalize",
+  },
+  evolutionSection: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
