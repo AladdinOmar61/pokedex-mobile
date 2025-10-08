@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Image,
   useWindowDimensions,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -12,9 +13,11 @@ import { Pokemon, Generation, Chain } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Details = () => {
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const { getPokemonDetails, getPokemonType, getEvolutions } = pokeApi();
 
@@ -136,7 +139,7 @@ const Details = () => {
   };
 
   return (
-    <View style={{ padding: 10 }}>
+    <ScrollView style={{ padding: 10, marginBottom: insets.bottom, flex: 1 }}>
       {pokemonDetails && (
         <>
           <View style={styles.card}>
@@ -184,8 +187,9 @@ const Details = () => {
                     key={index}
                     style={{ width: 60, height: 20 }}
                     source={{
-                      uri: item && (item as any)["generation-v"]["black-white"]
-                        .name_icon,
+                      uri:
+                        item &&
+                        (item as any)["generation-v"]["black-white"].name_icon,
                     }}
                   />
                 ))}
@@ -207,18 +211,18 @@ const Details = () => {
                       item.base_stat <= 30
                         ? "red"
                         : item.base_stat >= 30 && item.base_stat <= 80
-                          ? "orange"
-                          : item.base_stat >= 80 && item.base_stat <= 140
-                            ? "green"
-                            : item.base_stat >= 140 && item.base_stat <= 250
-                              ? "#4af"
-                              : "turquoise",
+                        ? "orange"
+                        : item.base_stat >= 80 && item.base_stat <= 140
+                        ? "green"
+                        : item.base_stat >= 140 && item.base_stat <= 250
+                        ? "#4af"
+                        : "turquoise",
                   }}
                 ></View>
               </View>
             ))}
           </View>
-          <View style={[styles.card, { width: '100%' }]}>
+          <View style={[styles.card, { width: "100%" }]}>
             <Text style={{ fontSize: 16 }}>Evolution Chain:</Text>
             {!evosLoading ? (
               <View style={styles.evolutionSection}>
@@ -233,11 +237,19 @@ const Details = () => {
                 />
                 <View style={{ display: "flex", alignItems: "center" }}>
                   <Ionicons name="arrow-forward" size={20} />
-                  {pokemonEvos?.evolves_to[0].evolution_details[0].min_level !== null && (
+                  {pokemonEvos?.evolves_to[0].evolution_details[0].min_level !==
+                    null && (
                     <Text>
                       Lvl{" "}
-                      {pokemonEvos?.evolves_to[0].evolution_details[0].min_level}
+                      {
+                        pokemonEvos?.evolves_to[0].evolution_details[0]
+                          .min_level
+                      }
                     </Text>
+                  )}
+                  {pokemonEvos?.evolves_to[0].evolution_details[0]
+                    .min_happiness !== null && (
+                    <Ionicons name="heart" color={"red"} size={15} />
                   )}
                 </View>
                 <Image
@@ -249,42 +261,55 @@ const Details = () => {
                     aspectRatio: "1/1",
                   }}
                 />
-                {pokemonEvos?.evolves_to[0].evolves_to && pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
-                  <>
+                {pokemonEvos?.evolves_to[0].evolves_to &&
+                  pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
+                    <>
+                      <View style={{ display: "flex", alignItems: "center" }}>
+                        <Ionicons name="arrow-forward" size={20} />
+                        {pokemonEvos?.evolves_to[0].evolves_to[0]
+                          .evolution_details[0].min_level && (
+                          <Text>
+                            Lvl{" "}
+                            {
+                              pokemonEvos?.evolves_to[0].evolves_to[0]
+                                .evolution_details[0].min_level
+                            }
+                          </Text>
+                        )}
+                        {pokemonEvos?.evolves_to[0].evolves_to[0]
+                          .evolution_details[0].item !== null && (
+                          <Image
+                            source={{
+                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${pokemonEvos?.evolves_to[0].evolves_to[0].evolution_details[0].item.name}.png`,
+                            }}
+                            style={{ height: 20, width: 20 }}
+                          />
+                        )}
+                        {pokemonEvos?.evolves_to[0].evolves_to[0]
+                          .evolution_details[0].min_happiness !== null && (
+                          <Ionicons name="heart" color={"red"} size={15} />
+                        )}
+                      </View>
 
-                    <View style={{ display: "flex", alignItems: "center" }}>
-                      <Ionicons name="arrow-forward" size={20} />
-                      {pokemonEvos?.evolves_to[0].evolves_to[0].evolution_details[0].min_level &&
-                        <Text>
-                          Lvl{" "}
-                          {
-                            pokemonEvos?.evolves_to[0].evolves_to[0]
-                              .evolution_details[0].min_level
-                          }
-                        </Text>
-                      }
-                    </View>
-
-                    <Image
-                      source={{ uri: evo2Img && evo2Img }}
-                      style={{
-                        width: 100,
-                        height: 100,
-                        padding: 5,
-                        aspectRatio: "1/1",
-                      }}
-                    />
-                  </>
-                )}
-
+                      <Image
+                        source={{ uri: evo2Img && evo2Img }}
+                        style={{
+                          width: 100,
+                          height: 100,
+                          padding: 5,
+                          aspectRatio: "1/1",
+                        }}
+                      />
+                    </>
+                  )}
               </View>
-            ) :
+            ) : (
               <ActivityIndicator />
-            }
+            )}
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

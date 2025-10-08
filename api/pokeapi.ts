@@ -45,6 +45,11 @@ interface GameName {
   nameIcon: string;
 }
 
+type Item = {
+  name: string;
+  url: string;
+}
+
 export interface Chain {
   is_baby: boolean;
   species: Species;
@@ -55,13 +60,13 @@ export interface Chain {
 export interface EvolutionDetails {
   gender: number;
   held_item: null;
-  item: null;
+  item: Item;
   known_move: null;
   known_move_type: null;
   location: null;
   min_affection: null;
   min_beauty: null;
-  min_happiness: null;
+  min_happiness: number;
   min_level: number;
   needs_overworld_rain: boolean;
   party_species: null;
@@ -72,6 +77,7 @@ export interface EvolutionDetails {
   trigger: Trigger;
   turn_upside_down: boolean;
   evolves_to?: EvolutionDetails;
+  Image: string;
 }
 
 interface Trigger {
