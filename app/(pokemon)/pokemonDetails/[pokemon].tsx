@@ -27,7 +27,7 @@ const Details = () => {
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
   const [pokemonEvos, setPokemonEvos] = useState<Chain>();
   const [baseEvo, setBaseEvo] = useState<string>("");
-  const [evo1Img, setEvo1Img] = useState<string>("");
+  const [evo1Img, setEvo1Img] = useState<string[]>([]);
   const [evo2Img, setEvo2Img] = useState<string[]>([]);
   const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
@@ -50,6 +50,7 @@ const Details = () => {
     setEvosLoading(true);
     const pokeEvos = async () => {
       const evos = await getEvolutions(pokemon!);
+      console.log("do we get here?");
       setPokemonEvos(evos.chain);
       setEvosLoading(false);
     };
@@ -62,15 +63,22 @@ const Details = () => {
       const speciesNum = speciesUrl ? speciesUrl[1] : null;
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
       setBaseEvo(speciesImg);
-      if (pokemonEvos.evolves_to.length > 0) {
-        const speciesUrl =
-          pokemonEvos?.evolves_to[0].species.url.match(/\/(\d+)\/$/);
-        const speciesNum = speciesUrl ? speciesUrl[1] : null;
-        const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-        setEvo1Img(speciesImg);
-      }
-      // TODO: create dynamic array solution for branching evos
       let evosBucket = [];
+      if (pokemonEvos.evolves_to.length > 0) {
+        console.log("loop running?");
+        for (let i = 0; i < pokemonEvos.evolves_to.length; i++) {
+          const speciesUrl =
+            pokemonEvos?.evolves_to[i].species.url.match(
+              /\/(\d+)\/$/
+            );
+          const speciesNum = speciesUrl ? speciesUrl[1] : null;
+          const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+          evosBucket.push(speciesImg);
+        }
+      }
+      setEvo1Img(evosBucket);
+
+      let secondEvosBucket = [];
       if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
         for (let i = 0; i < pokemonEvos.evolves_to[0].evolves_to.length; i++) {
           const speciesUrl =
@@ -79,10 +87,12 @@ const Details = () => {
             );
           const speciesNum = speciesUrl ? speciesUrl[1] : null;
           const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-          evosBucket.push(speciesImg);
+          secondEvosBucket.push(speciesImg);
         }
       }
-      setEvo2Img(evosBucket);
+      setEvo2Img(secondEvosBucket);
+    } else {
+      return;
     }
   }, [pokemonEvos]);
 
@@ -217,12 +227,12 @@ const Details = () => {
                       item.base_stat <= 30
                         ? "red"
                         : item.base_stat >= 30 && item.base_stat <= 80
-                        ? "orange"
-                        : item.base_stat >= 80 && item.base_stat <= 140
-                        ? "green"
-                        : item.base_stat >= 140 && item.base_stat <= 250
-                        ? "#4af"
-                        : "turquoise",
+                          ? "orange"
+                          : item.base_stat >= 80 && item.base_stat <= 140
+                            ? "green"
+                            : item.base_stat >= 140 && item.base_stat <= 250
+                              ? "#4af"
+                              : "turquoise",
                   }}
                 ></View>
               </View>
@@ -230,104 +240,138 @@ const Details = () => {
           </View>
           <View style={[styles.card, { width: "100%" }]}>
             <Text style={{ fontSize: 16 }}>Evolution Chain:</Text>
+
             {!evosLoading ? (
-              <View style={styles.evolutionSection}>
-                {baseEvo && (
-                  <Image
-                    source={{ uri: baseEvo }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      padding: 5,
-                      aspectRatio: "1/1",
-                    }}
-                  />
-                )}
-                <View style={{ display: "flex", alignItems: "center" }}>
-                  <Ionicons name="arrow-forward" size={20} />
-                  {pokemonEvos?.evolves_to[0].evolution_details[0].min_level !=
-                    null && (
-                    <Text>
-                      Lvl{" "}
-                      {
-                        pokemonEvos?.evolves_to[0].evolution_details[0]
-                          .min_level
-                      }
-                    </Text>
-                  )}
-                  {pokemonEvos?.evolves_to[0].evolution_details[0]
-                    .min_happiness != null && (
-                    <Ionicons name="heart" color={"red"} size={15} />
-                  )}
-                  {pokemonEvos?.evolves_to[0].evolution_details[0].item !==
-                    null && (
-                    <Image
-                      source={{
-                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${pokemonEvos?.evolves_to[0].evolution_details[0].item.name}.png`,
-                      }}
-                      style={{ height: 20, width: 20 }}
-                    />
-                  )}
-                </View>
-                {evo1Img && (
-                  <Image
-                    source={{ uri: evo1Img }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      padding: 5,
-                      aspectRatio: "1/1",
-                    }}
-                  />
-                )}
-                {pokemonEvos?.evolves_to[0].evolves_to &&
-                  pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
-                    <View>
-                      {pokemonEvos?.evolves_to[0].evolves_to.map(
-                        (item, index) => (
-                          <View key={index} style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-                            <View>
-                            <Ionicons name="arrow-forward" size={20} />
-                            {item.evolution_details[0].min_level !== null && (
-                              <Text>
-                                Lvl {item.evolution_details[0].min_level}
-                              </Text>
-                            )}
-                            {item.evolution_details[0].item !== null && (
-                              <Image
-                                source={{
-                                  uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
-                                }}
-                                style={{ height: 20, width: 20 }}
-                              />
-                            )}
-                            {!evosLoading &&
-                              item.evolution_details[0].min_happiness !=
-                                null && (
-                                <Ionicons
-                                  name="heart"
-                                  color={"red"}
-                                  size={15}
-                                />
-                              )}
+              <>
+                {pokemonEvos &&
+                  pokemonEvos?.evolves_to &&
+                  pokemonEvos?.evolves_to.length === 0 ? (
+
+                  <View style={styles.evolutionSection}>
+                    {baseEvo && (
+                      <Image
+                        source={{ uri: baseEvo }}
+                        style={{
+                          width: 100,
+                          height: 100,
+                          padding: 5,
+                          aspectRatio: "1/1",
+                        }}
+                      />
+                    )}
+
+                    {/* first evo starts here  */}
+
+
+                    {pokemonEvos?.evolves_to &&
+                      pokemonEvos?.evolves_to.length > 0 && (
+                        <View>
+                          {pokemonEvos?.evolves_to.map(
+                            (item, index) => (
+                              <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                <View>
+                                  <Ionicons name="arrow-forward" size={20} />
+                                  {item.evolution_details[0].min_level !== null && (
+                                    <Text>
+                                      Lvl {item.evolution_details[0].min_level}
+                                    </Text>
+                                  )}
+                                  {item.evolution_details[0].item !== null && (
+                                    <Image
+                                      source={{
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                      }}
+                                      style={{ height: 20, width: 20 }}
+                                    />
+                                  )}
+                                  {!evosLoading &&
+                                    item.evolution_details[0].min_happiness !=
+                                    null && (
+                                      <Ionicons
+                                        name="heart"
+                                        color={"red"}
+                                        size={15}
+                                      />
+                                    )}
+                                </View>
+                                {evo1Img[index] && (
+                                  <Image
+                                    source={{ uri: evo1Img[index] }}
+                                    style={{
+                                      width: 100,
+                                      height: 100,
+                                      padding: 5,
+                                      aspectRatio: "1/1",
+                                    }}
+                                  />
+                                )}
                               </View>
-                            {evo2Img[index] && (
-                              <Image
-                                source={{ uri: evo2Img[index] }}
-                                style={{
-                                  width: 100,
-                                  height: 100,
-                                  padding: 5,
-                                  aspectRatio: "1/1",
-                                }}
-                              />
-                            )}
-                          </View>
-                        )
+                            )
+                          )}
+                        </View>)}
+
+
+                    {/* second evo starts here */}
+
+                    {pokemonEvos?.evolves_to[0].evolves_to &&
+                      pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
+                        <View>
+                          {pokemonEvos?.evolves_to[0].evolves_to.map(
+                            (item, index) => (
+                              <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                <View>
+                                  <Ionicons name="arrow-forward" size={20} />
+                                  {item.evolution_details[0].min_level !== null && (
+                                    <Text>
+                                      Lvl {item.evolution_details[0].min_level}
+                                    </Text>
+                                  )}
+                                  {item.evolution_details[0].item !== null && (
+                                    <Image
+                                      source={{
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                      }}
+                                      style={{ height: 20, width: 20 }}
+                                    />
+                                  )}
+                                  {item.species.name === "annihilape" && (
+                                    <>
+                                      <Ionicons name="help" size={18} color={"white"} style={{ borderColor: 'black', borderWidth: 1, borderRadius: 5, backgroundColor: 'red' }} />
+                                    </>
+                                  )}
+                                  {!evosLoading &&
+                                    item.evolution_details[0].min_happiness !=
+                                    null && (
+                                      <Ionicons
+                                        name="heart"
+                                        color={"red"}
+                                        size={15}
+                                      />
+                                    )}
+                                </View>
+                                {evo2Img[index] && (
+                                  <Image
+                                    source={{ uri: evo2Img[index] }}
+                                    style={{
+                                      width: 100,
+                                      height: 100,
+                                      padding: 5,
+                                      aspectRatio: "1/1",
+                                    }}
+                                  />
+                                )}
+                              </View>
+                            )
+                          )}
+                        </View>
                       )}
-                    </View>
-                  )}
-              </View>
+                  </View>
+                ) : (
+                  <View>
+                    <Text>This Pokemon does not evolve.</Text>
+                  </View>
+                )}
+              </>
             ) : (
               <ActivityIndicator size={20} />
             )}
