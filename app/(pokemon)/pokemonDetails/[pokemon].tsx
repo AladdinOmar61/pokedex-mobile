@@ -62,8 +62,9 @@ const Details = () => {
       const speciesUrl = pokemonEvos?.species.url.match(/\/(\d+)\/$/);
       const speciesNum = speciesUrl ? speciesUrl[1] : null;
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-      setBaseEvo(speciesImg);
+      setBaseEvo(speciesImg); //undefined for legends
       let evosBucket = [];
+      let secondEvosBucket = [];
       if (pokemonEvos.evolves_to.length > 0) {
         console.log("loop running?");
         for (let i = 0; i < pokemonEvos.evolves_to.length; i++) {
@@ -75,24 +76,20 @@ const Details = () => {
           const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
           evosBucket.push(speciesImg);
         }
-      }
-      setEvo1Img(evosBucket);
-
-      let secondEvosBucket = [];
-      if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
-        for (let i = 0; i < pokemonEvos.evolves_to[0].evolves_to.length; i++) {
-          const speciesUrl =
-            pokemonEvos?.evolves_to[0].evolves_to[i].species.url.match(
-              /\/(\d+)\/$/
-            );
-          const speciesNum = speciesUrl ? speciesUrl[1] : null;
-          const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-          secondEvosBucket.push(speciesImg);
+        setEvo1Img(evosBucket);
+        if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
+          for (let i = 0; i < pokemonEvos.evolves_to[0].evolves_to.length; i++) {
+            const speciesUrl =
+              pokemonEvos?.evolves_to[0].evolves_to[i].species.url.match(
+                /\/(\d+)\/$/
+              );
+            const speciesNum = speciesUrl ? speciesUrl[1] : null;
+            const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+            secondEvosBucket.push(speciesImg);
+          }
+          setEvo2Img(secondEvosBucket);
         }
       }
-      setEvo2Img(secondEvosBucket);
-    } else {
-      return;
     }
   }, [pokemonEvos]);
 
@@ -245,7 +242,7 @@ const Details = () => {
               <>
                 {pokemonEvos &&
                   pokemonEvos?.evolves_to &&
-                  pokemonEvos?.evolves_to.length === 0 ? (
+                  pokemonEvos?.evolves_to.length > 0 ? (
 
                   <View style={styles.evolutionSection}>
                     {baseEvo && (
