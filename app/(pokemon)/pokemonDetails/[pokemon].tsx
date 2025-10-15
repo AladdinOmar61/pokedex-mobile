@@ -6,9 +6,10 @@ import {
   useWindowDimensions,
   ActivityIndicator,
   ScrollView,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { Pokemon, Generation, Chain } from "@/api/pokeapi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,6 +30,11 @@ const Details = () => {
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
   const [evo2Img, setEvo2Img] = useState<string[]>([]);
+
+  const [baseNum, setBaseNum] = useState<string>("");
+  const [evo1Num, setEvo1Num] = useState<string[]>([]);
+  const [evo2Num, setEvo2Num] = useState<string[]>([]);
+
   const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
@@ -50,7 +56,6 @@ const Details = () => {
     setEvosLoading(true);
     const pokeEvos = async () => {
       const evos = await getEvolutions(pokemon!);
-      console.log("do we get here?");
       setPokemonEvos(evos.chain);
       setEvosLoading(false);
     };
@@ -61,21 +66,29 @@ const Details = () => {
     if (pokemonEvos) {
       const speciesUrl = pokemonEvos?.species.url.match(/\/(\d+)\/$/);
       const speciesNum = speciesUrl ? speciesUrl[1] : null;
+      if (speciesNum) {
+        setBaseNum(speciesNum);
+      }
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
       setBaseEvo(speciesImg); //undefined for legends
       let evosBucket = [];
       let secondEvosBucket = [];
+      let evos1NumBucket = [];
+      let evos2NumBucket: string[] = [];
       if (pokemonEvos.evolves_to.length > 0) {
-        console.log("loop running?");
         for (let i = 0; i < pokemonEvos.evolves_to.length; i++) {
           const speciesUrl =
             pokemonEvos?.evolves_to[i].species.url.match(
               /\/(\d+)\/$/
             );
           const speciesNum = speciesUrl ? speciesUrl[1] : null;
+          if (speciesNum) {
+            evos1NumBucket.push(speciesNum);
+          }
           const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
           evosBucket.push(speciesImg);
         }
+        setEvo1Num(evos1NumBucket);
         setEvo1Img(evosBucket);
         if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
           for (let i = 0; i < pokemonEvos.evolves_to[0].evolves_to.length; i++) {
@@ -84,9 +97,13 @@ const Details = () => {
                 /\/(\d+)\/$/
               );
             const speciesNum = speciesUrl ? speciesUrl[1] : null;
+            if (speciesNum) {
+              evos2NumBucket.push(speciesNum);
+            }
             const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
             secondEvosBucket.push(speciesImg);
           }
+          setEvo2Num(evos2NumBucket);
           setEvo2Img(secondEvosBucket);
         }
       }
@@ -246,15 +263,19 @@ const Details = () => {
 
                   <View style={styles.evolutionSection}>
                     {baseEvo && (
-                      <Image
-                        source={{ uri: baseEvo }}
-                        style={{
-                          width: 100,
-                          height: 100,
-                          padding: 5,
-                          aspectRatio: "1/1",
-                        }}
-                      />
+                      <Link href={`/(pokemon)/pokemonDetails/${baseNum}`} asChild>
+                        <Pressable>
+                          <Image
+                            source={{ uri: baseEvo }}
+                            style={{
+                              width: 100,
+                              height: 100,
+                              padding: 5,
+                              aspectRatio: "1/1",
+                            }}
+                          />
+                        </Pressable>
+                      </Link>
                     )}
 
                     {/* first evo starts here  */}
@@ -292,15 +313,19 @@ const Details = () => {
                                     )}
                                 </View>
                                 {evo1Img[index] && (
-                                  <Image
-                                    source={{ uri: evo1Img[index] }}
-                                    style={{
-                                      width: 100,
-                                      height: 100,
-                                      padding: 5,
-                                      aspectRatio: "1/1",
-                                    }}
-                                  />
+                                  <Link href={`/(pokemon)/pokemonDetails/${evo1Num[index]}`} asChild>
+                                    <Pressable>
+                                      <Image
+                                        source={{ uri: evo1Img[index] }}
+                                        style={{
+                                          width: 100,
+                                          height: 100,
+                                          padding: 5,
+                                          aspectRatio: "1/1",
+                                        }}
+                                      />
+                                    </Pressable>
+                                  </Link>
                                 )}
                               </View>
                             )
@@ -336,8 +361,7 @@ const Details = () => {
                                       <Ionicons name="help" size={18} color={"white"} style={{ borderColor: 'black', borderWidth: 1, borderRadius: 5, backgroundColor: 'red' }} />
                                     </>
                                   )}
-                                  {!evosLoading &&
-                                    item.evolution_details[0].min_happiness !=
+                                  {item.evolution_details[0].min_happiness !=
                                     null && (
                                       <Ionicons
                                         name="heart"
@@ -347,15 +371,19 @@ const Details = () => {
                                     )}
                                 </View>
                                 {evo2Img[index] && (
-                                  <Image
-                                    source={{ uri: evo2Img[index] }}
-                                    style={{
-                                      width: 100,
-                                      height: 100,
-                                      padding: 5,
-                                      aspectRatio: "1/1",
-                                    }}
-                                  />
+                                  <Link href={`/(pokemon)/pokemonDetails/${evo2Num[index]}`} asChild>
+                                    <Pressable>
+                                      <Image
+                                        source={{ uri: evo2Img[index] }}
+                                        style={{
+                                          width: 100,
+                                          height: 100,
+                                          padding: 5,
+                                          aspectRatio: "1/1",
+                                        }}
+                                      />
+                                    </Pressable>
+                                  </Link>
                                 )}
                               </View>
                             )
