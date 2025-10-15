@@ -5,11 +5,11 @@
     "scheme": "myapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/pokeball.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/pokeball.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,16 +21,23 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.aladdino.pokedexmobile"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/pokeball.png"
     },
     "plugins": [
       "expo-router"
     ],
     "experiments": {
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0bcb5744-da46-4293-a56b-546dce0f2e31"
+      }
     }
   }
 }
