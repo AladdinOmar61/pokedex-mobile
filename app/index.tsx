@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollView, Image, ImageBackground } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -12,11 +12,15 @@ const Home = () => {
 
   return (
     <View>
-      <ScrollView style={{marginBottom: insets.bottom}}>
+      <ScrollView style={{ marginBottom: insets.bottom }}>
         <Link href="/(pokemon)/all" asChild>
           <TouchableOpacity>
             <View style={[styles.genGridItem, { width: width - 6 }]}>
-              <Text>All</Text>
+              <ImageBackground
+                source={require("../assets/All-Gens.png")}
+                style={styles.backgroundImageSize}
+                resizeMode='cover'
+              />
             </View>
           </TouchableOpacity>
         </Link>
@@ -83,9 +87,13 @@ const styles = StyleSheet.create({
 
   genGridItem: {
     height: 150,
-    borderWidth: 1,
-    borderColor: 'black',
-    margin: 3
+    margin: 4
+  },
+
+  backgroundImageSize: {
+    flex: 1,
+    width: "100%",
+    height: "100%"
   }
 })
 
