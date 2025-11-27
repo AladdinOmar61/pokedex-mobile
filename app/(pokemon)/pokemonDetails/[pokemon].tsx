@@ -117,6 +117,7 @@ const Details = () => {
           pokemonDetails.name.charAt(0).toUpperCase() +
           pokemonDetails.name.slice(1),
         headerTitleAlign: "center",
+        headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
       });
     }
   }, [pokemonDetails, navigation]);
@@ -227,15 +228,15 @@ const Details = () => {
             </View>
           </View>
           <View style={styles.card}>
-            <Text style={{ fontSize: 16 }}>Stats:</Text>
+            <Text style={[styles.infoText, { fontSize: 16 }]}>Stats:</Text>
             {pokemonDetails.stats.map((item: any) => (
               <View key={item.stat.name}>
-                <Text>
+                <Text style={styles.infoText}>
                   {item.stat.name}: {item.base_stat}
                 </Text>
                 <View
                   style={{
-                    height: 5,
+                    height: 8,
                     width: `${(item.base_stat / maxVal) * 100}%`,
                     backgroundColor:
                       item.base_stat <= 30
@@ -252,8 +253,8 @@ const Details = () => {
               </View>
             ))}
           </View>
-          <View style={[styles.card, { width: "100%" }]}>
-            <Text style={{ fontSize: 16 }}>Evolution Chain:</Text>
+          <View style={[styles.card]}>
+            <Text style={[styles.infoText, { fontSize: 16 }]}>Evolution Chain:</Text>
 
             {!evosLoading ? (
               <>
@@ -268,8 +269,8 @@ const Details = () => {
                           <Image
                             source={{ uri: baseEvo }}
                             style={{
-                              width: 100,
-                              height: 100,
+                              width: 95,
+                              height: 95 ,
                               padding: 5,
                               aspectRatio: "1/1",
                             }}
@@ -288,9 +289,9 @@ const Details = () => {
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <View>
-                                  <Ionicons name="arrow-forward" size={20} />
+                                  <Ionicons name="arrow-forward" size={20} style={{ transform: [{ translateX: '25%' }] }} />
                                   {item.evolution_details[0].min_level !== null && (
-                                    <Text>
+                                    <Text style={[styles.infoText, { fontSize: 10  }]}>
                                       Lvl {item.evolution_details[0].min_level}
                                     </Text>
                                   )}
@@ -342,9 +343,11 @@ const Details = () => {
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <View>
-                                  <Ionicons name="arrow-forward" size={20} />
+                                  {/* <View style={{display: 'flex', justifyContent: 'center'}}> */}
+                                    <Ionicons name="arrow-forward" size={20} style={{transform: [{translateX: '25%'}]}} />
+                                    {/* </View> */}
                                   {item.evolution_details[0].min_level !== null && (
-                                    <Text>
+                                    <Text style={[styles.infoText, { fontSize: 10 }]}>
                                       Lvl {item.evolution_details[0].min_level}
                                     </Text>
                                   )}
@@ -393,7 +396,7 @@ const Details = () => {
                   </View>
                 ) : (
                   <View>
-                    <Text>This Pokemon does not evolve.</Text>
+                      <Text style={styles.infoText}>This Pokemon does not evolve.</Text>
                   </View>
                 )}
               </>
@@ -419,6 +422,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textTransform: "capitalize",
   },
+
+  infoText: {
+    fontFamily: "Silkscreen"
+  },
+
   evolutionSection: {
     display: "flex",
     flexDirection: "row",
