@@ -35,21 +35,22 @@ const AllPokemon = () => {
 
     useEffect(() => {
         if (genPokemon) {
-          navigation.setOptions({
-            title: `Generation ${gen}`,
-            headerTitleAlign: 'center'
-          });
+            navigation.setOptions({
+                title: `Generation ${gen}`,
+                headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
+                headerTitleAlign: 'center'
+            });
         }
     }, [genPokemon, navigation])
 
     return (
-        <ScrollView style={{marginBottom: insets.bottom}}>
+        <ScrollView style={{ marginBottom: insets.bottom }}>
             {genPokemon ? (
 
                 genPokemon.map((p) => {
                     let extractedNum = p.url.match(/\/(\d+)\/$/);
                     let finalNum = extractedNum ? extractedNum[1] : null;
-                    
+
                     return (
                         <Link href={`/(pokemon)/pokemonDetails/${finalNum}`} key={finalNum} asChild>
                             <TouchableOpacity>
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 18,
+        fontFamily: "Silkscreen",
         textTransform: 'capitalize',
         flex: 1
     }

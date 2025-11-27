@@ -28,7 +28,26 @@
       "favicon": "./assets/pokeball.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      ["expo-font",
+      {
+      "fonts": [
+        "./assets/Fonts/Silkscreen-Regular.ttf"
+      ],
+      "android": {
+        "fonts": [
+          {
+            "fontFamily": "Silkscreen",
+            "fontDefinitions": [
+              {
+                "path": "./assets/Fonts/Silkscreen-Bold.ttf",
+                "weight": 700
+              }
+            ]
+          }
+        ]
+      }
+    }]
     ],
     "experiments": {
       "tsconfigPaths": true

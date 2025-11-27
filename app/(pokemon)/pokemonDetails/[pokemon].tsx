@@ -70,7 +70,7 @@ const Details = () => {
         setBaseNum(speciesNum);
       }
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-      setBaseEvo(speciesImg); //undefined for legends
+      setBaseEvo(speciesImg); //undefined for legendary pokemon
       let evosBucket = [];
       let secondEvosBucket = [];
       let evos1NumBucket = [];
@@ -414,7 +414,8 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   pokemonName: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: "Silkscreen",
     textAlign: "center",
     textTransform: "capitalize",
   },

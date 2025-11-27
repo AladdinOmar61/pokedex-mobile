@@ -10,9 +10,9 @@ const Layout = () => {
             },
             headerTintColor: "#FFF"
         }}>
-            <Stack.Screen name='index' options={{ title: "Pokedex Home" }} />
+            <Stack.Screen name='index' options={{ title: "Select Generation", headerTitleStyle: {fontFamily: "Silkscreen", fontSize: 16} }} />
             <Stack.Screen name='(pokemon)/pokemonDetails/[pokemon]' options={{ title: "" }} />
-            <Stack.Screen name="(pokemon)/all" options={{ title: "All Pokemon" }} />
+            <Stack.Screen name="(pokemon)/all" options={{ title: "All Pokemon", headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 } }} />
             <Stack.Screen name="(pokemon)/generations/[gen]" options={{ title: "" }} />
         </Stack>
     )

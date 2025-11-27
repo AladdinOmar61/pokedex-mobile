@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 18,
+    fontFamily: "Silkscreen",
     textTransform: "capitalize",
     flex: 1,
   },
