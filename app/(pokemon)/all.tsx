@@ -13,6 +13,7 @@ import { Link } from "expo-router";
 import { Pokemon } from "@/api/pokeapi";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
+import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
 
 const AllPokemon = () => {
   const { getPokemon } = pokeApi();
@@ -43,7 +44,7 @@ const AllPokemon = () => {
                 <Text style={styles.itemText}>
                   #{p.id} {p.name}
                 </Text>
-                <Ionicons name="chevron-forward" size={24} />
+                <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
               </View>
             </TouchableOpacity>
           </Link>

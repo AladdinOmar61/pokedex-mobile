@@ -2,9 +2,9 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIn
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
 import { GenPokemonEntry } from '@/api/pokeapi'
-import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
+import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
 
 const AllPokemon = () => {
 
@@ -57,7 +57,7 @@ const AllPokemon = () => {
                                 <View style={styles.item}>
                                     <Image source={{ uri: p.image }} style={styles.preview} />
                                     <Text style={styles.itemText}>#{finalNum} {p.name}</Text>
-                                    <Ionicons name='chevron-forward' size={24} />
+                                    <ForwardChev width={8} height={14} style={{width: 8, height: 14, marginRight: 15}} />
                                 </View>
                             </TouchableOpacity>
                         </Link>

@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -38,6 +39,8 @@ const Details = () => {
   const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
+
+  const [textWidth, setTextWidth] = useState(0);
 
   const maxVal = 255;
 
@@ -269,8 +272,8 @@ const Details = () => {
                           <Image
                             source={{ uri: baseEvo }}
                             style={{
-                              width: 95,
-                              height: 95 ,
+                              width: 90,
+                              height: 90 ,
                               padding: 5,
                               aspectRatio: "1/1",
                             }}
@@ -288,8 +291,9 @@ const Details = () => {
                           {pokemonEvos?.evolves_to.map(
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <View>
-                                  <Ionicons name="arrow-forward" size={20} style={{ transform: [{ translateX: '25%' }] }} />
+                                <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                  {/* <Ionicons name="arrow-forward" size={20} style={{ transform: [{ translateX: '25%' }] }} /> */}
+                                  <ArrowRight width={24} height={24} />
                                   {item.evolution_details[0].min_level !== null && (
                                     <Text style={[styles.infoText, { fontSize: 10  }]}>
                                       Lvl {item.evolution_details[0].min_level}
@@ -306,11 +310,13 @@ const Details = () => {
                                   {!evosLoading &&
                                     item.evolution_details[0].min_happiness !=
                                     null && (
+                                    <>
                                       <Ionicons
                                         name="heart"
                                         color={"red"}
                                         size={15}
                                       />
+                                    </>
                                     )}
                                 </View>
                                 {evo1Img[index] && (
@@ -344,20 +350,27 @@ const Details = () => {
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <View>
                                   {/* <View style={{display: 'flex', justifyContent: 'center'}}> */}
-                                    <Ionicons name="arrow-forward" size={20} style={{transform: [{translateX: '25%'}]}} />
+                                  
                                     {/* </View> */}
                                   {item.evolution_details[0].min_level !== null && (
+                                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <ArrowRight width={24} height={24} />
                                     <Text style={[styles.infoText, { fontSize: 10 }]}>
                                       Lvl {item.evolution_details[0].min_level}
-                                    </Text>
+                                      </Text>
+                                      </View>
                                   )}
                                   {item.evolution_details[0].item !== null && (
-                                    <Image
+                                    <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                      <ArrowRight width={24} height={24} />
+                                      <Image
                                       source={{
                                         uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
+                                      <Text numberOfLines={1} onLayout={(event) => event.} style={[styles.infoText, {fontSize: 9, position: 'absolute', bottom: "-50%", width: 89}]}>{item.evolution_details[0].item.name}</Text>
+                                      </View>
                                   )}
                                   {item.species.name === "annihilape" && (
                                     <>
@@ -366,11 +379,14 @@ const Details = () => {
                                   )}
                                   {item.evolution_details[0].min_happiness !=
                                     null && (
+                                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                      <ArrowRight width={24} height={24} />
                                       <Ionicons
                                         name="heart"
                                         color={"red"}
                                         size={15}
                                       />
+                                      </View>
                                     )}
                                 </View>
                                 {evo2Img[index] && (
