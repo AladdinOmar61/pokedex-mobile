@@ -21,6 +21,8 @@ export interface GenPokemonEntry {
   name: string;
   url: string;
   image: string;
+  firstType?: string;
+  secondType?: string;
 }
 
 export interface PokemonTypes {

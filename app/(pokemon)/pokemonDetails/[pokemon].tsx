@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Pressable,
+  LayoutChangeEvent
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
@@ -16,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
+import Heart from "@/assets/Icons/Pixel-Heart.svg";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -40,7 +42,7 @@ const Details = () => {
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
-  const [textWidth, setTextWidth] = useState(0);
+  const [firstEvoTextWidth, setFirstEvoTextWidth] = useState(0);
 
   const maxVal = 255;
 
@@ -284,7 +286,6 @@ const Details = () => {
 
                     {/* first evo starts here  */}
 
-
                     {pokemonEvos?.evolves_to &&
                       pokemonEvos?.evolves_to.length > 0 && (
                         <View>
@@ -300,24 +301,27 @@ const Details = () => {
                                     </Text>
                                   )}
                                   {item.evolution_details[0].item !== null && (
+                                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                     <Image
                                       source={{
                                         uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
+                                    <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
+                                  </View>
                                   )}
                                   {!evosLoading &&
                                     item.evolution_details[0].min_happiness !=
                                     null && (
                                     <>
-                                      <Ionicons
-                                        name="heart"
-                                        color={"red"}
-                                        size={15}
-                                      />
+                                      <Heart width={14} height={14} />
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
                                     </>
                                     )}
+                                  {item.evolution_details[0].time_of_day && 
+                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
+                                  }
                                 </View>
                                 {evo1Img[index] && (
                                   <Link href={`/(pokemon)/pokemonDetails/${evo1Num[index]}`} asChild>
@@ -369,8 +373,8 @@ const Details = () => {
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
-                                      <Text numberOfLines={1} onLayout={(event) => event.} style={[styles.infoText, {fontSize: 9, position: 'absolute', bottom: "-50%", width: 89}]}>{item.evolution_details[0].item.name}</Text>
-                                      </View>
+                                      <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
+                                    </View>
                                   )}
                                   {item.species.name === "annihilape" && (
                                     <>
@@ -381,11 +385,8 @@ const Details = () => {
                                     null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                       <ArrowRight width={24} height={24} />
-                                      <Ionicons
-                                        name="heart"
-                                        color={"red"}
-                                        size={15}
-                                      />
+                                      <Heart width={14} height={14} />
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness {item.evolution_details[0].time_of_day}</Text>
                                       </View>
                                     )}
                                 </View>

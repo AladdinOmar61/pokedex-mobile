@@ -1,0 +1,58 @@
+import GrassType from "@/assets/Icons/pokeTypes/Grass.svg";
+import WaterType from "@/assets/Icons/pokeTypes/Water.svg";
+import BugType from "@/assets/Icons/pokeTypes/Bug.svg";
+import DarkType from "@/assets/Icons/pokeTypes/Dark.svg";
+import DragonType from "@/assets/Icons/pokeTypes/Dragon.svg";
+import ElectricType from "@/assets/Icons/pokeTypes/Electric.svg";
+import FairyType from "@/assets/Icons/pokeTypes/Fairy.svg";
+import FightingType from "@/assets/Icons/pokeTypes/Fighting.svg";
+import FireType from "@/assets/Icons/pokeTypes/Fire.svg";
+import FlyingType from "@/assets/Icons/pokeTypes/Flying.svg";
+import GhostType from "@/assets/Icons/pokeTypes/Ghost.svg";
+import GroundType from "@/assets/Icons/pokeTypes/Ground.svg";
+import IceType from "@/assets/Icons/pokeTypes/Ice.svg";
+import NormalType from "@/assets/Icons/pokeTypes/Normal.svg";
+import PoisonType from "@/assets/Icons/pokeTypes/Poison.svg";
+import PsychicType from "@/assets/Icons/pokeTypes/Psychic.svg";
+import SteelType from "@/assets/Icons/pokeTypes/Steel.svg";
+
+export const PokeTypeIcon = (type: string) => {
+    switch (type) {
+        case 'grass':
+            return <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'fire':
+            return <FireType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'water':
+            return <WaterType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'bug':
+            return <BugType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'dark':
+            return <DarkType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'dragon':
+            return <DragonType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'electric':
+            return <ElectricType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'ice':
+            return <IceType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'steel':
+            return <SteelType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'fairy':
+            return <FairyType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'fighting':
+            return <FightingType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'flying':
+            return <FlyingType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'ghost':
+            return <GhostType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'ground':
+            return <GroundType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'Normal':
+            return <NormalType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'poison':
+            return <PoisonType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'psychic':
+            return <PsychicType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        default:
+            return <NormalType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />    
+    }
+}
