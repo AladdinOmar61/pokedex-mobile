@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollView, Image, ImageBackground } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react';
+import { MainClient } from 'pokenode-ts';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +18,15 @@ const Home = () => {
   const [loaded, error] = useFonts({
     "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
   });
+
+  (async () => {
+    const api = new MainClient();
+
+    await api.game
+      .getGenerationById(1)
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  })();
 
   useEffect(() => {
     if (loaded || error) {
@@ -32,7 +41,7 @@ const Home = () => {
   return (
     <View>
       <ScrollView style={{ marginBottom: insets.bottom }}>
-        <Link href="/(pokemon)/all" asChild>
+        <Link href={`(pokemon)/all`} asChild>
           <TouchableOpacity>
             <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
               <ImageBackground
@@ -57,7 +66,7 @@ const Home = () => {
           </TouchableOpacity>
         </Link>
         <View style={styles.genGrid}>
-          <Link href={`(pokemon)/generations/${1}`} asChild>
+          <Link href={`(pokemon)/generations/${2}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground
@@ -75,7 +84,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${2}`} asChild>
+          <Link href={`(pokemon)/generations/${3}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen2-bg.png")}
@@ -92,7 +101,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${3}`} asChild>
+          <Link href={`(pokemon)/generations/${4}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen3-bg.png")}
@@ -108,7 +117,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${4}`} asChild>
+          <Link href={`(pokemon)/generations/${5}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen4-bg.png")}
@@ -124,7 +133,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${5}`} asChild>
+          <Link href={`(pokemon)/generations/${6}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen5-bg.png")}
@@ -140,7 +149,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${6}`} asChild>
+          <Link href={`(pokemon)/generations/${7}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen6-bg.png")}
@@ -156,7 +165,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${7}`} asChild>
+          <Link href={`(pokemon)/generations/${8}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen7-bg.png")}
@@ -172,7 +181,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${8}`} asChild>
+          <Link href={`(pokemon)/generations/${9}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen8-bg.png")}
@@ -188,7 +197,7 @@ const Home = () => {
               </View>
             </TouchableOpacity>
           </Link>
-          <Link href={`(pokemon)/generations/${9}`} asChild>
+          <Link href={`(pokemon)/generations/${10}`} asChild>
             <TouchableOpacity>
               <View style={[styles.genGridItem, { width: width / 2.1 }]}>
                 <ImageBackground source={require("../assets/GenBGs/Gen9-bg.png")}

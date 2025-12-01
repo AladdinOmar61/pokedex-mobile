@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { MainClient } from "pokenode-ts";
+import { PokemonSpeciesDexEntry, Berry } from "pokenode-ts";
 
 export interface Pokemon {
   name: string;
@@ -12,17 +13,52 @@ export interface Pokemon {
   species: Species;
 }
 
+export interface Pokedex {
+  id: number;
+  /** The name for this resource */
+  name: string;
+  is_main_series: boolean;
+  /** The description of this resource listed in different languages */
+  descriptions: Description[];
+  /** The name of this resource listed in different languages */
+  names: Name[];
+  pokemon_entries: PokemonEntry[];
+  region: NamedAPIResource;
+  /** A list of version groups this Pokédex is relevant to */
+  version_groups: NamedAPIResource[];
+}
+
+export interface PokemonEntry {
+  /** The index of this Pokémon species entry within the Pokédex */
+  entry_number: number;
+  /** The Pokémon species being encountered */
+  pokemon_species: NamedAPIResource;
+}
+
+export interface Description {
+  /** The localized description for an API resource in a specific language. */
+  description: string;
+  /** The language this name is in */
+  language: NamedAPIResource;
+}
+
 interface Species {
   name: string;
   url: string;
 }
 
-export interface GenPokemonEntry {
+export interface Name {
+  /** The localized name for an API resource in a specific language */
   name: string;
+  /** The language this name is in */
+  language: NamedAPIResource;
+}
+
+export interface NamedAPIResource {
+  /** The name of the referenced resource */
+  name: string;
+  /** The URL of the referenced resource */
   url: string;
-  image: string;
-  firstType?: string;
-  secondType?: string;
 }
 
 export interface PokemonTypes {
@@ -40,17 +76,30 @@ interface TypeInfo {
 }
 
 export interface Generation {
-  gameName: GameName;
-}
-
-interface GameName {
-  nameIcon: string;
+  /** The identifier for this resource */
+  id: number;
+  /** The name for this resource */
+  name: string;
+  /** A list of abilities that were introduced in this generation */
+  abilities: NamedAPIResource[];
+  /** The name of this resource listed in different languages */
+  names: Name[];
+  /** The main region travelled in this generation */
+  main_region: NamedAPIResource;
+  /** A list of moves that were introduced in this generation */
+  moves: NamedAPIResource[];
+  /** A list of Pokémon species that were introduced in this generation */
+  pokemon_species: NamedAPIResource[];
+  /** A list of types that were introduced in this generation */
+  types: NamedAPIResource[];
+  /** A list of version groups that were introduced in this generation */
+  version_groups: NamedAPIResource[];
 }
 
 type Item = {
   name: string;
   url: string;
-}
+};
 
 export interface Chain {
   is_baby: boolean;
@@ -88,23 +137,15 @@ interface Trigger {
 }
 
 const pokeApi = () => {
-  let pokemonData: Pokemon = { name: "", url: "", image: "", id: 0, types: [], species: {name: "", url: ""} };
+  const api = new MainClient();
 
-  // All Pokemon
-
-  const getPokemon = async (limit = -1): Promise<Pokemon[]> => {
-    const resp = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=${limit}`
-    );
-    const data = await resp.json();
-    return data.results.map((item: Pokemon, index: number) => ({
+  const getPokemon = async (): Promise<PokemonEntry[]> => {
+    const data = await api.game.getPokedexById(1);
+    return data.pokemon_entries.map((item: PokemonEntry) => ({
       ...item,
-      id: index + 1,
-      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-        index + 1
-      }.png`,
-    }));
-  };
+      id: item.entry_number,
+      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.entry_number}.png`,
+    }));};
 
   const getPokemonDetails = async (id: string): Promise<Pokemon> => {
     const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -118,22 +159,20 @@ const pokeApi = () => {
     return data;
   };
 
-  const getAllPokemonFromGen = async (
-    gen: string
-  ): Promise<GenPokemonEntry[]> => {
-    const resp = await fetch(`https://pokeapi.co/api/v2/generation/${gen}`);
-    const data = await resp.json();
+  const getAllPokemonFromGen = async (gen: number): Promise<NamedAPIResource[]> => {
+    const data = await api.game.getGenerationById(gen);
+    console.log("generation: ", gen);
+    console.log("data: ", data);
     return data.pokemon_species
-      .map((item: GenPokemonEntry) => {
-        const extractedNum = item.url.match(/\/(\d+)\/$/);
-        const finalNum = extractedNum ? extractedNum[1] : null;
+      .map((item: NamedAPIResource, index: number) => {
         return {
           ...item,
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${finalNum}.png`,
-          num: finalNum,
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+            index + 1
+          }.png`,
         };
       })
-      .sort((a: any, b: any) => (a.num ?? 0) - (b.num ?? 0));
+      .sort((a: any, b: any) => (a.index ?? 0) - (b.index ?? 0));;
   };
 
   const getEvolutions = async (id: string) => {
