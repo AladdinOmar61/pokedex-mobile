@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link } from "expo-router";
-import { Pokemon } from "@/api/pokeapi";
+import { Pokemon } from "@/interface";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
@@ -36,19 +36,20 @@ const AllPokemon = () => {
   return (
     <ScrollView>
       {pokemon ? (
-        pokemon.map((p) => (
+        pokemon.map((p) => {
+          return (
           <Link href={`/(pokemon)/pokemonDetails/${p.id}`} key={p.id} asChild>
             <TouchableOpacity>
               <View style={styles.item}>
                 <Image source={{ uri: p.image }} style={styles.preview} />
                 <Text style={styles.itemText}>
-                  #{p.id} {p.name}
+                  #{p.id} {p.pokemon_species.name}
                 </Text>
                 <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
               </View>
             </TouchableOpacity>
-          </Link>
-        ))
+          </Link>)
+})
       ) : (
         <View style={{ flex: 1, justifyContent: "center" }}>
           <ActivityIndicator color={"#F4511E"} size={24} />

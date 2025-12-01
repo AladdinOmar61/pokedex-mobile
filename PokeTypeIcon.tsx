@@ -15,6 +15,7 @@ import NormalType from "@/assets/Icons/pokeTypes/Normal.svg";
 import PoisonType from "@/assets/Icons/pokeTypes/Poison.svg";
 import PsychicType from "@/assets/Icons/pokeTypes/Psychic.svg";
 import SteelType from "@/assets/Icons/pokeTypes/Steel.svg";
+import RockType from "@/assets/Icons/pokeTypes/Rock.svg";
 
 export const PokeTypeIcon = (type: string) => {
     switch (type) {
@@ -52,6 +53,8 @@ export const PokeTypeIcon = (type: string) => {
             return <PoisonType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
         case 'psychic':
             return <PsychicType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
+        case 'rock':
+            return <RockType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />
         default:
             return <NormalType width={100} height={100} style={{ position: 'absolute', right: '3%' }} />    
     }
