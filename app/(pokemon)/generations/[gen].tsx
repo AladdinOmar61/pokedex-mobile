@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
-import { NamedAPIResource, PokemonEntry } from '@/api/pokeapi'
+import { NamedAPIResource, PokemonSpecies, PokemonSpeciesVariety } from '@/interface';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
@@ -14,7 +14,7 @@ const AllPokemon = () => {
 
     const { gen } = useLocalSearchParams<{ gen: string }>();
 
-    console.log("generation endpoint: ", gen);
+    // console.log("generation endpoint: ", gen);
 
     const {
         getAllPokemonFromGen
@@ -23,7 +23,7 @@ const AllPokemon = () => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
-    const [genPokemon, setGenPokemon] = useState<NamedAPIResource[]>([]);
+    const [genPokemon, setGenPokemon] = useState<PokemonSpecies[]>([]);
 
     // const getPokemonsFirstType = async (pokemonId: string) => {
     //     try {
@@ -48,7 +48,7 @@ const AllPokemon = () => {
     const retrievePokemonFromGen = async () => {
         try {
             const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
-            console.log(genPokeResp);
+            // console.log(genPokeResp);
             // const enriched = await Promise.all(
             //     genPokeResp.map(async (p: any) => {
             //         const firstType = await getPokemonsFirstType(p.id);
@@ -87,14 +87,14 @@ const AllPokemon = () => {
 
                 genPokemon.map((p, index) => {
                     return (
-                        <Link href={`/(pokemon)/pokemonDetails/${p.name}`} key={index} asChild>
+                        <Link href={`/(pokemon)/pokemonDetails/${p.varieties[0].pokemon.name}`} key={index} asChild>
                             <TouchableOpacity>
                                 {/* <LinearGradient style={{ width: "100%" }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')}> */}
                                     <View style={styles.item}>
                                         {/* <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} /> */}
                                         {/* {PokeTypeIcon(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')} */}
-                                        {/* <Image source={{ uri: p.image }} style={styles.preview} /> */}
-                                        <Text style={styles.itemText}>#{index+1} {p.name}</Text>
+                                        <Image source={{ uri: p.image }} style={styles.preview} />
+                                        <Text style={styles.itemText}>#{index+1} {p.varieties[0].pokemon.name}</Text>
                                         <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
                                     </View>
                                 {/* </LinearGradient> */}
