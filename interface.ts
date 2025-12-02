@@ -1,13 +1,48 @@
 export interface Pokemon {
-  name: string;
-  url: string;
+  /** The identifier for this resource */
   id: number;
+  /** The name for this resource */
+  name: string;
   image: string;
-  sprites?: any;
-  abilities?: any;
-  stats?: any;
-  types: PokemonTypes[];
-  species: Species;
+  /** The base experience gained for defeating this Pokémon */
+  base_experience: number;
+  /** The height of this Pokémon in decimeters */
+  height: number;
+  /** Set for exactly one Pokémon used as the default for each species */
+  is_default: boolean;
+  /** Order for sorting. Almost national order, except families are grouped together */
+  order: number;
+  /** The weight of this Pokémon in hectograms */
+  weight: number;
+  /** A list of abilities this Pokémon could potentially have */
+  // abilities: PokemonAbility[];
+  /** A list of forms this Pokémon can take on */
+  forms: NamedAPIResource[];
+  /** A list of game indices relevant to Pokémon item by generation */
+  // game_indices: VersionGameIndex[];
+  /** A list of items this Pokémon may be holding when encountered */
+  // held_items: PokemonHeldItem[];
+  /** A link to a list of location areas, as well as encounter details pertaining to specific versions */
+  location_area_encounters: string;
+  /** A list of moves along with learn methods and level details pertaining to specific version groups */
+  // moves: PokemonMove[];
+  /** A set of sprites used to depict this Pokémon in the game.
+   * A visual representation of the various sprites can be found at [PokeAPI/sprites](https://github.com/PokeAPI/sprites#sprites)
+   */
+  // sprites: PokemonSprites;
+  /** The species this Pokémon belongs to */
+  species: NamedAPIResource;
+  /** A list of base stat values for this Pokémon */
+  // stats: PokemonStat[];
+  /** A list of details showing types this Pokémon has */
+  types: PokemonType[];
+}
+
+export interface PokemonType {
+  /** The order the Pokémon's types are listed in */
+  slot: number;
+  /** The type the referenced Pokémon has */
+  type: NamedAPIResource;
 }
 
 export interface PokemonEntry {
@@ -122,7 +157,7 @@ export interface PokemonSpecies {
   /** The rate at which this Pokémon species gains levels */
   growth_rate: NamedAPIResource;
   /** A list of Pokedexes and the indexes reserved within them for this Pokémon species */
-//   pokedex_numbers: PokemonSpeciesDexEntry[];
+  //   pokedex_numbers: PokemonSpeciesDexEntry[];
   /** A list of egg groups this Pokémon species is a member of */
   egg_groups: NamedAPIResource[];
   /** The color of this Pokémon for Pokédex search */
@@ -132,7 +167,7 @@ export interface PokemonSpecies {
   /** The Pokémon species that evolves into this Pokemon_species */
   evolves_from_species: NamedAPIResource;
   /** The evolution chain this Pokémon species is a member of */
-//   evolution_chain: APIResource;
+  //   evolution_chain: APIResource;
   /** The habitat this Pokémon species can be encountered in */
   habitat: NamedAPIResource;
   /** The generation this Pokémon species was introduced in */
@@ -140,13 +175,13 @@ export interface PokemonSpecies {
   /** The name of this resource listed in different languages */
   names: Name[];
   /** A list of encounters that can be had with this Pokémon species in pal park */
-//   pal_park_encounters: PalParkEncounterArea[];
+  //   pal_park_encounters: PalParkEncounterArea[];
   /** A list of flavor text entries for this Pokémon species */
-//   flavor_text_entries: FlavorText[];
+  //   flavor_text_entries: FlavorText[];
   /** Descriptions of different forms Pokémon take on within the Pokémon species */
   form_descriptions: Description[];
   /** The genus of this Pokémon species listed in multiple languages */
-//   genera: Genus[];
+  //   genera: Genus[];
   /** A list of the Pokémon that exist within this Pokémon species */
   varieties: PokemonSpeciesVariety[];
 }

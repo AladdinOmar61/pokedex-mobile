@@ -37,13 +37,14 @@ const AllPokemon = () => {
     <ScrollView>
       {pokemon ? (
         pokemon.map((p) => {
+          // console.log(p);
           return (
           <Link href={`/(pokemon)/pokemonDetails/${p.id}`} key={p.id} asChild>
             <TouchableOpacity>
               <View style={styles.item}>
                 <Image source={{ uri: p.image }} style={styles.preview} />
                 <Text style={styles.itemText}>
-                  #{p.id} {p.pokemon_species.name}
+                  #{p.id} {p.name}
                 </Text>
                 <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
               </View>

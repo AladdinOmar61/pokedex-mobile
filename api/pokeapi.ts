@@ -12,11 +12,19 @@ const pokeApi = () => {
 
   const getPokemon = async (): Promise<Pokemon[]> => {
     const data = await api.game.getPokedexById(1);
-    return data.pokemon_entries.map((item: Pokemon) => ({
-      ...item,
-      id: item.entry_number,
-      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.entry_number}.png`,
-    }));
+    const pokemon = await Promise.all(
+      data.pokemon_entries.map(async (res) => {
+        console.log("res", res);
+        return api.pokemon.getPokemonByName(res.pokemon_species.name);
+      })
+    )
+    console.log(pokemon);
+    return pokemon.map((item) => {
+      return {
+        ...item,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`,
+      };
+    });
   };
 
   const getPokemonDetails = async (id: string): Promise<Pokemon> => {
