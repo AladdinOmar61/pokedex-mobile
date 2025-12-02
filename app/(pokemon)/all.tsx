@@ -2,7 +2,6 @@ import {
   View,
   Text,
   ScrollView,
-  Touchable,
   TouchableOpacity,
   StyleSheet,
   Image,
@@ -24,7 +23,9 @@ const AllPokemon = () => {
     try {
       const pokeResp = await getPokemon();
       setPokemon(pokeResp);
-    } catch (err) {
+    } catch (err: any) {
+      console.error('axios error:', err.response?.status, err.response?.data);
+      console.error('requested url:', err.config?.url);
       console.error("Could not retrieve pokemon", err);
     }
   };

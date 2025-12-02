@@ -19,15 +19,6 @@ const Home = () => {
     "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
   });
 
-  // (async () => {
-  //   const api = new MainClient();
-
-  //   await api.game
-  //     .getGenerationById(1)
-  //     .then((data) => console.log(data))
-  //     .catch((error) => console.error(error));
-  // })();
-
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();

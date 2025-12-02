@@ -14,11 +14,14 @@ const pokeApi = () => {
     const data = await api.game.getPokedexById(1);
     const pokemon = await Promise.all(
       data.pokemon_entries.map(async (res) => {
-        console.log("res", res);
-        return api.pokemon.getPokemonByName(res.pokemon_species.name);
+        // console.log("res", res);
+        console.log("pokemon name: ", res.pokemon_species.name);
+        return api.pokemon.getPokemonById(
+          res.entry_number
+        );
       })
     )
-    console.log(pokemon);
+    console.log("pokemon info ", pokemon);
     return pokemon.map((item) => {
       return {
         ...item,
