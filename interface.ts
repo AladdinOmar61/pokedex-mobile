@@ -128,6 +128,8 @@ export interface Generation {
   version_groups: NamedAPIResource[];
 }
 
+export type SimpleSpecies = Pick<PokemonSpecies, "id" | "name" | "varieties" | "image">;
+
 export interface PokemonSpecies {
   /** The identifier for this resource */
   id: number;
