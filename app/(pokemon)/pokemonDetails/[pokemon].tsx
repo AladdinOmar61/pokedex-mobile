@@ -9,9 +9,10 @@ import {
   Pressable,
   LayoutChangeEvent
 } from "react-native";
+import type { EvolutionChain as PokeEvolutionChain } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import { Pokemon, Generation, Chain } from "@/api/pokeapi";
+import { Pokemon, Generation, EvolutionChain, ChainLink } from "@/interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
@@ -29,7 +30,7 @@ const Details = () => {
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
-  const [pokemonEvos, setPokemonEvos] = useState<Chain>();
+  const [pokemonEvos, setPokemonEvos] = useState<ChainLink>();
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
   const [evo2Img, setEvo2Img] = useState<string[]>([]);
@@ -61,7 +62,9 @@ const Details = () => {
     setEvosLoading(true);
     const pokeEvos = async () => {
       const evos = await getEvolutions(pokemon!);
-      setPokemonEvos(evos.chain);
+      console.log("pokemon: ", pokemon);
+      console.log("evolutions: ", evos);
+      setPokemonEvos(evos.chain as unknown as ChainLink);
       setEvosLoading(false);
     };
     pokeEvos();
@@ -119,8 +122,7 @@ const Details = () => {
     if (pokemonDetails) {
       navigation.setOptions({
         title:
-          pokemonDetails.name.charAt(0).toUpperCase() +
-          pokemonDetails.name.slice(1),
+          pokemonDetails.name,
         headerTitleAlign: "center",
         headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
       });
@@ -190,7 +192,7 @@ const Details = () => {
               }}
             >
               <Image
-                source={{ uri: pokemonDetails.sprites.front_default }}
+                source={{ uri: pokemonDetails.sprites.front_default! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -199,7 +201,7 @@ const Details = () => {
                 }}
               />
               <Image
-                source={{ uri: pokemonDetails.sprites.front_shiny }}
+                source={{ uri: pokemonDetails.sprites.front_shiny! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -221,11 +223,11 @@ const Details = () => {
                 {pokemonType.map((item, index) => (
                   <Image
                     key={index}
-                    style={{ width: 60, height: 20 }}
+                    style={{ width: 90, height: 20 }}
                     source={{
                       uri:
                         item &&
-                        (item as any)["generation-v"]["black-white"].name_icon,
+                        (item as any)["generation-viii"]["sword-shield"].name_icon,
                     }}
                   />
                 ))}
@@ -295,32 +297,32 @@ const Details = () => {
                                 <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                   {/* <Ionicons name="arrow-forward" size={20} style={{ transform: [{ translateX: '25%' }] }} /> */}
                                   <ArrowRight width={24} height={24} />
-                                  {item.evolution_details[0].min_level !== null && (
+                                  {item.evolution_detail[0].min_level !== null && (
                                     <Text style={[styles.infoText, { fontSize: 10  }]}>
-                                      Lvl {item.evolution_details[0].min_level}
+                                      Lvl {item.evolution_detail[0].min_level}
                                     </Text>
                                   )}
-                                  {item.evolution_details[0].item !== null && (
+                                  {item.evolution_detail[0].item !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                     <Image
                                       source={{
-                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_detail[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
-                                    <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
+                                    <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_detail[0].item.name}</Text>
                                   </View>
                                   )}
                                   {!evosLoading &&
-                                    item.evolution_details[0].min_happiness !=
+                                    item.evolution_detail[0].min_happiness !=
                                     null && (
                                     <>
                                       <Heart width={14} height={14} />
                                       <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
                                     </>
                                     )}
-                                  {item.evolution_details[0].time_of_day && 
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
+                                  {item.evolution_detail[0].time_of_day && 
+                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_detail[0].time_of_day}</Text>
                                   }
                                 </View>
                                 {evo1Img[index] && (
@@ -356,24 +358,24 @@ const Details = () => {
                                   {/* <View style={{display: 'flex', justifyContent: 'center'}}> */}
                                   
                                     {/* </View> */}
-                                  {item.evolution_details[0].min_level !== null && (
+                                  {item.evolution_detail[0].min_level !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                     <ArrowRight width={24} height={24} />
                                     <Text style={[styles.infoText, { fontSize: 10 }]}>
-                                      Lvl {item.evolution_details[0].min_level}
+                                      Lvl {item.evolution_detail[0].min_level}
                                       </Text>
                                       </View>
                                   )}
-                                  {item.evolution_details[0].item !== null && (
+                                  {item.evolution_detail[0].item !== null && (
                                     <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                       <ArrowRight width={24} height={24} />
                                       <Image
                                       source={{
-                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_detail[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
-                                      <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
+                                      <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_detail[0].item.name}</Text>
                                     </View>
                                   )}
                                   {item.species.name === "annihilape" && (
@@ -381,12 +383,12 @@ const Details = () => {
                                       <Ionicons name="help" size={18} color={"white"} style={{ borderColor: 'black', borderWidth: 1, borderRadius: 5, backgroundColor: 'red' }} />
                                     </>
                                   )}
-                                  {item.evolution_details[0].min_happiness !=
+                                  {item.evolution_detail[0].min_happiness !=
                                     null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                       <ArrowRight width={24} height={24} />
                                       <Heart width={14} height={14} />
-                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness {item.evolution_details[0].time_of_day}</Text>
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness {item.evolution_detail[0].time_of_day}</Text>
                                       </View>
                                     )}
                                 </View>

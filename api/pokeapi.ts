@@ -1,12 +1,12 @@
 import { MainClient } from "pokenode-ts";
 import {
   Pokemon,
-  PokemonEntry,
   TypeInfo,
-  NamedAPIResource,
-  PokemonSpecies,
   SimpleSpecies,
+  EvolutionChain,
+  ChainLink,
 } from "@/interface";
+import type { EvolutionChain as PokeEvolutionChain } from "pokenode-ts";
 
 const pokeApi = () => {
   const api = new MainClient();
@@ -15,12 +15,9 @@ const pokeApi = () => {
     const data = await api.game.getPokedexById(1);
     const pokemon = await Promise.all(
       data.pokemon_entries.map(async (res) => {
-        // console.log("res", res);
-        console.log("pokemon name: ", res.pokemon_species.name);
         return api.pokemon.getPokemonById(res.entry_number);
       })
     );
-    console.log("pokemon info ", pokemon);
     return pokemon.map((item) => {
       return {
         ...item,
@@ -44,12 +41,9 @@ const pokeApi = () => {
     const data = await api.game.getGenerationById(gen);
     const species = await Promise.all(
       data.pokemon_species.map(async (res) => {
-        console.log("res: ", res);
         return api.pokemon.getPokemonSpeciesByName(res.name);
       })
     );
-    console.log("species: ", species);
-    // console.log(species.varieties);
     return species
       .map((item) => ({
         id: item.id,
@@ -60,11 +54,13 @@ const pokeApi = () => {
       .sort((a, b) => a.id - b.id);
   };
 
-  const getEvolutions = async (id: string) => {
-    const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}`;
-    const data = await safeFetchJson(pokemonUrl);
-    const speciesData = await safeFetchJson(data.species.url);
-    const evoData = await safeFetchJson(speciesData.evolution_chain.url);
+  //pokemon > species > id
+
+  const getEvolutions = async (id: string): Promise<PokeEvolutionChain> => {
+    const pokemonUrl = await api.pokemon.getPokemonSpeciesByName(id);
+    console.log("pokemon url: ", pokemonUrl);
+    const evoData = await api.evolution.getEvolutionChainById(pokemonUrl.id);
+    console.log("evolution data: ", evoData);
     return evoData;
   };
 

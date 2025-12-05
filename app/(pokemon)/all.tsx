@@ -38,7 +38,6 @@ const AllPokemon = () => {
     <ScrollView>
       {pokemon ? (
         pokemon.map((p) => {
-          // console.log(p);
           return (
           <Link href={`/(pokemon)/pokemonDetails/${p.id}`} key={p.id} asChild>
             <TouchableOpacity>

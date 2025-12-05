@@ -1,47 +1,97 @@
 export interface Pokemon {
-  /** The identifier for this resource */
   id: number;
-  /** The name for this resource */
   name: string;
-  image: string;
-  /** The base experience gained for defeating this Pokémon */
+  image?: string;
   base_experience: number;
-  /** The height of this Pokémon in decimeters */
   height: number;
-  /** Set for exactly one Pokémon used as the default for each species */
   is_default: boolean;
-  /** Order for sorting. Almost national order, except families are grouped together */
   order: number;
-  /** The weight of this Pokémon in hectograms */
   weight: number;
-  /** A list of abilities this Pokémon could potentially have */
-  // abilities: PokemonAbility[];
-  /** A list of forms this Pokémon can take on */
+  abilities: PokemonAbility[];
   forms: NamedAPIResource[];
-  /** A list of game indices relevant to Pokémon item by generation */
-  // game_indices: VersionGameIndex[];
-  /** A list of items this Pokémon may be holding when encountered */
-  // held_items: PokemonHeldItem[];
-  /** A link to a list of location areas, as well as encounter details pertaining to specific versions */
+  game_indices: VersionGameIndex[];
+  held_items: PokemonHeldItem[];
   location_area_encounters: string;
-  /** A list of moves along with learn methods and level details pertaining to specific version groups */
-  // moves: PokemonMove[];
-  /** A set of sprites used to depict this Pokémon in the game.
-   * A visual representation of the various sprites can be found at [PokeAPI/sprites](https://github.com/PokeAPI/sprites#sprites)
-   */
-  // sprites: PokemonSprites;
-  /** The species this Pokémon belongs to */
+  moves: PokemonMove[];
+  sprites: PokemonSprites;
   species: NamedAPIResource;
-  /** A list of base stat values for this Pokémon */
-  // stats: PokemonStat[];
-  /** A list of details showing types this Pokémon has */
+  stats: PokemonStat[];
   types: PokemonType[];
 }
 
-export interface PokemonType {
-  /** The order the Pokémon's types are listed in */
+export interface VersionGameIndex {
+  /** The internal id of an API resource within game data */
+  game_index: number;
+  /** The version relevent to this game index */
+  version: NamedAPIResource;
+}
+
+export interface PokemonHeldItem {
+  /** The item the referenced Pokémon holds */
+  item: NamedAPIResource;
+  /** The details of the different versions in which the item is held */
+  version_details: PokemonHeldItemVersion[];
+}
+
+export interface PokemonHeldItemVersion {
+  /** The version in which the item is held */
+  version: NamedAPIResource;
+  /** How often the item is held */
+  rarity: number;
+}
+
+export interface PokemonMove {
+  /** The move the Pokémon can learn */
+  move: NamedAPIResource;
+  /** The details of the version in which the Pokémon can learn the move */
+  version_group_details: PokemonMoveVersion[];
+}
+
+export interface PokemonMoveVersion {
+  /** The method by which the move is learned */
+  move_learn_method: NamedAPIResource;
+  /** The version group in which the move is learned */
+  version_group: NamedAPIResource;
+  /** The minimum level to learn the move */
+  level_learned_at: number;
+}
+
+export interface PokemonAbility {
+  /** Whether or not this is a hidden ability */
+  is_hidden: boolean;
+  /** The slot this ability occupies in this Pokémon species */
   slot: number;
-  /** The type the referenced Pokémon has */
+  /** The ability the Pokémon may have */
+  ability: NamedAPIResource;
+}
+
+export interface PokemonStat {
+  stat: NamedAPIResource;
+  effort: number;
+  base_stat: number;
+}
+
+export interface PokemonSprites {
+  /** The default depiction of this Pokémon from the front in battle */
+  front_default: string | null;
+  /** The shiny depiction of this Pokémon from the front in battle */
+  front_shiny: string | null;
+  /** The female depiction of this Pokémon from the front in battle */
+  front_female: string | null;
+  /** The shiny female depiction of this Pokémon from the front in battle */
+  front_shiny_female: string | null;
+  /** The default depiction of this Pokémon from the back in battle */
+  back_default: string | null;
+  /** The shiny depiction of this Pokémon from the back in battle */
+  back_shiny: string | null;
+  /** The female depiction of this Pokémon from the back in battle */
+  back_female: string | null;
+  /** The shiny female depiction of this Pokémon from the back in battle */
+  back_shiny_female: string | null;
+}
+
+export interface PokemonType {
+  slot: number;
   type: NamedAPIResource;
 }
 
@@ -84,12 +134,6 @@ export interface Description {
   /** The language this name is in */
   language: NamedAPIResource;
 }
-
-interface Species {
-  name: string;
-  url: string;
-}
-
 export interface Name {
   /** The localized name for an API resource in a specific language */
   name: string;
@@ -193,4 +237,71 @@ export interface PokemonSpeciesVariety {
   is_default: boolean;
   /** The Pokémon variety */
   pokemon: NamedAPIResource;
+}
+
+export interface EvolutionChain {
+  /** The identifier for this resource */
+  id: number;
+  /**
+   * The item that a Pokémon would be holding when mating that would trigger
+   * the egg hatching a baby Pokémon rather than a basic Pokémon
+   */
+  baby_trigger_item: NamedAPIResource | null;
+  /**
+   * The base chain link object. Each link contains evolution details for a Pokémon in the chain.
+   * Each link references the next Pokémon in the natural evolution order
+   */
+  chain: ChainLink;
+}
+
+export interface ChainLink {
+  /** Whether or not this link is for a baby Pokémon. This would only ever be true on the base link */
+  is_baby: boolean;
+  /** The Pokémon species at this point in the evolution chain */
+  species: NamedAPIResource;
+  /** All details regarding the specific details of the referenced Pokémon species evolution */
+  evolution_detail: EvolutionDetail[];
+  /** A List of chain objects */
+  evolves_to: ChainLink[];
+}
+
+export interface EvolutionDetail {
+  item: NamedAPIResource;
+  trigger: NamedAPIResource;
+  gender: number;
+  held_item: NamedAPIResource;
+  known_move: NamedAPIResource;
+  known_move_type: NamedAPIResource;
+  location: NamedAPIResource;
+  min_level: number;
+  min_happiness: number;
+  min_beauty: number;
+  min_affection: number;
+  needs_overworld_rain: boolean;
+  /** The Pokémon species that must be in the players party in order for the evolving Pokémon species to evolve into this Pokémon species. */
+  party_species: NamedAPIResource;
+  /**
+   * The player must have a Pokémon of this type in their party during the evolution trigger event
+   * in order for the evolving Pokémon species to evolve into this Pokémon species.
+   */
+  party_type: NamedAPIResource;
+  /** The required relation between the Pokémon's Attack and Defense stats. 1 means Attack > Defense. 0 means Attack = Defense. -1 means Attack < Defense. */
+  relative_physical_stats: 1 | 0 | -1;
+  /** The required time of day. Day or night. */
+  time_of_day: "Day" | "Night";
+  /** Pokémon species for which this one must be traded. */
+  trade_species: NamedAPIResource;
+  /** Whether or not the 3DS needs to be turned upside-down as this Pokémon levels up. */
+  turn_upside_down: boolean;
+}
+
+export interface EvolutionTrigger {
+  /** The identifier for this resource. */
+  id: number;
+  /** The name for this resource. */
+  name: string;
+  /** The name of this resource listed in different languages. */
+  names: Name[];
+  /** A list of pokemon species that result from this evolution trigger. */
+  pokemon_species: NamedAPIResource[];
 }
