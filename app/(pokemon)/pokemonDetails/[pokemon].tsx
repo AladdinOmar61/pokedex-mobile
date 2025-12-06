@@ -70,7 +70,7 @@ const Details = () => {
 
   useEffect(() => {
     if (pokemonEvos) {
-      const speciesUrl = pokemonEvos?.chain.species.url.match(/\/(\d+)\/$/);
+      const speciesUrl = pokemonEvos?.chain.species.url.match(/\/(\d+)\/?$/);
       const speciesNum = speciesUrl ? speciesUrl[1] : null;
       console.log("species num: ", speciesNum);
       // console.log("pokemon evos: ", pokemonEvos);

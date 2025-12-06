@@ -1,13 +1,15 @@
 import { MainClient } from "pokenode-ts";
 import {
-  Pokemon,
   TypeInfo,
   SimpleSpecies,
 } from "@/interface";
-import type { EvolutionChain as PokeEvolutionChain } from "pokenode-ts";
+import pLimit from "p-limit";
+import type { Pokemon, EvolutionChain as PokeEvolutionChain, PokemonSpecies } from "pokenode-ts";
 
 const pokeApi = () => {
   const api = new MainClient();
+
+  const limit = pLimit(8);
 
   const getPokemon = async (): Promise<Pokemon[]> => {
     const data = await api.game.getPokedexById(1);
@@ -35,21 +37,21 @@ const pokeApi = () => {
 
   const getAllPokemonFromGen = async (
     gen: number
-  ): Promise<SimpleSpecies[]> => {
+  ): Promise<Pokemon[]> => {
     const data = await api.game.getGenerationById(gen);
+    // console.log("data: ", data);
     const species = await Promise.all(
-      data.pokemon_species.map(async (res) => {
-        return api.pokemon.getPokemonSpeciesByName(res.name);
-      })
-    );
-    return species
-      .map((item) => ({
-        id: item.id,
-        name: item.name,
-        varieties: item.varieties,
-        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`,
+      data.pokemon_species.map(async (res) => limit(() => {
+        return api.pokemon.getPokemonByName(res.name);
       }))
-      .sort((a, b) => a.id - b.id);
+    );
+    return species.sort((a, b) => a.id - b.id);
+      // .map((item) => ({
+      //   id: item.id,
+      //   name: item.name,
+      //   varieties: item.varieties,
+      //   image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`,
+      // }))
   };
 
   //pokemon > species > id

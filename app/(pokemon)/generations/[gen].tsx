@@ -9,6 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
+import { Pokemon, PokemonSpecies } from 'pokenode-ts';
 
 const AllPokemon = () => {
 
@@ -21,7 +22,7 @@ const AllPokemon = () => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
-    const [genPokemon, setGenPokemon] = useState<SimpleSpecies[]>([]);
+    const [genPokemon, setGenPokemon] = useState<Pokemon[]>([]);
 
     const retrievePokemonFromGen = async () => {
         try {
@@ -54,14 +55,14 @@ const AllPokemon = () => {
             style={{ marginBottom: insets.bottom }}
             data={genPokemon}
             renderItem={({ item, index }) => (
-                < Link href={`/(pokemon)/pokemonDetails/${item.varieties?.[0]?.pokemon?.name ?? item.name}`} key={index} asChild>
+                < Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
                     <TouchableOpacity>
                         {/* <LinearGradient style={{ width: "100%" }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')}> */}
                         <View style={styles.item}>
                             {/* <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} /> */}
                             {/* {PokeTypeIcon(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')} */}
-                            <Image source={{ uri: item.image }} style={styles.preview} />
-                            <Text style={styles.itemText}>#{item.id} {item.varieties?.[0]?.pokemon?.name ?? item.name}</Text>
+                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
+                            <Text style={styles.itemText}>#{item.id} {item.name}</Text>
                             <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
                         </View>
                         {/* </LinearGradient> */}
