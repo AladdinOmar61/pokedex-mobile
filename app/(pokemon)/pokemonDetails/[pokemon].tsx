@@ -7,12 +7,11 @@ import {
   ActivityIndicator,
   ScrollView,
   Pressable,
-  LayoutChangeEvent
 } from "react-native";
-import type { EvolutionChain as PokeEvolutionChain } from "pokenode-ts";
+import type { ChainLink, EvolutionChain, EvolutionDetail } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import { Pokemon, Generation, EvolutionChain, ChainLink } from "@/interface";
+import { Pokemon, Generation } from "@/interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
@@ -24,13 +23,13 @@ const Details = () => {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  const { getPokemonDetails, getPokemonType, getEvolutions } = pokeApi();
+  const { getPokemonDetails, getPokemonType, getEvolutions} = pokeApi();
 
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
-  const [pokemonEvos, setPokemonEvos] = useState<ChainLink>();
+  const [pokemonEvos, setPokemonEvos] = useState<EvolutionChain>();
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
   const [evo2Img, setEvo2Img] = useState<string[]>([]);
@@ -61,10 +60,9 @@ const Details = () => {
   useEffect(() => {
     setEvosLoading(true);
     const pokeEvos = async () => {
-      const evos = await getEvolutions(pokemon!);
-      console.log("pokemon: ", pokemon);
-      console.log("evolutions: ", evos);
-      setPokemonEvos(evos.chain as unknown as ChainLink);
+      const evos = await getEvolutions(Number(pokemon!));
+      console.log("pokemon specs: ", evos);
+      setPokemonEvos(evos);
       setEvosLoading(false);
     };
     pokeEvos();
@@ -72,21 +70,23 @@ const Details = () => {
 
   useEffect(() => {
     if (pokemonEvos) {
-      const speciesUrl = pokemonEvos?.species.url.match(/\/(\d+)\/$/);
+      const speciesUrl = pokemonEvos?.chain.species.url.match(/\/(\d+)\/$/);
       const speciesNum = speciesUrl ? speciesUrl[1] : null;
+      console.log("species num: ", speciesNum);
+      // console.log("pokemon evos: ", pokemonEvos);
       if (speciesNum) {
         setBaseNum(speciesNum);
       }
-      const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+      const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonEvos.id}.png`;
       setBaseEvo(speciesImg); //undefined for legendary pokemon
       let evosBucket = [];
       let secondEvosBucket = [];
       let evos1NumBucket = [];
       let evos2NumBucket: string[] = [];
-      if (pokemonEvos.evolves_to.length > 0) {
-        for (let i = 0; i < pokemonEvos.evolves_to.length; i++) {
+      if (pokemonEvos.chain.evolves_to.length > 0) {
+        for (let i = 0; i < pokemonEvos.chain.evolves_to.length; i++) {
           const speciesUrl =
-            pokemonEvos?.evolves_to[i].species.url.match(
+            pokemonEvos?.chain.evolves_to[i].species.url.match(
               /\/(\d+)\/$/
             );
           const speciesNum = speciesUrl ? speciesUrl[1] : null;
@@ -98,10 +98,10 @@ const Details = () => {
         }
         setEvo1Num(evos1NumBucket);
         setEvo1Img(evosBucket);
-        if (pokemonEvos.evolves_to[0].evolves_to.length > 0) {
-          for (let i = 0; i < pokemonEvos.evolves_to[0].evolves_to.length; i++) {
+        if (pokemonEvos.chain.evolves_to[0].evolves_to.length > 0) {
+          for (let i = 0; i < pokemonEvos.chain.evolves_to[0].evolves_to.length; i++) {
             const speciesUrl =
-              pokemonEvos?.evolves_to[0].evolves_to[i].species.url.match(
+              pokemonEvos?.chain.evolves_to[0].evolves_to[i].species.url.match(
                 /\/(\d+)\/$/
               );
             const speciesNum = speciesUrl ? speciesUrl[1] : null;
@@ -266,8 +266,8 @@ const Details = () => {
             {!evosLoading ? (
               <>
                 {pokemonEvos &&
-                  pokemonEvos?.evolves_to &&
-                  pokemonEvos?.evolves_to.length > 0 ? (
+                  pokemonEvos?.chain.evolves_to &&
+                  pokemonEvos?.chain.evolves_to.length > 0 ? (
 
                   <View style={styles.evolutionSection}>
                     {baseEvo && (
@@ -288,41 +288,41 @@ const Details = () => {
 
                     {/* first evo starts here  */}
 
-                    {pokemonEvos?.evolves_to &&
-                      pokemonEvos?.evolves_to.length > 0 && (
+                    {pokemonEvos?.chain.evolves_to &&
+                      pokemonEvos?.chain.evolves_to.length > 0 && (
                         <View>
-                          {pokemonEvos?.evolves_to.map(
+                          {pokemonEvos?.chain.evolves_to.map(
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                   {/* <Ionicons name="arrow-forward" size={20} style={{ transform: [{ translateX: '25%' }] }} /> */}
                                   <ArrowRight width={24} height={24} />
-                                  {item.evolution_detail[0].min_level !== null && (
+                                  {item.evolution_details[0].min_level !== null && (
                                     <Text style={[styles.infoText, { fontSize: 10  }]}>
-                                      Lvl {item.evolution_detail[0].min_level}
+                                      Lvl {item.evolution_details[0].min_level}
                                     </Text>
                                   )}
-                                  {item.evolution_detail[0].item !== null && (
+                                  {item.evolution_details[0].item !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                     <Image
                                       source={{
-                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_detail[0].item.name}.png`,
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
-                                    <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_detail[0].item.name}</Text>
+                                    <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
                                   </View>
                                   )}
                                   {!evosLoading &&
-                                    item.evolution_detail[0].min_happiness !=
+                                    item.evolution_details[0].min_happiness !=
                                     null && (
                                     <>
                                       <Heart width={14} height={14} />
                                       <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
                                     </>
                                     )}
-                                  {item.evolution_detail[0].time_of_day && 
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_detail[0].time_of_day}</Text>
+                                  {item.evolution_details[0].time_of_day && 
+                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
                                   }
                                 </View>
                                 {evo1Img[index] && (
@@ -348,34 +348,34 @@ const Details = () => {
 
                     {/* second evo starts here */}
 
-                    {pokemonEvos?.evolves_to[0].evolves_to &&
-                      pokemonEvos?.evolves_to[0].evolves_to.length > 0 && (
+                    {pokemonEvos?.chain.evolves_to[0].evolves_to &&
+                      pokemonEvos?.chain.evolves_to[0].evolves_to.length > 0 && (
                         <View>
-                          {pokemonEvos?.evolves_to[0].evolves_to.map(
+                          {pokemonEvos?.chain.evolves_to[0].evolves_to.map(
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <View>
                                   {/* <View style={{display: 'flex', justifyContent: 'center'}}> */}
                                   
                                     {/* </View> */}
-                                  {item.evolution_detail[0].min_level !== null && (
+                                  {item.evolution_details[0].min_level !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                     <ArrowRight width={24} height={24} />
                                     <Text style={[styles.infoText, { fontSize: 10 }]}>
-                                      Lvl {item.evolution_detail[0].min_level}
+                                      Lvl {item.evolution_details[0].min_level}
                                       </Text>
                                       </View>
                                   )}
-                                  {item.evolution_detail[0].item !== null && (
+                                  {item.evolution_details[0].item !== null && (
                                     <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                                       <ArrowRight width={24} height={24} />
                                       <Image
                                       source={{
-                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_detail[0].item.name}.png`,
+                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
                                       }}
                                       style={{ height: 20, width: 20 }}
                                     />
-                                      <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_detail[0].item.name}</Text>
+                                      <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text>
                                     </View>
                                   )}
                                   {item.species.name === "annihilape" && (
@@ -383,12 +383,12 @@ const Details = () => {
                                       <Ionicons name="help" size={18} color={"white"} style={{ borderColor: 'black', borderWidth: 1, borderRadius: 5, backgroundColor: 'red' }} />
                                     </>
                                   )}
-                                  {item.evolution_detail[0].min_happiness !=
+                                  {item.evolution_details[0].min_happiness !=
                                     null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                       <ArrowRight width={24} height={24} />
                                       <Heart width={14} height={14} />
-                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness {item.evolution_detail[0].time_of_day}</Text>
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness {item.evolution_details[0].time_of_day}</Text>
                                       </View>
                                     )}
                                 </View>

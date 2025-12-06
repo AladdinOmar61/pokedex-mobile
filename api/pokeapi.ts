@@ -3,8 +3,6 @@ import {
   Pokemon,
   TypeInfo,
   SimpleSpecies,
-  EvolutionChain,
-  ChainLink,
 } from "@/interface";
 import type { EvolutionChain as PokeEvolutionChain } from "pokenode-ts";
 
@@ -56,11 +54,11 @@ const pokeApi = () => {
 
   //pokemon > species > id
 
-  const getEvolutions = async (id: string): Promise<PokeEvolutionChain> => {
-    const pokemonUrl = await api.pokemon.getPokemonSpeciesByName(id);
-    console.log("pokemon url: ", pokemonUrl);
+  const getEvolutions = async (id: number): Promise<PokeEvolutionChain> => {
+    const pokemonUrl = await api.pokemon.getPokemonSpeciesById(id);
+    // console.log("pokemon url: ", pokemonUrl);
     const evoData = await api.evolution.getEvolutionChainById(pokemonUrl.id);
-    console.log("evolution data: ", evoData);
+    // console.log("evolution data: ", evoData);
     return evoData;
   };
 

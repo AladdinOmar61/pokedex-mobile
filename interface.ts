@@ -1,7 +1,7 @@
 export interface Pokemon {
   id: number;
   name: string;
-  image?: string;
+  // image?: string;
   base_experience: number;
   height: number;
   is_default: boolean;
@@ -239,31 +239,31 @@ export interface PokemonSpeciesVariety {
   pokemon: NamedAPIResource;
 }
 
-export interface EvolutionChain {
-  /** The identifier for this resource */
-  id: number;
-  /**
-   * The item that a Pokémon would be holding when mating that would trigger
-   * the egg hatching a baby Pokémon rather than a basic Pokémon
-   */
-  baby_trigger_item: NamedAPIResource | null;
-  /**
-   * The base chain link object. Each link contains evolution details for a Pokémon in the chain.
-   * Each link references the next Pokémon in the natural evolution order
-   */
-  chain: ChainLink;
-}
+// export interface EvolutionChain {
+//   /** The identifier for this resource */
+//   id: number;
+//   /**
+//    * The item that a Pokémon would be holding when mating that would trigger
+//    * the egg hatching a baby Pokémon rather than a basic Pokémon
+//    */
+//   baby_trigger_item: NamedAPIResource | null;
+//   /**
+//    * The base chain link object. Each link contains evolution details for a Pokémon in the chain.
+//    * Each link references the next Pokémon in the natural evolution order
+//    */
+//   chain: ChainLink;
+// }
 
-export interface ChainLink {
-  /** Whether or not this link is for a baby Pokémon. This would only ever be true on the base link */
-  is_baby: boolean;
-  /** The Pokémon species at this point in the evolution chain */
-  species: NamedAPIResource;
-  /** All details regarding the specific details of the referenced Pokémon species evolution */
-  evolution_detail: EvolutionDetail[];
-  /** A List of chain objects */
-  evolves_to: ChainLink[];
-}
+// export interface ChainLink {
+//   /** Whether or not this link is for a baby Pokémon. This would only ever be true on the base link */
+//   is_baby: boolean;
+//   /** The Pokémon species at this point in the evolution chain */
+//   species: NamedAPIResource;
+//   /** All details regarding the specific details of the referenced Pokémon species evolution */
+//   evolution_detail: EvolutionDetail[];
+//   /** A List of chain objects */
+//   evolves_to: ChainLink[];
+// }
 
 export interface EvolutionDetail {
   item: NamedAPIResource;
