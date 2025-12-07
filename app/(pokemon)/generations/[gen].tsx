@@ -9,26 +9,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { Pokemon, PokemonSpecies } from 'pokenode-ts';
+import { NamedAPIResource, Pokemon, PokemonSpecies } from 'pokenode-ts';
 
 const AllPokemon = () => {
 
     const { gen } = useLocalSearchParams<{ gen: string }>();
 
     const {
-        getAllPokemonFromGen
+        getAllPokemonFromGen,
+        extractedIdFromUrl
     } = pokeApi();
 
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
-    const [genPokemon, setGenPokemon] = useState<Pokemon[]>([]);
+    const [genPokemon, setGenPokemon] = useState<NamedAPIResource[]>([]);
 
     const retrievePokemonFromGen = async () => {
         try {
             const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
-            const filteredPokemon = genPokeResp.filter((pokemn) => pokemn.id !== undefined)
-            setGenPokemon(filteredPokemon);
+            const sortedPokemon = genPokeResp.pokemon_species.sort((a, b) => extractedIdFromUrl(a.url)! - extractedIdFromUrl(b.url)!);
+            setGenPokemon(sortedPokemon);
         } catch (err: any) {
             console.error('axios error:', err.response?.status, err.response?.data);
             console.error('requested url:', err.config?.url);
@@ -61,8 +62,8 @@ const AllPokemon = () => {
                         <View style={styles.item}>
                             {/* <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} /> */}
                             {/* {PokeTypeIcon(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')} */}
-                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
-                            <Text style={styles.itemText}>#{item.id} {item.name}</Text>
+                            {/* <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} /> */}
+                            <Text style={styles.itemText}>#{index+1} {item.name}</Text>
                             <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
                         </View>
                         {/* </LinearGradient> */}
