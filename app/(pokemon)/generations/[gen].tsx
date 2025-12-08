@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
-import {  SimpleSpecies } from '@/interface';
+import { SimpleSpecies } from '@/interface';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
@@ -9,7 +9,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { NamedAPIResource, Pokemon, PokemonSpecies } from 'pokenode-ts';
+import { NamedAPIResource, Pokemon, PokemonSpecies, PokemonSprites } from 'pokenode-ts';
+import pLimit from "p-limit";
 
 const AllPokemon = () => {
 
@@ -17,19 +18,39 @@ const AllPokemon = () => {
 
     const {
         getAllPokemonFromGen,
+        getDefaultSprite,
         extractedIdFromUrl
     } = pokeApi();
 
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
-    const [genPokemon, setGenPokemon] = useState<NamedAPIResource[]>([]);
+    const limit = pLimit(8);
+
+    type GenPokemonEntry = {
+        name: string;
+        url: string;
+        sprite?: string;
+    }
+
+    const [genPokemon, setGenPokemon] = useState<GenPokemonEntry[]>([]);
+    const [defaultSprite, setDefaultSprite] = useState<string[]>([]);
 
     const retrievePokemonFromGen = async () => {
         try {
             const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
             const sortedPokemon = genPokeResp.pokemon_species.sort((a, b) => extractedIdFromUrl(a.url)! - extractedIdFromUrl(b.url)!);
-            setGenPokemon(sortedPokemon);
+            const getSprites = await Promise.all(
+                sortedPokemon.map(async (item) => {
+                    const getFrontDefault = await getDefaultSprite(item.name);
+                    return {
+                        ...item,
+                        sprite: getFrontDefault
+                    }
+                })
+            )
+
+            setGenPokemon(getSprites);
         } catch (err: any) {
             console.error('axios error:', err.response?.status, err.response?.data);
             console.error('requested url:', err.config?.url);
@@ -62,14 +83,16 @@ const AllPokemon = () => {
                         <View style={styles.item}>
                             {/* <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} /> */}
                             {/* {PokeTypeIcon(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')} */}
-                            {/* <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} /> */}
-                            <Text style={styles.itemText}>#{index+1} {item.name}</Text>
+                            {item.sprite &&
+                                <Image source={{ uri: item.sprite }} style={styles.preview} />
+                            }
+                            <Text style={styles.itemText}>#{index + 1} {item.name}</Text>
                             <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
                         </View>
                         {/* </LinearGradient> */}
                     </TouchableOpacity>
                 </Link>
-                            
+
             )} />)
 }
 

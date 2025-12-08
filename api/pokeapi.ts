@@ -4,7 +4,7 @@ import {
   SimpleSpecies,
 } from "@/interface";
 import pLimit from "p-limit";
-import type { Pokemon, EvolutionChain as PokeEvolutionChain, PokemonSpecies, Generation } from "pokenode-ts";
+import type { Pokemon, EvolutionChain as PokeEvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
 
 const pokeApi = () => {
   const api = new MainClient();
@@ -36,9 +36,13 @@ const pokeApi = () => {
     });
   };
 
-  const getPokemonDetails = async (id: string): Promise<Pokemon> => {
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
-    return await safeFetchJson(url);
+  const getPokemonDetails = async (name: string): Promise<Pokemon> => {
+    return await api.pokemon.getPokemonByName(name);
+  }
+
+  const getDefaultSprite = async (name: string): Promise<string> => {
+    const pokemonDetails = await api.pokemon.getPokemonByName(name);
+    return pokemonDetails.sprites.front_default!;
   };
 
   const getPokemonType = async (typeUrl: string): Promise<TypeInfo> => {
@@ -77,11 +81,12 @@ const pokeApi = () => {
 
   return {
     getPokemon,
-    getPokemonDetails,
+    getDefaultSprite,
     getPokemonType,
     getAllPokemonFromGen,
     getEvolutions,
     extractedIdFromUrl,
+    getPokemonDetails,
   };
 };
 
