@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Image, VirtualizedList } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
 import { SimpleSpecies } from '@/interface';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,7 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { NamedAPIResource, Pokemon, PokemonSpecies, PokemonSprites } from 'pokenode-ts';
+import { NamedAPIResource, Pokemon, PokemonSpecies, PokemonSprites, PokemonType } from 'pokenode-ts';
 import pLimit from "p-limit";
 
 const AllPokemon = () => {
@@ -18,8 +18,6 @@ const AllPokemon = () => {
 
     const {
         getAllPokemonFromGen,
-        getDefaultSprite,
-        extractedIdFromUrl
     } = pokeApi();
 
     const navigation = useNavigation();
@@ -27,40 +25,32 @@ const AllPokemon = () => {
 
     const limit = pLimit(8);
 
-    type GenPokemonEntry = {
-        name: string;
-        url: string;
-        sprite?: string;
-    }
+    const [genPokemon, setGenPokemon] = useState<Pokemon[]>([]);
+    const [pokemonLoaded, setPokemonLoaded] = useState<boolean>(true);
 
-    const [genPokemon, setGenPokemon] = useState<GenPokemonEntry[]>([]);
-    const [defaultSprite, setDefaultSprite] = useState<string[]>([]);
-
-    const retrievePokemonFromGen = async () => {
-        try {
-            const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
-            const sortedPokemon = genPokeResp.pokemon_species.sort((a, b) => extractedIdFromUrl(a.url)! - extractedIdFromUrl(b.url)!);
-            const getSprites = await Promise.all(
-                sortedPokemon.map(async (item) => {
-                    const getFrontDefault = await getDefaultSprite(item.name);
-                    return {
-                        ...item,
-                        sprite: getFrontDefault
-                    }
-                })
-            )
-
-            setGenPokemon(getSprites);
-        } catch (err: any) {
-            console.error('axios error:', err.response?.status, err.response?.data);
-            console.error('requested url:', err.config?.url);
-            console.error("Could not retrieve pokemon", err);
-        }
-    }
+    const getItem = (data: typeof genPokemon, index: number) => data[index];
 
     useEffect(() => {
+        const retrievePokemonFromGen = async () => {
+            try {
+                setPokemonLoaded(true);
+                const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
+                const sortedPokemon = genPokeResp.sort((a, b) => a.id - b.id);
+
+                sortedPokemon.forEach((pokemon, index) => {
+                    setTimeout(() => {
+                        setGenPokemon(prev => [...prev, pokemon]);
+                    }, index * 10) //10 ms between renders
+                });
+                setPokemonLoaded(false);
+            } catch (err: any) {
+                console.error('axios error:', err.response?.status, err.response?.data);
+                console.error('requested url:', err.config?.url);
+                console.error("Could not retrieve pokemon", err);
+            }
+        }
         retrievePokemonFromGen();
-    }, [])
+    }, [gen])
 
     useEffect(() => {
         if (genPokemon) {
@@ -72,28 +62,37 @@ const AllPokemon = () => {
         }
     }, [genPokemon, navigation])
 
-    return (
-        <FlashList
-            style={{ marginBottom: insets.bottom }}
-            data={genPokemon}
-            renderItem={({ item, index }) => (
-                < Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
-                    <TouchableOpacity>
-                        {/* <LinearGradient style={{ width: "100%" }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')}> */}
-                        <View style={styles.item}>
-                            {/* <GrassType width={100} height={100} style={{ position: 'absolute', right: '3%' }} /> */}
-                            {/* {PokeTypeIcon(p.firstType === "normal" && p.secondType === "flying" ? p.secondType : p.firstType ?? 'normal')} */}
-                            {item.sprite &&
-                                <Image source={{ uri: item.sprite }} style={styles.preview} />
-                            }
-                            <Text style={styles.itemText}>#{index + 1} {item.name}</Text>
-                            <ForwardChev width={8} height={14} style={{ width: 8, height: 14, marginRight: 15 }} />
-                        </View>
-                        {/* </LinearGradient> */}
-                    </TouchableOpacity>
-                </Link>
+    const ItemRow = React.memo(({ item }: { item: Pokemon }) => (
+        <Link href={`/(pokemon)/pokemonDetails/${item.name ? item.name : item.forms[0].name}`} asChild>
+            <TouchableOpacity>
+                <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
+                    <View style={styles.item}>
+                        {PokeTypeIcon(item.types[0].type.name)}
+                        {item.sprites &&
+                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
+                        }
+                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
+                        <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
+                    </View>
+                </LinearGradient>
+            </TouchableOpacity>
+                    </Link > 
+    ));
 
-            )} />)
+    const renderItem = useCallback(({ item }: { item: Pokemon }) => <ItemRow item={item} />, [])
+
+    return (
+        <VirtualizedList
+            style={{ marginBottom: insets.bottom }}
+            initialNumToRender={7}
+            maxToRenderPerBatch={7}
+            windowSize={2}
+            updateCellsBatchingPeriod={50}
+            data={genPokemon}
+            getItemCount={(data) => data.length}
+            getItem={getItem}
+            keyExtractor={(item) => String(item?.id || 'unknown')}
+            renderItem={renderItem} />)
 }
 
 const styles = StyleSheet.create({

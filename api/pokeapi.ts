@@ -16,9 +16,14 @@ const pokeApi = () => {
     return urlId ? Number(urlId[1]) : undefined;
   }
 
-  const getAllPokemonFromGen = async (gen: number): Promise<Generation> => {
+  const getAllPokemonFromGen = async (gen: number): Promise<Pokemon[]> => {
     const genData = await api.game.getGenerationById(gen);
-    return genData;
+    const getPokemonFromGen = await Promise.all(
+      genData.pokemon_species.map(async (res) => {
+        return api.pokemon.getPokemonById(extractedIdFromUrl(res.url)!);
+      })
+    )
+    return getPokemonFromGen;
   };
 
   const getPokemon = async (): Promise<Pokemon[]> => {
