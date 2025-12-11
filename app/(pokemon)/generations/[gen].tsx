@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, VirtualizedList } from 'react-native'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
-import { SimpleSpecies } from '@/interface';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
@@ -9,8 +8,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { NamedAPIResource, Pokemon, PokemonSpecies, PokemonSprites, PokemonType } from 'pokenode-ts';
-import pLimit from "p-limit";
+import { Image } from "expo-image";
+import { Pokemon } from 'pokenode-ts';
 
 const AllPokemon = () => {
 
@@ -23,26 +22,20 @@ const AllPokemon = () => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
-    const limit = pLimit(8);
-
     const [genPokemon, setGenPokemon] = useState<Pokemon[]>([]);
     const [pokemonLoaded, setPokemonLoaded] = useState<boolean>(true);
-
-    const getItem = (data: typeof genPokemon, index: number) => data[index];
 
     useEffect(() => {
         const retrievePokemonFromGen = async () => {
             try {
-                setPokemonLoaded(true);
+                console.log("pokemon loaded before gen ", pokemonLoaded);
                 const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
                 const sortedPokemon = genPokeResp.sort((a, b) => a.id - b.id);
-
-                sortedPokemon.forEach((pokemon, index) => {
-                    setTimeout(() => {
-                        setGenPokemon(prev => [...prev, pokemon]);
-                    }, index * 10) //10 ms between renders
-                });
-                setPokemonLoaded(false);
+                setGenPokemon(sortedPokemon);
+                setPokemonLoaded(!pokemonLoaded);
+                if (genPokemon) {
+                console.log("pokemon loaded after gen ", pokemonLoaded);
+                }
             } catch (err: any) {
                 console.error('axios error:', err.response?.status, err.response?.data);
                 console.error('requested url:', err.config?.url);
@@ -50,7 +43,7 @@ const AllPokemon = () => {
             }
         }
         retrievePokemonFromGen();
-    }, [gen])
+    }, [])
 
     useEffect(() => {
         if (genPokemon) {
@@ -82,15 +75,9 @@ const AllPokemon = () => {
     const renderItem = useCallback(({ item }: { item: Pokemon }) => <ItemRow item={item} />, [])
 
     return (
-        <VirtualizedList
+        <FlashList
             style={{ marginBottom: insets.bottom }}
-            initialNumToRender={7}
-            maxToRenderPerBatch={7}
-            windowSize={2}
-            updateCellsBatchingPeriod={50}
             data={genPokemon}
-            getItemCount={(data) => data.length}
-            getItem={getItem}
             keyExtractor={(item) => String(item?.id || 'unknown')}
             renderItem={renderItem} />)
 }
