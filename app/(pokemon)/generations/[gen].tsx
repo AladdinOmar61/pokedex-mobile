@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
@@ -8,7 +8,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { Image } from "expo-image";
 import { Pokemon } from 'pokenode-ts';
 
 const AllPokemon = () => {
@@ -28,14 +27,10 @@ const AllPokemon = () => {
     useEffect(() => {
         const retrievePokemonFromGen = async () => {
             try {
-                console.log("pokemon loaded before gen ", pokemonLoaded);
                 const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
                 const sortedPokemon = genPokeResp.sort((a, b) => a.id - b.id);
                 setGenPokemon(sortedPokemon);
                 setPokemonLoaded(!pokemonLoaded);
-                if (genPokemon) {
-                console.log("pokemon loaded after gen ", pokemonLoaded);
-                }
             } catch (err: any) {
                 console.error('axios error:', err.response?.status, err.response?.data);
                 console.error('requested url:', err.config?.url);
@@ -55,31 +50,27 @@ const AllPokemon = () => {
         }
     }, [genPokemon, navigation])
 
-    const ItemRow = React.memo(({ item }: { item: Pokemon }) => (
-        <Link href={`/(pokemon)/pokemonDetails/${item.name ? item.name : item.forms[0].name}`} asChild>
-            <TouchableOpacity>
-                <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
-                    <View style={styles.item}>
-                        {PokeTypeIcon(item.types[0].type.name)}
-                        {item.sprites &&
-                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
-                        }
-                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
-                        <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
-                    </View>
-                </LinearGradient>
-            </TouchableOpacity>
-                    </Link > 
-    ));
-
-    const renderItem = useCallback(({ item }: { item: Pokemon }) => <ItemRow item={item} />, [])
-
     return (
         <FlashList
             style={{ marginBottom: insets.bottom }}
             data={genPokemon}
             keyExtractor={(item) => String(item?.id || 'unknown')}
-            renderItem={renderItem} />)
+            renderItem={({ item, index }) => (
+                <Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
+                    <TouchableOpacity>
+                        <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
+                            <View style={styles.item}>
+                                {PokeTypeIcon(item.types[0].type.name)}
+                                {item.sprites &&
+                                    <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
+                                }
+                                <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
+                                <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
+                            </View>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </Link>
+            )} />)
 }
 
 const styles = StyleSheet.create({

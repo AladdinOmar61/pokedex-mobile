@@ -20,9 +20,11 @@ const pokeApi = () => {
     const genData = await api.game.getGenerationById(gen);
     const getPokemonFromGen = await Promise.all(
       genData.pokemon_species.map(async (res) => {
+        // console.log(res.name);
         return api.pokemon.getPokemonById(extractedIdFromUrl(res.url)!);
       })
     )
+    console.log("Promise.all finished");
     return getPokemonFromGen;
   };
 
