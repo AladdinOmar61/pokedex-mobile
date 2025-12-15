@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Image, useWindowDimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -13,6 +13,7 @@ import { Pokemon } from 'pokenode-ts';
 const AllPokemon = () => {
 
     const { gen } = useLocalSearchParams<{ gen: string }>();
+    const { width, height } = useWindowDimensions();
 
     const {
         getAllPokemonFromGen,
@@ -50,27 +51,37 @@ const AllPokemon = () => {
         }
     }, [genPokemon, navigation])
 
+
+
     return (
-        <FlashList
-            style={{ marginBottom: insets.bottom }}
-            data={genPokemon}
-            keyExtractor={(item) => String(item?.id || 'unknown')}
-            renderItem={({ item, index }) => (
-                <Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
-                    <TouchableOpacity>
-                        <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
-                            <View style={styles.item}>
-                                {PokeTypeIcon(item.types[0].type.name)}
-                                {item.sprites &&
-                                    <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
-                                }
-                                <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
-                                <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
-                            </View>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </Link>
-            )} />)
+        <View style={{ height: height - (insets.bottom + insets.top), width: width }}>
+            {pokemonLoaded ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    {/* TODO: Add spinning pokeball loading animation */ }
+                    <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>
+                </View>
+            ) : (
+                <FlashList
+                    style={{ marginBottom: insets.bottom, height: '100%', width: '100%' }}
+                    data={genPokemon}
+                    keyExtractor={(item) => String(item?.id || 'unknown')}
+                    renderItem={({ item, index }) => (
+                        <Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
+                            <TouchableOpacity>
+                                <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
+                                    <View style={styles.item}>
+                                        {PokeTypeIcon(item.types[0].type.name)}
+                                        {item.sprites &&
+                                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
+                                        }
+                                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
+                                        <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
+                                    </View>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </Link>
+                    )} />)}
+        </View>)
 }
 
 const styles = StyleSheet.create({
