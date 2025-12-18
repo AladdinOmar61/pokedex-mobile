@@ -4,7 +4,7 @@ import {
   SimpleSpecies,
 } from "@/interface";
 import pLimit from "p-limit";
-import type { Pokemon, EvolutionChain as PokeEvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
+import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
 
 const pokeApi = () => {
   const api = new MainClient();
@@ -13,7 +13,7 @@ const pokeApi = () => {
 
   const extractedIdFromUrl = (url: string) => {
     const urlId = url.match(/\/(\d+)\/?$/);
-    return urlId ? Number(urlId[1]) : undefined;
+    return urlId ? Number(urlId[1]) : null;
   }
 
   const getAllPokemonFromGen = async (gen: number): Promise<Pokemon[]> => {
@@ -54,11 +54,10 @@ const pokeApi = () => {
     return await safeFetchJson(typeUrl);
   };
 
-  const getEvolutions = async (id: number): Promise<PokeEvolutionChain> => {
+  const getEvolutions = async (id: number): Promise<EvolutionChain> => {
     const pokemonUrl = await api.pokemon.getPokemonSpeciesById(id);
-    // console.log("pokemon url: ", pokemonUrl);
-    const evoData = await api.evolution.getEvolutionChainById(pokemonUrl.id);
-    // console.log("evolution data: ", evoData);
+    let evolutionId = extractedIdFromUrl(pokemonUrl.evolution_chain.url);
+    const evoData = await api.evolution.getEvolutionChainById(evolutionId!);
     return evoData;
   };
 
