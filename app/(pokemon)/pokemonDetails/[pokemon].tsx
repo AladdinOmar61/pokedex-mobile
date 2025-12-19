@@ -8,7 +8,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import type { ChainLink, EvolutionChain, EvolutionDetail } from "pokenode-ts";
+import type { EvolutionChain, EvolutionDetail } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { Pokemon, Generation } from "@/interface";
@@ -41,6 +41,8 @@ const Details = () => {
   const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
+
+  const [evolutionMethod, setEvolutionMethod] = useState<string>("");
 
   const [firstEvoTextWidth, setFirstEvoTextWidth] = useState(0);
 
@@ -83,8 +85,6 @@ const Details = () => {
     };
     pokeEvos();
   }, [pokemonDetails, speciesId]);
-
-
 
   useEffect(() => {
     if (pokemonEvos) {
@@ -310,7 +310,9 @@ const Details = () => {
                           {pokemonEvos?.chain.evolves_to.map(
                             (item, index) => (
                               <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                               
                                 {/* Level up trigger */}
+                                
                                 <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                   <ArrowRight width={24} height={24} />
                                   {item.evolution_details[0].min_level !== null && (
@@ -318,7 +320,9 @@ const Details = () => {
                                       Lvl {item.evolution_details[0].min_level}
                                     </Text>
                                   )}
+
                                   {/* Item trigger */}
+                                  
                                   {item.evolution_details[0].item !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                       <Image
@@ -330,7 +334,9 @@ const Details = () => {
                                       {/* <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text> */}
                                     </View>
                                   )}
+                                  
                                   {/* Happiness trigger */}
+                                  
                                   {!evosLoading &&
                                     item.evolution_details[0].min_happiness !=
                                     null && (
@@ -340,9 +346,17 @@ const Details = () => {
                                       </>
                                     )}
                                   {/* time of day trigger add-on */}
+
                                   {item.evolution_details[0].time_of_day &&
                                     <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
                                   }
+
+                                  {/* Trade Evo Trigger */}
+
+                                  {item.evolution_details[0].trigger.name === "trade" && 
+                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
+                                  }
+
                                 </View>
                                 {evo1Img[index] && (
                                   <Link href={`/(pokemon)/pokemonDetails/${evo1Num[index]}`} asChild>
@@ -421,11 +435,32 @@ const Details = () => {
                                       
                                         {/* Time of day add-on */}
 
-                                        {item.evolution_details[0].time_of_day &&
+                                        {item.evolution_details[0].time_of_day && (
                                           <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
-                                        }
+                                      )}
                                       </View>
                                     )}
+                                  
+                                  {/* Trade Evo Trigger */}
+
+                                  {item.evolution_details[0].trigger.name === "trade" &&
+                                    <View style={{ display: 'flex', alignItems: 'center' }}>
+                                      <ArrowRight width={24} height={24} />
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
+                                      {item.evolution_details[0].held_item && (
+                                        <>
+                                        <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
+                                        <Image
+                                        source={{
+                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].held_item.name}.png`,
+                                        }}
+                                        style={{ height: 20, width: 20 }}
+                                          />
+                                        </>
+                                      )}
+                                    </View>
+                                  }
+
                                 </View>
                                 {evo2Img[index] && (
                                   <Link href={`/(pokemon)/pokemonDetails/${evo2Num[index]}`} asChild>

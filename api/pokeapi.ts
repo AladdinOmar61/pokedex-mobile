@@ -1,7 +1,6 @@
 import { MainClient } from "pokenode-ts";
 import {
   TypeInfo,
-  SimpleSpecies,
 } from "@/interface";
 import pLimit from "p-limit";
 import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
