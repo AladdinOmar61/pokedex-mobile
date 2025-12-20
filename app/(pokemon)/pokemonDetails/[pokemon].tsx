@@ -8,7 +8,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import type { EvolutionChain, EvolutionDetail } from "pokenode-ts";
+import type { EvolutionChain } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { Pokemon, Generation } from "@/interface";
@@ -41,10 +41,6 @@ const Details = () => {
   const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
-
-  const [evolutionMethod, setEvolutionMethod] = useState<string>("");
-
-  const [firstEvoTextWidth, setFirstEvoTextWidth] = useState(0);
 
   const [speciesId, setSpeciesId] = useState<number>(0)
 
@@ -303,144 +299,157 @@ const Details = () => {
                     )}
 
                     {/* first evo starts here  */}
-
-                    {pokemonEvos?.chain.evolves_to &&
-                      pokemonEvos?.chain.evolves_to.length > 0 && (
+                      {pokemonEvos?.chain.evolves_to &&
+                        
+                        pokemonEvos?.chain.evolves_to.length > 0 && (
                         <View>
                           {pokemonEvos?.chain.evolves_to.map(
-                            (item, index) => (
-                              <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            (item, index) => {
+                              // console.log(item)
+                              return (
+                                <View key={index} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
 
-                                {/* Level up trigger */}
 
-                                <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                  <ArrowRight width={24} height={24} />
-                                  {item.evolution_details[0].min_level !== null ? (
-                                    <Text style={[styles.infoText, { fontSize: 10 }]}>
-                                      Lvl {item.evolution_details[0].min_level}
-                                    </Text>
-                                  ) : (item.evolution_details[0].trigger.name === "level-up" && (
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
-                                  ))}
 
-                                  {/* Item trigger */}
+                                  <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <ArrowRight width={24} height={24} />
 
-                                  {item.evolution_details[0].item !== null && (
-                                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                      {item.evolution_details[0].item.name === "black-augurite" ? (
-                                        <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>black{'\n'}augurite</Text>
-                                      ) : (
-                                      <Image
-                                        alt={item.evolution_details[0].item.name}
-                                        source={{
-                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
-                                        }}
-                                        style={{ height: 20, width: 20 }}
-                                        />)}
-                                      
-                                    </View>
-                                  )}
+                                    {/* Level up trigger */}
 
-                                  {/* Happiness/Friendship/Affection trigger */}
+                                    {item.evolution_details[0].trigger.name === "level-up" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
+                                    )}
 
-                                  {!evosLoading &&
-                                    item.evolution_details[0].min_happiness && (
+                                    {item.evolution_details[0].min_level !== null && (
+                                      <Text style={[styles.infoText, { fontSize: 10 }]}>
+                                        Lvl {item.evolution_details[0].min_level}
+                                      </Text>
+                                    )}
+
+                                    {/* Item trigger */}
+
+                                    {item.evolution_details[0].item !== null && (
+                                      <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        {item.evolution_details[0].item.name === "black-augurite" ? (
+                                          <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>black{'\n'}augurite</Text>
+                                        ) : (
+                                          <Image
+                                            alt={item.evolution_details[0].item.name}
+                                            source={{
+                                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                            }}
+                                            style={{ height: 20, width: 20 }}
+                                          />)}
+
+                                      </View>
+                                    )}
+
+                                    {/* Happiness/Friendship/Affection trigger */}
+
+                                    {!evosLoading &&
+                                      item.evolution_details[0].min_happiness && (
+                                        <>
+                                          <Heart width={14} height={14} />
+                                          <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
+                                        </>
+                                      )}
+
+                                    {item.evolution_details[0].min_affection && (
                                       <>
                                         <Heart width={14} height={14} />
                                         <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
                                       </>
                                     )}
-                                  
-                                  {item.evolution_details[0].min_affection && (
-                                    <>
-                                      <Heart width={14} height={14} />
-                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
-                                    </>
-                                  )}
 
-                                  {/* time of day trigger add-on */}
+                                    {/* time of day trigger add-on */}
 
-                                  {item.evolution_details[0].time_of_day &&
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
-                                  }
+                                    {item.evolution_details[0].time_of_day &&
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].time_of_day}</Text>
+                                    }
 
-                                  {/* Other evo triggers */}
+                                    {/* Other evo triggers */}
 
-                                  {item.species.name === "sirfetchd" && (
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>Land 3 crits {'\n'} in 1 battle</Text>
-                                  )}
+                                    {item.species.name === "sirfetchd" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>Land 3 crits {'\n'} in 1 battle</Text>
+                                    )}
 
-                                  {item.species.name === "hitmonchan" && (
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{"def > atk"}</Text>
-                                  )}
+                                    {item.species.name === "hitmonchan" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{"def > atk"}</Text>
+                                    )}
 
-                                  {item.species.name === "hitmonlee" && (
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{"atk > def"}</Text>
-                                  )}
+                                    {item.species.name === "hitmonlee" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{"atk > def"}</Text>
+                                    )}
 
-                                  {item.species.name === "hitmontop" && (
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{"atk = def"}</Text>
-                                  )}
+                                    {item.species.name === "hitmontop" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{"atk = def"}</Text>
+                                    )}
 
-                                  {/* Trade Evo Trigger */}
+                                    {/* Trade Evo Trigger */}
 
-                                  {item.evolution_details[0].trigger.name === "trade" &&
-                                    <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
-                                  }
+                                    {item.evolution_details[0].trigger.name === "trade" &&
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
+                                    }
 
-                                  {/* Level up location Evo Trigger */}
+                                    {/* Level up location Evo Trigger */}
 
-                                  {item.evolution_details[0].location && (
-                                    <View style={{ display: 'flex', alignItems: 'center' }}>
-                                      <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>{item.evolution_details[0].location.name}</Text>
-                                      {item.evolution_details[0].held_item && (
+                                    {item.evolution_details[0].location && (
+                                      <View style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>{item.evolution_details[0].location.name}</Text>
+                                        {item.evolution_details[0].held_item && (
+                                          <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
+                                        )}
+                                      </View>
+                                    )}
+
+                                    {/* Known Move Type Evo Trigger */}
+
+                                    {item.evolution_details[0].known_move_type &&
+                                      <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>knowing {'\n'} {item.evolution_details[0].known_move_type.name} {'\n'} move</Text>
+                                    }
+
+                                    {/* Known Moves Evo Trigger */}
+
+                                    {item.evolution_details[0].known_move &&
+                                      <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>knowing {'\n'} {item.evolution_details[0].known_move.name}</Text>
+                                    }
+
+                                    {item.evolution_details[0].held_item && (
+                                      <>
                                         <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
-                                      )}
-                                    </View>
+                                        <Image
+                                          source={{
+                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].held_item.name}.png`,
+                                          }}
+                                          style={{ height: 20, width: 20 }}
+                                        />
+                                      </>
+                                    )}
+
+                                    {/* Party member evo trigger */}
+
+                                    {item.evolution_details[0].party_species &&
+                                      <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>+ {'\n'} {item.evolution_details[0].party_species.name} {'\n'} in team</Text>
+                                    }
+
+                                  </View>
+                                  {evo1Img[index] && (
+                                    <Link href={`/(pokemon)/pokemonDetails/${evo1Num[index]}`} asChild>
+                                      <Pressable>
+                                        <Image
+                                          source={{ uri: evo1Img[index] }}
+                                          style={{
+                                            width: 80,
+                                            height: 80,
+                                            padding: 5,
+                                            aspectRatio: "1/1",
+                                          }}
+                                        />
+                                      </Pressable>
+                                    </Link>
                                   )}
-
-                                  {/* Known Move Type Evo Trigger */}
-
-                                  {item.evolution_details[0].known_move_type &&
-                                    <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>knowing {'\n'} {item.evolution_details[0].known_move_type.name} {'\n'} move</Text>
-                                  }
-
-                                  {/* Known Moves Evo Trigger */}
-
-                                  {item.evolution_details[0].known_move &&
-                                    <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>knowing {'\n'} {item.evolution_details[0].known_move.name}</Text>
-                                  }
-
-                                  {item.evolution_details[0].held_item && (
-                                    <>
-                                      <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
-                                      <Image
-                                        source={{
-                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].held_item.name}.png`,
-                                        }}
-                                        style={{ height: 20, width: 20 }}
-                                      />
-                                    </>
-                                  )}
-
-                                </View>
-                                {evo1Img[index] && (
-                                  <Link href={`/(pokemon)/pokemonDetails/${evo1Num[index]}`} asChild>
-                                    <Pressable>
-                                      <Image
-                                        source={{ uri: evo1Img[index] }}
-                                        style={{
-                                          width: 80,
-                                          height: 80,
-                                          padding: 5,
-                                          aspectRatio: "1/1",
-                                        }}
-                                      />
-                                    </Pressable>
-                                  </Link>
-                                )}
-                              </View>
-                            )
+                                </View>)
+                            }
                           )}
                         </View>)}
 
@@ -457,26 +466,38 @@ const Details = () => {
                                 {/* Level up trigger */}
 
                                 <View>
-                                  {item.evolution_details[0].min_level !== null && (
-                                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                      <ArrowRight width={24} height={24} />
+                                  {/* {item.evolution_details[0].min_level !== null && ( */}
+                                  <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <ArrowRight width={24} height={24} />
+
+                                    {item.evolution_details[0].trigger.name === "level-up" && (
+                                      <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
+                                    )}
+
+                                    {item.evolution_details[0].min_level !== null && (
                                       <Text style={[styles.infoText, { fontSize: 10 }]}>
                                         Lvl {item.evolution_details[0].min_level}
                                       </Text>
-                                    </View>
-                                  )}
+                                    )}
+
+                                  </View>
+
+
 
                                   {/* Item trigger */}
 
                                   {item.evolution_details[0].item !== null && (
                                     <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                      <ArrowRight width={24} height={24} />
-                                      <Image
-                                        source={{
-                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
-                                        }}
-                                        style={{ height: 20, width: 20 }}
-                                      />
+                                      {/* <ArrowRight width={24} height={24} /> */}
+                                      {item.evolution_details[0].item.name === "peat-block" ? (
+                                        <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>peat{'\n'}block</Text>
+                                      ) : (
+                                        <Image
+                                          source={{
+                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].item.name}.png`,
+                                          }}
+                                          style={{ height: 20, width: 20 }}
+                                        />)}
                                       {/* <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text> */}
                                     </View>
                                   )}
@@ -485,7 +506,7 @@ const Details = () => {
 
                                   {item.species.name === "annihilape" && (
                                     <View style={{ display: 'flex', alignItems: 'center' }}>
-                                      <ArrowRight width={24} height={24} />
+                                      {/* <ArrowRight width={24} height={24} /> */}
                                       <Text style={[styles.infoText, { fontSize: 9 }]}>Use Rage {'\n'} Fist x20</Text>
                                     </View>
                                   )}
@@ -495,7 +516,7 @@ const Details = () => {
                                   {item.evolution_details[0].min_happiness !=
                                     null && (
                                       <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <ArrowRight width={24} height={24} />
+                                        {/* <ArrowRight width={24} height={24} /> */}
                                         <Heart width={14} height={14} />
                                         <Text style={[styles.infoText, { fontSize: 9 }]}>Happiness</Text>
 
@@ -511,7 +532,7 @@ const Details = () => {
 
                                   {item.evolution_details[0].trigger.name === "trade" &&
                                     <View style={{ display: 'flex', alignItems: 'center' }}>
-                                      <ArrowRight width={24} height={24} />
+                                      {/* <ArrowRight width={24} height={24} /> */}
                                       <Text style={[styles.infoText, { fontSize: 9 }]}>{item.evolution_details[0].trigger.name}</Text>
                                       {item.evolution_details[0].held_item && (
                                         <>
@@ -531,13 +552,31 @@ const Details = () => {
 
                                   {item.evolution_details[0].location && (
                                     <View style={{ display: 'flex', alignItems: 'center' }}>
-                                      <ArrowRight width={24} height={24} />
                                       <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>{item.evolution_details[0].trigger.name} {'\n'} {item.evolution_details[0].location.name}</Text>
                                       {item.evolution_details[0].held_item && (
                                         <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
                                       )}
                                     </View>
                                   )}
+
+                                  {/* Known Moves Evo Trigger */}
+
+                                  {item.evolution_details[0].known_move &&
+                                    <>
+                                      <Text style={[styles.infoText, { fontSize: 9, textAlign: 'center' }]}>knowing {'\n'} {item.evolution_details[0].known_move.name}</Text>
+                                      {item.evolution_details[0].held_item && (
+                                        <>
+                                          <Text style={[styles.infoText, { fontSize: 9 }]}>+ </Text>
+                                          <Image
+                                            source={{
+                                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.evolution_details[0].held_item.name}.png`,
+                                            }}
+                                            style={{ height: 20, width: 20 }}
+                                          />
+                                        </>
+                                      )}
+                                    </>
+                                  }
 
                                 </View>
                                 {evo2Img[index] && (
