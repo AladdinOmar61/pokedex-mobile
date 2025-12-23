@@ -550,7 +550,7 @@ const Details = () => {
                                           </Text>
                                         </View>
                                       )}
-                                    
+
                                     {firstEvo.species.name ===
                                       "basculegion" && (
                                         <View
@@ -570,7 +570,7 @@ const Details = () => {
                                           </Text>
                                         </View>
                                       )}
-                                    
+
                                     {firstEvo.species.name ===
                                       "runerigus" && (
                                         <View
@@ -611,22 +611,22 @@ const Details = () => {
                                     {/* Trade with certain species trigger */}
 
                                     {firstEvo.evolution_details[0].trade_species && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
+                                      <Text
+                                        style={[
+                                          styles.infoText,
                                           {
                                             fontSize: 9,
-                                              textAlign: 'center'
-                                             },
-                                          ]}
+                                            textAlign: 'center'
+                                          },
+                                        ]}
                                       >
                                         w
                                         {'\n'}
-                                          {
-                                            firstEvo.evolution_details[0].trade_species.name
-                                          }
-                                        </Text>
-                                      )}
+                                        {
+                                          firstEvo.evolution_details[0].trade_species.name
+                                        }
+                                      </Text>
+                                    )}
 
                                     {/* Level up location Evo Trigger */}
 
@@ -896,10 +896,30 @@ const Details = () => {
                                                 <Text
                                                   style={[
                                                     styles.infoText,
-                                                    { fontSize: 9 },
+                                                    { fontSize: 9, textAlign: 'center' },
                                                   ]}
                                                 >
                                                   Use Rage {"\n"} Fist x20
+                                                </Text>
+                                              </View>
+                                            )}
+                                          
+                                          {secEvo.species.name ===
+                                            "kingambit" && (
+                                              <View
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                }}
+                                              >
+                                                {/* <ArrowRight width={24} height={24} /> */}
+                                                <Text
+                                                  style={[
+                                                    styles.infoText,
+                                                    { fontSize: 9, textAlign: 'center' },
+                                                  ]}
+                                                >
+                                                  Poop
                                                 </Text>
                                               </View>
                                             )}
@@ -1248,6 +1268,26 @@ const Details = () => {
                                                   ]}
                                                 >
                                                   Use Rage {"\n"} Fist x20
+                                                </Text>
+                                              </View>
+                                            )}
+                                          
+                                          {secEvo.species.name ===
+                                            "kingambit" && (
+                                              <View
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                }}
+                                              >
+                                                {/* <ArrowRight width={24} height={24} /> */}
+                                                <Text
+                                                  style={[
+                                                    styles.infoText,
+                                                    { fontSize: 9, textAlign: 'center' },
+                                                  ]}
+                                                >
+                                                Defeat {'\n'} bisharp {'\n'} x3 + {'\n'} Lvl up w/ {'\n'} Leaders crest
                                                 </Text>
                                               </View>
                                             )}
