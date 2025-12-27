@@ -54,10 +54,10 @@ const pokeApi = () => {
   };
 
   const getEvolutions = async (id: number): Promise<EvolutionChain> => {
-    const pokemonUrl = await api.pokemon.getPokemonSpeciesById(id);
-    let evolutionId = extractedIdFromUrl(pokemonUrl.evolution_chain.url);
+      const pokemonUrl = await api.pokemon.getPokemonSpeciesById(id);
+      let evolutionId = extractedIdFromUrl(pokemonUrl.evolution_chain.url);
     const evoData = await api.evolution.getEvolutionChainById(evolutionId!);
-    return evoData;
+      return evoData;
   };
 
   // Helper that fetches a URL, validates the response, and parses JSON.

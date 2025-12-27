@@ -73,6 +73,64 @@ const Details = () => {
           }
           if (speciesId) {
             const evos = await getEvolutions(speciesId);
+            console.log(evos.id)
+            if (evos.id === 442) {
+              evos.chain.evolves_to[2].evolution_details.push({
+                // base_form_id: null,
+                gender: null,
+                held_item: null,
+                item: {
+                  name: "syrupy-apple",
+                  url: "https://pokeapi.co/api/v2/item/1174/"
+                },
+                known_move: null,
+                known_move_type: null,
+                location: null,
+                min_affection: null,
+                min_beauty: null,
+                min_happiness: null,
+                min_level: null,
+                needs_overworld_rain: false,
+                party_species: null,
+                party_type: null,
+                // region_id: null,
+                relative_physical_stats: null,
+                time_of_day: "",
+                trade_species: null,
+                trigger: {
+                  name: "use-item",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/3/"
+                },
+                turn_upside_down: false
+              })
+
+              evos.chain.evolves_to[2].evolves_to[0].evolution_details.push({
+                gender: null,
+                held_item: null,
+                item: null,
+                known_move: {
+                  name: "dragon-cheer",
+                  url: "https://pokeapi.co/api/v2/move/246/"
+                },
+                known_move_type: null,
+                location: null,
+                min_affection: null,
+                min_beauty: null,
+                min_happiness: null,
+                min_level: null,
+                needs_overworld_rain: false,
+                party_species: null,
+                party_type: null,
+                relative_physical_stats: null,
+                time_of_day: "",
+                trade_species: null,
+                trigger: {
+                  name: "level-up",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/3/"
+                },
+                turn_upside_down: false
+              });
+            }
             setPokemonEvos(evos);
             setEvosLoading(false);
           }
@@ -119,12 +177,12 @@ const Details = () => {
         setEvo1Img(evosBucket);
         if (pokemonEvos.chain.evolves_to[0].evolves_to.length > 0) {
           for (
-            let i = 0;
-            i < pokemonEvos.chain.evolves_to[0].evolves_to.length;
-            i++
+            let j = 0;
+            j < pokemonEvos.chain.evolves_to[0].evolves_to.length;
+            j++
           ) {
             const speciesUrl =
-              pokemonEvos?.chain.evolves_to[0].evolves_to[i].species.url.match(
+              pokemonEvos?.chain.evolves_to[0].evolves_to[j].species.url.match(
                 /\/(\d+)\/$/
               );
             const speciesNum = speciesUrl ? speciesUrl[1] : null;
@@ -137,7 +195,7 @@ const Details = () => {
             if (pokemonEvos.chain.evolves_to[1]) {
               const speciesUrl =
                 pokemonEvos?.chain.evolves_to[1].evolves_to[
-                  i
+                  j
                 ].species.url.match(/\/(\d+)\/$/);
               const speciesNum = speciesUrl ? speciesUrl[1] : null;
               if (speciesNum) {
@@ -146,6 +204,24 @@ const Details = () => {
               const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
               secondEvosBucket.unshift(splittingSpeciesImg);
             }
+
+            if (pokemonEvos.chain.evolves_to[2].evolves_to.length > 0) {
+              const speciesUrl =
+                pokemonEvos?.chain.evolves_to[2].evolves_to[
+                  j
+                ].species.url.match(/\/(\d+)\/$/);
+              const speciesNum = speciesUrl ? speciesUrl[1] : null;
+              if (speciesNum) {
+                evos2NumBucket.push(speciesNum);
+              }
+              const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+              console.log(splittingSpeciesImg);
+              secondEvosBucket.push(splittingSpeciesImg);
+            } else {
+              console.log("no worky poopy")
+            }
+
+
             if (pokemonEvos.chain.evolves_to[1]) {
               secondEvosBucket.unshift(speciesImg);
             } else {
@@ -279,9 +355,15 @@ const Details = () => {
             <Text style={[styles.infoText, { fontSize: 16 }]}>Stats:</Text>
             {pokemonDetails.stats.map((item: any) => (
               <View key={item.stat.name}>
-                <Text style={styles.infoText}>
-                  {item.stat.name}: {item.base_stat}
-                </Text>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Text style={[styles.infoText, {
+                    color:
+                      'grey'
+                  }]}>
+                    {item.stat.name}:
+                  </Text>
+                  <Text style={[styles.infoText]}>{item.base_stat}</Text>
+                </View>
                 <View
                   style={{
                     height: 8,
@@ -307,7 +389,7 @@ const Details = () => {
             </Text>
 
             {!evosLoading ? (
-              <>
+              <View>
                 {pokemonEvos &&
                   pokemonEvos?.chain.evolves_to &&
                   pokemonEvos?.chain.evolves_to.length > 0 &&
@@ -322,7 +404,7 @@ const Details = () => {
                           <Image
                             source={{ uri: baseEvo }}
                             style={{
-                              width: 80,
+                              width: '25%',
                               height: 80,
                               padding: 5,
                               aspectRatio: "1/1",
@@ -344,6 +426,7 @@ const Details = () => {
                                   display: "flex",
                                   flexDirection: "row",
                                   alignItems: "center",
+                                  justifyContent: "flex-start"
                                 }}
                               >
                                 <View
@@ -408,7 +491,13 @@ const Details = () => {
                                           }}
                                         >
                                           {firstEvo.evolution_details[0].item
-                                            .name === "black-augurite" ? (
+                                            .name === "black-augurite" || firstEvo.evolution_details[0].item.name === "tart-apple" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "tart-apple" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "sweet-apple" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "syrupy-apple" ? (
                                             <Text
                                               style={[
                                                 styles.infoText,
@@ -418,20 +507,55 @@ const Details = () => {
                                                 },
                                               ]}
                                             >
-                                              black{"\n"}augurite
+                                              {firstEvo.evolution_details[0].item
+                                                .name}
                                             </Text>
-                                          ) : (
-                                            <Image
-                                              alt={
-                                                firstEvo.evolution_details[0].item
-                                                  .name
-                                              }
-                                              source={{
-                                                uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].item.name}.png`,
-                                              }}
-                                              style={{ height: 20, width: 20 }}
-                                            />
-                                          )}
+                                          ) : <Image
+                                            alt={
+                                              firstEvo.evolution_details[0].item
+                                                .name
+                                            }
+                                            source={{
+                                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].item.name}.png`,
+                                            }}
+                                            style={{ height: 20, width: 20 }}
+                                          />
+                                          }
+
+
+
+                                          {/* {firstEvo.evolution_details[
+                                            0
+                                          ].item.name === "sweet-apple" &&
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                {
+                                                  fontSize: 9,
+                                                  textAlign: "center",
+                                                },
+                                              ]}
+                                            >
+                                              sweet{"\n"}apple
+                                            </Text>
+                                          }
+
+                                          {firstEvo.evolution_details[
+                                            0
+                                          ].item.name === "syrupy-apple" &&
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                {
+                                                  fontSize: 9,
+                                                  textAlign: "center",
+                                                },
+                                              ]}
+                                            >
+                                              syrupy{"\n"}apple
+                                            </Text>
+                                          } */}
+
                                         </View>
                                       )}
 
@@ -665,7 +789,7 @@ const Details = () => {
                                       </View>
                                     )}
 
-                                    {/* Known Move Type Evo Trigger */}
+                                    {/* Known Move TYPE Evo Trigger */}
 
                                     {firstEvo.evolution_details[0]
                                       .known_move_type && (
@@ -878,6 +1002,7 @@ const Details = () => {
                                                     }}
                                                   />
                                                 )}
+
                                                 {/* <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text> */}
                                               </View>
                                             )}
@@ -903,7 +1028,7 @@ const Details = () => {
                                                 </Text>
                                               </View>
                                             )}
-                                          
+
                                           {secEvo.species.name ===
                                             "kingambit" && (
                                               <View
@@ -1271,7 +1396,7 @@ const Details = () => {
                                                 </Text>
                                               </View>
                                             )}
-                                          
+
                                           {secEvo.species.name ===
                                             "kingambit" && (
                                               <View
@@ -1287,7 +1412,7 @@ const Details = () => {
                                                     { fontSize: 9, textAlign: 'center' },
                                                   ]}
                                                 >
-                                                Defeat {'\n'} bisharp {'\n'} x3 + {'\n'} Lvl up w/ {'\n'} Leaders crest
+                                                  Defeat {'\n'} bisharp {'\n'} x3 + {'\n'} Lvl up w/ {'\n'} Leaders crest
                                                 </Text>
                                               </View>
                                             )}
@@ -1520,7 +1645,7 @@ const Details = () => {
                     </Text>
                   </View>
                 )}
-              </>
+              </View>
             ) : (
               <ActivityIndicator size={20} />
             )}
