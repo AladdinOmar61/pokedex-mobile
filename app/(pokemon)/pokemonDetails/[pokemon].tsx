@@ -76,7 +76,6 @@ const Details = () => {
             console.log(evos.id)
             if (evos.id === 442) {
               evos.chain.evolves_to[2].evolution_details.push({
-                // base_form_id: null,
                 gender: null,
                 held_item: null,
                 item: {
@@ -93,7 +92,6 @@ const Details = () => {
                 needs_overworld_rain: false,
                 party_species: null,
                 party_type: null,
-                // region_id: null,
                 relative_physical_stats: null,
                 time_of_day: "",
                 trade_species: null,
@@ -205,22 +203,6 @@ const Details = () => {
               secondEvosBucket.unshift(splittingSpeciesImg);
             }
 
-            if (pokemonEvos.chain.evolves_to[2].evolves_to.length > 0) {
-              const speciesUrl =
-                pokemonEvos?.chain.evolves_to[2].evolves_to[
-                  j
-                ].species.url.match(/\/(\d+)\/$/);
-              const speciesNum = speciesUrl ? speciesUrl[1] : null;
-              if (speciesNum) {
-                evos2NumBucket.push(speciesNum);
-              }
-              const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
-              console.log(splittingSpeciesImg);
-              secondEvosBucket.push(splittingSpeciesImg);
-            } else {
-              console.log("no worky poopy")
-            }
-
 
             if (pokemonEvos.chain.evolves_to[1]) {
               secondEvosBucket.unshift(speciesImg);
@@ -228,9 +210,25 @@ const Details = () => {
               secondEvosBucket.push(speciesImg);
             }
           }
+
           setEvo2Num(evos2NumBucket);
           setEvo2Img(secondEvosBucket);
         }
+      }
+      if (pokemonEvos.chain.evolves_to.length > 2 && pokemonEvos.chain.evolves_to[2].evolves_to.length > 0) {
+        const speciesUrl =
+          pokemonEvos?.chain.evolves_to[2].evolves_to[
+            0
+          ].species.url.match(/\/(\d+)\/$/);
+        const speciesNum = speciesUrl ? speciesUrl[1] : null;
+        if (speciesNum) {
+          evos2NumBucket.push(speciesNum);
+        }
+        const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
+        secondEvosBucket.push(splittingSpeciesImg);
+
+        setEvo2Num(evos2NumBucket);
+        setEvo2Img(secondEvosBucket);
       }
     }
   }, [pokemonEvos, baseNum]);
@@ -1243,7 +1241,7 @@ const Details = () => {
                                             ]}>{secEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
                                           }
                                         </View>
-                                        {evo2Img[feIndex] && (
+                                        {evo2Img[feIndex] ? (
                                           <Link
                                             href={`/(pokemon)/pokemonDetails/${evo2Num[feIndex]}`}
                                             asChild
@@ -1262,6 +1260,25 @@ const Details = () => {
                                               />
                                             </Pressable>
                                           </Link>
+                                        ) : (
+                                            <Link
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
+                                              asChild
+                                            >
+                                              <Pressable>
+                                                <Image
+                                                  source={{
+                                                    uri: evo2Img[seIndex],
+                                                  }}
+                                                  style={{
+                                                    width: 80,
+                                                    height: 80,
+                                                    padding: 5,
+                                                    aspectRatio: "1/1",
+                                                  }}
+                                                />
+                                              </Pressable>
+                                            </Link>  
                                         )}
                                       </View>
                                     ))}
