@@ -74,7 +74,7 @@ const Details = () => {
           if (speciesId) {
             const evos = await getEvolutions(speciesId);
             console.log(evos.id)
-            // injectig dipplin/hydrapple's evo conditions
+            // injecting dipplin/hydrapple's evo conditions
             if (evos.id === 442) {
               evos.chain.evolves_to[2].evolution_details.push({
                 gender: null,
@@ -1659,12 +1659,18 @@ const Details = () => {
                       )}
                   </View>
                 ) : (
-                  <View>
-                    <Image source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${Number(pokemon)}.png` }} style={{
-                      width: 80,
+                    <View style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      alignItems: 'center'
+                    }}>
+                    <Image source={{ uri: pokemonDetails.sprites.front_default! }} style={{
+                      width: width,
                       height: 80,
                       padding: 5,
                       aspectRatio: "1/1",
+                        
                     }} />
                     <Text style={[styles.infoText, { textAlign: 'center', fontSize: 11 }]}>
                       This Pokemon does not evolve.
