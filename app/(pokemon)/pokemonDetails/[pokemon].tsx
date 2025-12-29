@@ -74,6 +74,7 @@ const Details = () => {
           if (speciesId) {
             const evos = await getEvolutions(speciesId);
             console.log(evos.id)
+            // injectig dipplin/hydrapple's evo conditions
             if (evos.id === 442) {
               evos.chain.evolves_to[2].evolution_details.push({
                 gender: null,
@@ -129,6 +130,35 @@ const Details = () => {
                 turn_upside_down: false
               });
             }
+            // injecting duraludon/archaludon's evo conditions
+            if (evos.id === 465) {
+              evos.chain.evolves_to[0].evolution_details.push({
+                gender: null,
+                held_item: null,
+                item: {
+                  name: "metal-alloy",
+                  url: "https://pokeapi.co/api/v2/item/1174/"
+                },
+                known_move: null,
+                known_move_type: null,
+                location: null,
+                min_affection: null,
+                min_beauty: null,
+                min_happiness: null,
+                min_level: null,
+                needs_overworld_rain: false,
+                party_species: null,
+                party_type: null,
+                relative_physical_stats: null,
+                time_of_day: "",
+                trade_species: null,
+                trigger: {
+                  name: "use-item",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/3/"
+                },
+                turn_upside_down: false
+              })
+            }
             setPokemonEvos(evos);
             setEvosLoading(false);
           }
@@ -151,7 +181,7 @@ const Details = () => {
       }
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${baseNum}.png`;
       setBaseEvo(speciesImg);
-      //undefined for legendary pokemon
+      //undefined for legendary/pokemon w no evos
       let evosBucket = [];
 
       let secondEvosBucket = [];
@@ -402,7 +432,7 @@ const Details = () => {
                           <Image
                             source={{ uri: baseEvo }}
                             style={{
-                              width: '25%',
+                              width: (width / 5) - 15,
                               height: 80,
                               padding: 5,
                               aspectRatio: "1/1",
@@ -440,6 +470,7 @@ const Details = () => {
                                       display: "flex",
                                       flexDirection: "column",
                                       alignItems: "center",
+                                      width: (width / 5) - 15
                                     }}
                                   >
                                     <ArrowRight width={24} height={24} />
@@ -451,7 +482,7 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                            { fontSize: 9 },
+                                          { fontSize: 9, textAlign: 'center' },
                                           ]}
                                         >
                                           {
@@ -466,7 +497,7 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                            { fontSize: 10 },
+                                            { fontSize: 9 },
                                           ]}
                                         >
                                           Lvl{" "}
@@ -495,7 +526,9 @@ const Details = () => {
                                               0
                                             ].item.name === "sweet-apple" || firstEvo.evolution_details[
                                               0
-                                            ].item.name === "syrupy-apple" ? (
+                                            ].item.name === "syrupy-apple" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "metal-alloy" ? (
                                             <Text
                                               style={[
                                                 styles.infoText,
@@ -506,7 +539,7 @@ const Details = () => {
                                               ]}
                                             >
                                               {firstEvo.evolution_details[0].item
-                                                .name}
+                                                .name.replace("-", "\n") }
                                             </Text>
                                           ) : <Image
                                             alt={
@@ -519,41 +552,6 @@ const Details = () => {
                                             style={{ height: 20, width: 20 }}
                                           />
                                           }
-
-
-
-                                          {/* {firstEvo.evolution_details[
-                                            0
-                                          ].item.name === "sweet-apple" &&
-                                            <Text
-                                              style={[
-                                                styles.infoText,
-                                                {
-                                                  fontSize: 9,
-                                                  textAlign: "center",
-                                                },
-                                              ]}
-                                            >
-                                              sweet{"\n"}apple
-                                            </Text>
-                                          }
-
-                                          {firstEvo.evolution_details[
-                                            0
-                                          ].item.name === "syrupy-apple" &&
-                                            <Text
-                                              style={[
-                                                styles.infoText,
-                                                {
-                                                  fontSize: 9,
-                                                  textAlign: "center",
-                                                },
-                                              ]}
-                                            >
-                                              syrupy{"\n"}apple
-                                            </Text>
-                                          } */}
-
                                         </View>
                                       )}
 
@@ -770,7 +768,7 @@ const Details = () => {
                                         >
                                           {
                                             firstEvo.evolution_details[0]
-                                              .location.name
+                                              .location.name.replace("-", "\n")
                                           }
                                         </Text>
                                         {firstEvo.evolution_details[0]
@@ -794,7 +792,8 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                            { fontSize: 9, textAlign: "center" },
+                                          { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
+                                            
                                           ]}
                                         >
                                           knowing {"\n"}{" "}
@@ -813,7 +812,7 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                            { fontSize: 9, textAlign: "center" },
+                                          { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
                                           ]}
                                         >
                                           knowing {"\n"}{" "}
@@ -882,7 +881,7 @@ const Details = () => {
                                         <Image
                                           source={{ uri: evo1Img[feIndex] }}
                                           style={{
-                                            width: 80,
+                                            width: (width / 5) - 15,
                                             height: 80,
                                             padding: 5,
                                             aspectRatio: "1/1",
@@ -921,6 +920,7 @@ const Details = () => {
                                               display: "flex",
                                               flexDirection: "column",
                                               alignItems: "center",
+                                              width: (width / 5) - 15
                                             }}
                                           >
                                             <ArrowRight
@@ -1196,6 +1196,7 @@ const Details = () => {
                                                     {
                                                       fontSize: 9,
                                                       textAlign: "center",
+                                                      width: (width / 5) - 10
                                                     },
                                                   ]}
                                                 >
@@ -1203,7 +1204,7 @@ const Details = () => {
                                                   {
                                                     secEvo.evolution_details[
                                                       seIndex
-                                                    ].known_move.name
+                                                    ].known_move.name.replace("-", "\n")
                                                   }
                                                 </Text>
                                                 {secEvo.evolution_details[
@@ -1252,7 +1253,7 @@ const Details = () => {
                                                   uri: evo2Img[feIndex],
                                                 }}
                                                 style={{
-                                                  width: 80,
+                                                  width: (width / 5) - 15,
                                                   height: 80,
                                                   padding: 5,
                                                   aspectRatio: "1/1",
@@ -1261,24 +1262,24 @@ const Details = () => {
                                             </Pressable>
                                           </Link>
                                         ) : (
-                                            <Link
-                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
-                                              asChild
-                                            >
-                                              <Pressable>
-                                                <Image
-                                                  source={{
-                                                    uri: evo2Img[seIndex],
-                                                  }}
-                                                  style={{
-                                                    width: 80,
-                                                    height: 80,
-                                                    padding: 5,
-                                                    aspectRatio: "1/1",
-                                                  }}
-                                                />
-                                              </Pressable>
-                                            </Link>  
+                                          <Link
+                                            href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
+                                            asChild
+                                          >
+                                            <Pressable>
+                                              <Image
+                                                source={{
+                                                  uri: evo2Img[seIndex],
+                                                }}
+                                                style={{
+                                                  width: (width / 5) - 15,
+                                                  height: 80,
+                                                  padding: 5,
+                                                  aspectRatio: "1/1",
+                                                }}
+                                              />
+                                            </Pressable>
+                                          </Link>
                                         )}
                                       </View>
                                     ))}
@@ -1298,6 +1299,7 @@ const Details = () => {
                                           display: "flex",
                                           flexDirection: "row",
                                           alignItems: "center",
+                                          // width: (width / 5) - 10
                                         }}
                                       >
                                         {/* Level up trigger */}
@@ -1309,6 +1311,7 @@ const Details = () => {
                                               display: "flex",
                                               flexDirection: "column",
                                               alignItems: "center",
+                                              // width: (width / 5) - 10
                                             }}
                                           >
                                             <ArrowRight
@@ -1634,7 +1637,7 @@ const Details = () => {
                                                   uri: evo2Img[seIndex],
                                                 }}
                                                 style={{
-                                                  width: 80,
+                                                  width: (width / 5) - 15,
                                                   height: 80,
                                                   padding: 5,
                                                   aspectRatio: "1/1",
@@ -1657,7 +1660,13 @@ const Details = () => {
                   </View>
                 ) : (
                   <View>
-                    <Text style={styles.infoText}>
+                    <Image source={{ uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${Number(pokemon)}.png` }} style={{
+                      width: 80,
+                      height: 80,
+                      padding: 5,
+                      aspectRatio: "1/1",
+                    }} />
+                    <Text style={[styles.infoText, { textAlign: 'center', fontSize: 11 }]}>
                       This Pokemon does not evolve.
                     </Text>
                   </View>

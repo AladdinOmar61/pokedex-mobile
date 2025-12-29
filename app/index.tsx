@@ -34,7 +34,7 @@ const Home = () => {
       <ScrollView style={{ marginBottom: insets.bottom }}>
         <Link href={`(pokemon)/all`} asChild>
           <TouchableOpacity>
-            <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
+            {/* <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
               <ImageBackground
                 source={require("../assets/GenBGs/All-Gens-bg.png")}
                 style={styles.backgroundImageSize}
@@ -53,7 +53,7 @@ const Home = () => {
                 </View>
                 <Text style={styles.allGensText}>ALL</Text>
               </ImageBackground>
-            </View>
+            </View> */}
           </TouchableOpacity>
         </Link>
         <View style={styles.genGrid}>
