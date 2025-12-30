@@ -8,7 +8,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import type { EvolutionChain } from "pokenode-ts";
+import { PokemonSpecies, type EvolutionChain } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { Pokemon, Generation } from "@/interface";
@@ -28,12 +28,18 @@ const Details = () => {
     getPokemonType,
     getEvolutions,
     extractedIdFromUrl,
+    getPokemonSpecies,
   } = pokeApi();
 
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
   const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
+
+  const [speciesInfo, setSpeciesInfo] = useState<PokemonSpecies>();
+  const [speciesLoading, setSpeciesLoading] = useState<boolean>(true);
+  const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
+
   const [pokemonEvos, setPokemonEvos] = useState<EvolutionChain>();
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
@@ -51,6 +57,8 @@ const Details = () => {
 
   const maxVal = 255;
 
+
+
   useEffect(() => {
     const pokeDetails = async () => {
       const pokeDetailsResp = await getPokemonDetails(pokemon!);
@@ -61,6 +69,17 @@ const Details = () => {
     };
     pokeDetails();
   }, [pokemon]);
+
+  useEffect(() => {
+    const getPokemonSpeciesInfo = async () => {
+      if (pokemonDetails) {
+        const pokemonSpecies = await getPokemonSpecies(pokemonDetails.species.name);
+        setSpeciesInfo(pokemonSpecies);
+        setSpeciesLoading(false);
+      }
+    }
+    getPokemonSpeciesInfo();
+  }, [pokemonDetails])
 
   useEffect(() => {
     setEvosLoading(true);
@@ -264,6 +283,19 @@ const Details = () => {
   }, [pokemonEvos, baseNum]);
 
   useEffect(() => {
+    if (speciesInfo) {
+      let varietiesBucket = [];
+      for (let i = 0; i < speciesInfo.varieties.length; i++) {
+        let varietyUrl = extractedIdFromUrl(speciesInfo.varieties[i].pokemon.url);
+        const speciesVarietyImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${varietyUrl}.png`;
+        varietiesBucket.push(speciesVarietyImg);
+      }
+      setVarietyImgs(varietiesBucket);
+    }
+
+  }, [speciesInfo])
+
+  useEffect(() => {
     if (pokemonDetails) {
       navigation.setOptions({
         title: pokemonDetails.name,
@@ -390,7 +422,7 @@ const Details = () => {
                   }]}>
                     {item.stat.name}:
                   </Text>
-                  <Text style={[styles.infoText]}>{item.base_stat}</Text>
+                  <Text style={[styles.infoText]}>{" "}{item.base_stat}</Text>
                 </View>
                 <View
                   style={{
@@ -482,7 +514,7 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                          { fontSize: 9, textAlign: 'center' },
+                                            { fontSize: 9, textAlign: 'center' },
                                           ]}
                                         >
                                           {
@@ -539,7 +571,7 @@ const Details = () => {
                                               ]}
                                             >
                                               {firstEvo.evolution_details[0].item
-                                                .name.replace("-", "\n") }
+                                                .name.replace("-", "\n")}
                                             </Text>
                                           ) : <Image
                                             alt={
@@ -792,8 +824,8 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                          { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
-                                            
+                                            { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
+
                                           ]}
                                         >
                                           knowing {"\n"}{" "}
@@ -812,7 +844,7 @@ const Details = () => {
                                         <Text
                                           style={[
                                             styles.infoText,
-                                          { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
+                                            { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
                                           ]}
                                         >
                                           knowing {"\n"}{" "}
@@ -1659,18 +1691,18 @@ const Details = () => {
                       )}
                   </View>
                 ) : (
-                    <View style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      flexDirection: 'column',
-                      alignItems: 'center'
-                    }}>
+                  <View style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                  }}>
                     <Image source={{ uri: pokemonDetails.sprites.front_default! }} style={{
                       width: width,
                       height: 80,
                       padding: 5,
                       aspectRatio: "1/1",
-                        
+
                     }} />
                     <Text style={[styles.infoText, { textAlign: 'center', fontSize: 11 }]}>
                       This Pokemon does not evolve.
@@ -1682,6 +1714,35 @@ const Details = () => {
               <ActivityIndicator size={20} />
             )}
           </View>
+
+          <View style={styles.card}>
+            <Text style={styles.infoText}>Varieties:</Text>
+            {speciesLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <ScrollView horizontal>
+                {speciesInfo?.varieties.length! > 1 ? (
+                  speciesInfo?.varieties.map((variety, index) => (
+
+                    <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                      {varietyImgs && varietyImgs?.length > 0 &&
+                        <Link href={`/(pokemon)/pokemonDetails/${variety.pokemon.name}`} asChild>
+                        <Pressable>
+                        <Image source={{ uri: varietyImgs[index] }} style={{ width: 80, height: 80 }} />
+                        </Pressable>
+                        </Link>
+                      }
+                    </View>
+                  ))
+                ) : (
+                  <Text style={[styles.infoText, { fontSize: 11, textAlign: 'center' }]}>This pokemon has no alternate varieties</Text>
+                )
+                }
+              </ScrollView>
+            )}
+
+          </View>
+
         </>
       )}
     </ScrollView>

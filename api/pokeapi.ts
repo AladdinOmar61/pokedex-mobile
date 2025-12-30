@@ -60,6 +60,11 @@ const pokeApi = () => {
       return evoData;
   };
 
+  const getPokemonSpecies = async (name: string): Promise<PokemonSpecies> => {
+    const pokemonSpecies = await api.pokemon.getPokemonSpeciesByName(name);
+    return pokemonSpecies;
+  }
+
   // Helper that fetches a URL, validates the response, and parses JSON.
   // If the response is not JSON (or returns a non-OK status), it throws
   // a detailed error including the response text to help debugging.
@@ -90,6 +95,7 @@ const pokeApi = () => {
     getEvolutions,
     extractedIdFromUrl,
     getPokemonDetails,
+    getPokemonSpecies,
   };
 };
 
