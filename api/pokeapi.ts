@@ -22,7 +22,7 @@ const pokeApi = () => {
         return api.pokemon.getPokemonById(extractedIdFromUrl(res.url)!);
       })
     )
-    return getPokemonFromGen;
+    return getPokemonFromGen.sort((a, b) => a.id - b.id);
   };
 
   const getPokemon = async (): Promise<Pokemon[]> => {

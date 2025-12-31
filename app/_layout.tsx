@@ -2,8 +2,11 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useRouter, Stack } from 'expo-router'
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const Layout = () => {
+
+    const queryClient = new QueryClient();
 
     const router = useRouter();
 
@@ -14,6 +17,7 @@ const Layout = () => {
     )
 
     return (
+        <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{
             headerStyle: {
                 backgroundColor: "#F4511E"
@@ -31,6 +35,7 @@ const Layout = () => {
                 title: "", headerLeft: pixelBackArrow
             }} />
         </Stack>
+        </QueryClientProvider>
     )
 }
 

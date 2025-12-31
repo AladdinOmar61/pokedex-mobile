@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, useWindowDimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import pokeApi from '@/api/pokeapi';
@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { PokeTypeColor } from '@/PokeTypeColor';
 import { PokeTypeIcon } from '@/PokeTypeIcon';
 import { FlashList } from "@shopify/flash-list";
-import { Pokemon } from 'pokenode-ts';
+import { useQuery } from '@tanstack/react-query';
 
 const AllPokemon = () => {
 
@@ -19,27 +19,13 @@ const AllPokemon = () => {
         getAllPokemonFromGen,
     } = pokeApi();
 
+    const {data: genPokemon, isLoading, error } = useQuery({
+        queryKey: ["gen", gen],
+        queryFn: () => getAllPokemonFromGen(Number(gen)-1)
+    })
+
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
-
-    const [genPokemon, setGenPokemon] = useState<Pokemon[]>([]);
-    const [pokemonLoaded, setPokemonLoaded] = useState<boolean>(true);
-
-    useEffect(() => {
-        const retrievePokemonFromGen = async () => {
-            try {
-                const genPokeResp = await getAllPokemonFromGen(Number(gen) - 1);
-                const sortedPokemon = genPokeResp.sort((a, b) => a.id - b.id);
-                setGenPokemon(sortedPokemon);
-                setPokemonLoaded(!pokemonLoaded);
-            } catch (err: any) {
-                console.error('axios error:', err.response?.status, err.response?.data);
-                console.error('requested url:', err.config?.url);
-                console.error("Could not retrieve pokemon", err);
-            }
-        }
-        retrievePokemonFromGen();
-    }, [])
 
     useEffect(() => {
         if (genPokemon) {
@@ -55,7 +41,7 @@ const AllPokemon = () => {
 
     return (
         <View style={{ height: height - (insets.bottom + insets.top), width: width }}>
-            {pokemonLoaded ? (
+            {isLoading ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     {/* TODO: Add spinning pokeball loading animation */ }
                     <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>
