@@ -3,10 +3,26 @@ import React from 'react'
 import { useRouter, Stack } from 'expo-router'
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useReactQueryDevTools } from '@dev-plugins/react-query';
+
+const asyncStoragePersister = createAsyncStoragePersister({
+    storage: AsyncStorage,
+});
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            gcTime: 1000 * 60 * 60 * 24, // 24 hours
+            staleTime: 1000 * 60 * 5,
+        },
+    },
+})
 
 const Layout = () => {
-
-    const queryClient = new QueryClient();
+    useReactQueryDevTools(queryClient);
 
     const router = useRouter();
 
@@ -17,7 +33,10 @@ const Layout = () => {
     )
 
     return (
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: asyncStoragePersister }}
+        >
         <Stack screenOptions={{
             headerStyle: {
                 backgroundColor: "#F4511E"
@@ -35,7 +54,7 @@ const Layout = () => {
                 title: "", headerLeft: pixelBackArrow
             }} />
         </Stack>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
     )
 }
 

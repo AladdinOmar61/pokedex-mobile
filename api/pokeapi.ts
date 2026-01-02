@@ -5,6 +5,13 @@ import {
 import pLimit from "p-limit";
 import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
 
+type SinglePokemon = {
+  id: number;
+  name: string;
+  defaultSprite: string;
+  primaryType: string;
+}
+
 const pokeApi = () => {
   const api = new MainClient();
 
@@ -15,13 +22,21 @@ const pokeApi = () => {
     return urlId ? Number(urlId[1]) : null;
   }
 
-  const getAllPokemonFromGen = async (gen: number): Promise<Pokemon[]> => {
+  const getAllPokemonFromGen = async (gen: number): Promise<SinglePokemon[]> => {
     const genData = await api.game.getGenerationById(gen);
     const getPokemonFromGen = await Promise.all(
       genData.pokemon_species.map(async (res) => {
-        return api.pokemon.getPokemonById(extractedIdFromUrl(res.url)!);
+        const pokemon = await api.pokemon.getPokemonById(
+          extractedIdFromUrl(res.url)!
+        );
+        return {
+          id: pokemon.id,
+          name: pokemon.forms[0].name,
+          primaryType: pokemon.types[0].type.name,
+          defaultSprite: pokemon.sprites.front_default!,
+        };
       })
-    )
+    );
     return getPokemonFromGen.sort((a, b) => a.id - b.id);
   };
 

@@ -54,13 +54,13 @@ const AllPokemon = () => {
                     renderItem={({ item, index }) => (
                         <Link href={`/(pokemon)/pokemonDetails/${item.name}`} key={index} asChild>
                             <TouchableOpacity>
-                                <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.types[0].type.name)}>
+                                <LinearGradient style={{ width: "100%", zIndex: -10 }} start={{ x: 0.1, y: 0 }} colors={PokeTypeColor(item.primaryType)}>
                                     <View style={styles.item}>
-                                        {PokeTypeIcon(item.types[0].type.name)}
-                                        {item.sprites &&
-                                            <Image source={{ uri: item.sprites.front_default! }} style={styles.preview} />
+                                        {PokeTypeIcon(item.primaryType)}
+                                        {item.defaultSprite &&
+                                            <Image source={{ uri: item.defaultSprite! }} style={styles.preview} />
                                         }
-                                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.forms[0].name}</Text>
+                                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.name}</Text>
                                         <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
                                     </View>
                                 </LinearGradient>
