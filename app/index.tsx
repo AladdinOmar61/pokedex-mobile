@@ -2,46 +2,23 @@ import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, ScrollVi
 import React from 'react'
 import { Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import pokeApi from '@/api/pokeapi';
 
 SplashScreen.preventAutoHideAsync();
 
 const Home = () => {
 
-  const queryClient = useQueryClient();
-
-  const {
-    getAllPokemonFromGen,
-  } = pokeApi();
-
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   // const tabHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
 
-  const [loaded, error] = useFonts({
-    "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
-  });
-
   // useEffect(() => {
   //   queryClient.prefetchQuery({
-  //     queryKey: ['gen', 1],
+  //     queryKey: ['gen', 2],
   //     queryFn: () => getAllPokemonFromGen(2),
   //   })
   //  }, [])
 
-  useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error]);
-
-  if (!loaded && !error) {
-    return null;
-  }
 
   return (
     <View>

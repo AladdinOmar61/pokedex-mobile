@@ -24,8 +24,6 @@ const AllPokemon = () => {
         queryFn: () => getAllPokemonFromGen(Number(gen) - 1)
     })
 
-    console.log(genPokemon);
-
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
@@ -39,7 +37,20 @@ const AllPokemon = () => {
         }
     }, [genPokemon, navigation])
 
-
+    const readableColor = (pokemonType: string) => {
+        if (pokemonType === "dark" ||
+            pokemonType === "ghost" ||
+            pokemonType === "dragon" ||
+            pokemonType === "fighting" ||
+            pokemonType === "steel" ||
+            pokemonType === "poison" ||
+            pokemonType === "water" ||
+            pokemonType === "fire") {
+            return "white"
+        } else {
+            return "black"
+        }
+    }
 
     return (
         <View style={{ height: height - (insets.bottom + insets.top), width: width }}>
@@ -67,7 +78,7 @@ const AllPokemon = () => {
                                         {item.defaultSprite &&
                                             <Image source={{ uri: item.defaultSprite! }} style={styles.preview} />
                                         }
-                                        <Text style={[styles.itemText]}>#{item.id} {item.name}</Text>
+                                        <Text style={[styles.itemText, {color: readableColor(item.primaryType)}]}>#{item.id} {item.name}</Text>
                                         <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
                                     </View>
                                 </LinearGradient>
@@ -95,8 +106,6 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 18,
         color: '#000000',
-        textShadowColor: "#fff",
-        textShadowRadius: 4,
         fontFamily: "Silkscreen",
         textTransform: 'capitalize',
         flex: 1,

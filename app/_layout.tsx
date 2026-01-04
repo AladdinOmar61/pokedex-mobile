@@ -1,12 +1,13 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { useRouter, Stack } from 'expo-router'
+import React, { useEffect } from 'react'
+import { useRouter, Stack, SplashScreen } from 'expo-router'
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { useFonts } from 'expo-font'
 
 const asyncStoragePersister = createAsyncStoragePersister({
     storage: AsyncStorage,
@@ -23,6 +24,20 @@ const queryClient = new QueryClient({
 
 const Layout = () => {
     useReactQueryDevTools(queryClient);
+
+    const [loaded, error] = useFonts({
+        "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
+    });
+    
+    useEffect(() => {
+        if (loaded || error) {
+          SplashScreen.hideAsync();
+        }
+      }, [loaded, error]);
+    
+      if (!loaded && !error) {
+        return null;
+      }
 
     const router = useRouter();
 
@@ -43,7 +58,7 @@ const Layout = () => {
             },
             headerTintColor: "#FFF"
         }}>
-            <Stack.Screen name='index' options={{ title: "Select Generation", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 } }} />
+            <Stack.Screen name='index' options={{ title: "select generation", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 } }} />
             <Stack.Screen name='(pokemon)/pokemonDetails/[pokemon]' options={{
                 title: "", headerLeft: pixelBackArrow
             }} />

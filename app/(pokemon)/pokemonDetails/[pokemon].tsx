@@ -11,13 +11,14 @@ import {
 import { PokemonSpecies, type EvolutionChain } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import { Pokemon, Generation } from "@/interface";
+import { Generation } from "@/interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import pokeApi from "@/api/pokeapi";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
 import Heart from "@/assets/Icons/Pixel-Heart.svg";
+import { useQuery } from "@tanstack/react-query";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -34,10 +35,6 @@ const Details = () => {
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
 
-  const [pokemonDetails, setPokemonDetails] = useState<Pokemon>();
-
-  const [speciesInfo, setSpeciesInfo] = useState<PokemonSpecies>();
-  const [speciesLoading, setSpeciesLoading] = useState<boolean>(true);
   const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
 
   const [pokemonEvos, setPokemonEvos] = useState<EvolutionChain>();
@@ -57,33 +54,17 @@ const Details = () => {
 
   const maxVal = 255;
 
-  useEffect(() => {
-    const pokeDetails = async () => {
-      try {
-        const pokeDetailsResp = await getPokemonDetails(pokemon!);
-        setPokemonDetails(pokeDetailsResp);
-      } catch (err: any) {
-        console.error("axios error:", err.response?.status, err.response?.data);
-        console.error("requested url:", err.config?.url);
-        console.error("Could not retrieve pokemon", err);
-      }
-        
-      const isFavorite = await AsyncStorage.getItem(`favorite-${pokemon}`);
-      setIsFavorited(isFavorite === "true");
-    };
-    pokeDetails();
-  }, [pokemon]);
+  const { data: pokemonDetails, isLoading: detailsLoading, isError: detailsError } = useQuery({
+    queryKey: ["pokeDetails", pokemon],
+    queryFn: () => getPokemonDetails(pokemon!)
+  });
 
-  useEffect(() => {
-    const getPokemonSpeciesInfo = async () => {
-      if (pokemonDetails) {
-        const pokemonSpecies = await getPokemonSpecies(pokemonDetails.species.name);
-        setSpeciesInfo(pokemonSpecies);
-        setSpeciesLoading(false);
-      }
-    }
-    getPokemonSpeciesInfo();
-  }, [pokemonDetails])
+  const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError } = useQuery({
+    queryKey: ["pokeSpecDetails", pokemonDetails?.species.name],
+    queryFn: () => getPokemonSpecies(pokemonDetails!.species.name),
+    enabled: !!pokemonDetails?.species?.name
+  });
+
 
   useEffect(() => {
     setEvosLoading(true);
@@ -564,11 +545,11 @@ const Details = () => {
                                               0
                                             ].item.name === "syrupy-apple" || firstEvo.evolution_details[
                                               0
-                                          ].item.name === "metal-alloy" || firstEvo.evolution_details[
-                                            0
-                                          ].item.name === "auspicious-armor" || firstEvo.evolution_details[
-                                            0
-                                          ].item.name === "malicious-armor" ? (
+                                            ].item.name === "metal-alloy" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "auspicious-armor" || firstEvo.evolution_details[
+                                              0
+                                            ].item.name === "malicious-armor" ? (
                                             <Text
                                               style={[
                                                 styles.infoText,
@@ -1697,9 +1678,9 @@ const Details = () => {
                     <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                       {varietyImgs && varietyImgs?.length > 0 &&
                         <Link href={`/(pokemon)/pokemonDetails/${variety.pokemon.name}`} asChild>
-                        <Pressable>
-                        <Image source={{ uri: varietyImgs[index] }} style={{ width: 80, height: 80 }} />
-                        </Pressable>
+                          <Pressable>
+                            <Image source={{ uri: varietyImgs[index] }} style={{ width: 80, height: 80 }} />
+                          </Pressable>
                         </Link>
                       }
                     </View>

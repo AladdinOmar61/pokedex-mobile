@@ -26,12 +26,16 @@ const pokeApi = () => {
     const genData = await api.game.getGenerationById(gen);
     const getPokemonFromGen = await Promise.all(
       genData.pokemon_species.map(async (res) => {
+        const pokemonSpec = await api.pokemon.getPokemonSpeciesById(
+          extractedIdFromUrl(res.url)!
+        );
         const pokemon = await api.pokemon.getPokemonById(
           extractedIdFromUrl(res.url)!
         );
+        let pokemonName = pokemonSpec.varieties.filter((pkm) => pkm.is_default);
         return {
           id: pokemon.id,
-          name: pokemon.forms[0].name,
+          name: pokemonName[0].pokemon.name,
           primaryType: pokemon.types[0].type.name,
           defaultSprite: pokemon.sprites.front_default!,
         };
