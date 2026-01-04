@@ -19,9 +19,9 @@ const AllPokemon = () => {
         getAllPokemonFromGen,
     } = pokeApi();
 
-    const {data: genPokemon, isLoading, error } = useQuery({
+    const { data: genPokemon, isLoading, error } = useQuery({
         queryKey: ["gen", gen],
-        queryFn: () => getAllPokemonFromGen(Number(gen)-1)
+        queryFn: () => getAllPokemonFromGen(Number(gen) - 1)
     })
 
     const navigation = useNavigation();
@@ -41,9 +41,14 @@ const AllPokemon = () => {
 
     return (
         <View style={{ height: height - (insets.bottom + insets.top), width: width }}>
+            {error &&
+                <View>
+                    <Text style={{ fontFamily: "Silkscreen" }}>Oops! Something went wrong. Leave the page or app and try again</Text>
+                </View>
+            }
             {isLoading ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    {/* TODO: Add spinning pokeball loading animation */ }
+                    {/* TODO: Maybe add spinning pokeball loading animation */}
                     <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>
                 </View>
             ) : (
@@ -88,6 +93,8 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 18,
         color: '#000000',
+        textShadowColor: "#fff",
+        textShadowRadius: 4,
         fontFamily: "Silkscreen",
         textTransform: 'capitalize',
         flex: 1,

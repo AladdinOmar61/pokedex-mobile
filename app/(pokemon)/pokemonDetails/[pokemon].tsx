@@ -560,12 +560,16 @@ const Details = () => {
                                               0
                                             ].item.name === "syrupy-apple" || firstEvo.evolution_details[
                                               0
-                                            ].item.name === "metal-alloy" ? (
+                                          ].item.name === "metal-alloy" || firstEvo.evolution_details[
+                                            0
+                                          ].item.name === "auspicious-armor" || firstEvo.evolution_details[
+                                            0
+                                          ].item.name === "malicious-armor" ? (
                                             <Text
                                               style={[
                                                 styles.infoText,
                                                 {
-                                                  fontSize: 9,
+                                                  fontSize: 8,
                                                   textAlign: "center",
                                                 },
                                               ]}
@@ -691,7 +695,6 @@ const Details = () => {
                                             alignItems: "center",
                                           }}
                                         >
-                                          {/* <ArrowRight width={24} height={24} /> */}
                                           <Text
                                             style={[
                                               styles.infoText,
@@ -711,7 +714,6 @@ const Details = () => {
                                             alignItems: "center",
                                           }}
                                         >
-                                          {/* <ArrowRight width={24} height={24} /> */}
                                           <Text
                                             style={[
                                               styles.infoText,
@@ -731,7 +733,6 @@ const Details = () => {
                                             alignItems: "center",
                                           }}
                                         >
-                                          {/* <ArrowRight width={24} height={24} /> */}
                                           <Text
                                             style={[
                                               styles.infoText,
@@ -924,7 +925,7 @@ const Details = () => {
                                   )}
                                 </View>
 
-                                {/* second evos start here */}
+                                {/* second evos starts here */}
 
                                 {/* evo split for complex lines like silcoon/cascoon */}
 
@@ -946,7 +947,6 @@ const Details = () => {
                                         {/* Level up trigger */}
 
                                         <View>
-                                          {/* {item.evolution_details[0].min_level !== null && ( */}
                                           <View
                                             style={{
                                               display: "flex",
@@ -1006,7 +1006,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 {secEvo.evolution_details[
                                                   seIndex
                                                 ].item.name === "peat-block" ? (
@@ -1033,7 +1032,6 @@ const Details = () => {
                                                   />
                                                 )}
 
-                                                {/* <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text> */}
                                               </View>
                                             )}
 
@@ -1047,7 +1045,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Text
                                                   style={[
                                                     styles.infoText,
@@ -1055,26 +1052,6 @@ const Details = () => {
                                                   ]}
                                                 >
                                                   Use Rage {"\n"} Fist x20
-                                                </Text>
-                                              </View>
-                                            )}
-
-                                          {secEvo.species.name ===
-                                            "kingambit" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                {/* <ArrowRight width={24} height={24} /> */}
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9, textAlign: 'center' },
-                                                  ]}
-                                                >
-                                                  Poop
                                                 </Text>
                                               </View>
                                             )}
@@ -1090,7 +1067,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Heart width={14} height={14} />
                                                 <Text
                                                   style={[
@@ -1132,7 +1108,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Text
                                                   style={[
                                                     styles.infoText,
@@ -1199,7 +1174,7 @@ const Details = () => {
                                                   {
                                                     secEvo.evolution_details[
                                                       seIndex
-                                                    ].location.name
+                                                    ].location.name.replace("-", "\n")
                                                   }
                                                 </Text>
                                                 {secEvo.evolution_details[
@@ -1331,19 +1306,16 @@ const Details = () => {
                                           display: "flex",
                                           flexDirection: "row",
                                           alignItems: "center",
-                                          // width: (width / 5) - 10
                                         }}
                                       >
                                         {/* Level up trigger */}
 
                                         <View>
-                                          {/* {item.evolution_details[0].min_level !== null && ( */}
                                           <View
                                             style={{
                                               display: "flex",
                                               flexDirection: "column",
                                               alignItems: "center",
-                                              // width: (width / 5) - 10
                                             }}
                                           >
                                             <ArrowRight
@@ -1397,7 +1369,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 {secEvo.evolution_details[
                                                   feIndex
                                                 ].item.name === "peat-block" ? (
@@ -1423,7 +1394,6 @@ const Details = () => {
                                                     }}
                                                   />
                                                 )}
-                                                {/* <Text numberOfLines={1} style={[styles.infoText, { fontSize: 9, position: 'absolute', bottom: "-50%", width: 89, textAlign: 'center' }]}>{item.evolution_details[0].item.name}</Text> */}
                                               </View>
                                             )}
 
@@ -1437,7 +1407,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Text
                                                   style={[
                                                     styles.infoText,
@@ -1457,14 +1426,13 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Text
                                                   style={[
                                                     styles.infoText,
-                                                    { fontSize: 9, textAlign: 'center' },
+                                                    { fontSize: 8, textAlign: 'center' },
                                                   ]}
                                                 >
-                                                  Defeat {'\n'} bisharp {'\n'} x3 + {'\n'} Lvl up w/ {'\n'} Leaders crest
+                                                  Defeat {'\n'} bisharp {'\n'} x3 & {'\n'} Lvl up + {'\n'} Leaders crest
                                                 </Text>
                                               </View>
                                             )}
@@ -1480,7 +1448,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Heart width={14} height={14} />
                                                 <Text
                                                   style={[
@@ -1522,7 +1489,6 @@ const Details = () => {
                                                   alignItems: "center",
                                                 }}
                                               >
-                                                {/* <ArrowRight width={24} height={24} /> */}
                                                 <Text
                                                   style={[
                                                     styles.infoText,
@@ -1583,7 +1549,7 @@ const Details = () => {
                                                   {
                                                     secEvo.evolution_details[
                                                       feIndex
-                                                    ].location.name
+                                                    ].location.name.replace("-", '\n')
                                                   }
                                                 </Text>
                                                 {secEvo.evolution_details[
@@ -1753,7 +1719,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     padding: 10,
-    margin: 5,
+    marginVertical: 5,
   },
   pokemonName: {
     fontSize: 16,
