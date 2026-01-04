@@ -57,13 +57,17 @@ const Details = () => {
 
   const maxVal = 255;
 
-
-
   useEffect(() => {
     const pokeDetails = async () => {
-      const pokeDetailsResp = await getPokemonDetails(pokemon!);
-      setPokemonDetails(pokeDetailsResp);
-
+      try {
+        const pokeDetailsResp = await getPokemonDetails(pokemon!);
+        setPokemonDetails(pokeDetailsResp);
+      } catch (err: any) {
+        console.error("axios error:", err.response?.status, err.response?.data);
+        console.error("requested url:", err.config?.url);
+        console.error("Could not retrieve pokemon", err);
+      }
+        
       const isFavorite = await AsyncStorage.getItem(`favorite-${pokemon}`);
       setIsFavorited(isFavorite === "true");
     };

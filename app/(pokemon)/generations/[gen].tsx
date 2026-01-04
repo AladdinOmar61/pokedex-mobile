@@ -24,6 +24,8 @@ const AllPokemon = () => {
         queryFn: () => getAllPokemonFromGen(Number(gen) - 1)
     })
 
+    console.log(genPokemon);
+
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
 
@@ -65,7 +67,7 @@ const AllPokemon = () => {
                                         {item.defaultSprite &&
                                             <Image source={{ uri: item.defaultSprite! }} style={styles.preview} />
                                         }
-                                        <Text style={[styles.itemText]}>#{item.id} {item.name ? item.name : item.name}</Text>
+                                        <Text style={[styles.itemText]}>#{item.id} {item.name}</Text>
                                         <ForwardChev width={8} height={14} style={{ marginRight: 15 }} />
                                     </View>
                                 </LinearGradient>
