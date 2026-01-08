@@ -59,9 +59,11 @@ const Details = () => {
     queryFn: () => getPokemonDetails(pokemon!)
   });
 
-  const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError } = useQuery({
+  const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError, isRefetching: specRefresh } = useQuery({
     queryKey: ["pokeSpecDetails", pokemonDetails?.species.name],
     queryFn: () => getPokemonSpecies(pokemonDetails!.species.name),
+    enabled: !!pokemonDetails,
+    refetchInterval: 1000,
   });
 
   // const { data: pokemonEvos, isLoading: evosLoading, isError: evosError } = useQuery({
@@ -72,8 +74,8 @@ const Details = () => {
   //   }
   // })
 
-  const specId = extractedIdFromUrl(speciesInfo?.evolution_chain.url!)
-  console.log("evo id: ", specId);
+  // const specId = extractedIdFromUrl(speciesInfo?.evolution_chain.url!)
+  // console.log("evo id: ", specId);
 
 
   useEffect(() => {
@@ -89,6 +91,8 @@ const Details = () => {
             const evos = await getEvolutions(speciesId);
             console.log("species id: ", pokemonDetails?.id)
             console.log("evolution id: ", evos.id)
+            console.log(speciesInfo?.evolution_chain.url);
+            console.log("evo id extracted: ", extractedIdFromUrl(speciesInfo?.evolution_chain.url!))
             // injecting dipplin/hydrapple's evo conditions
             if (evos.id === 442) {
               evos.chain.evolves_to[2].evolution_details.push({
@@ -1679,7 +1683,7 @@ const Details = () => {
 
           <View style={styles.card}>
             <Text style={styles.infoText}>Varieties:</Text>
-            {speciesLoading ? (
+            {speciesLoading && !specRefresh ? (
               <ActivityIndicator />
             ) : (
               <ScrollView horizontal>

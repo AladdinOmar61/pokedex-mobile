@@ -18,6 +18,7 @@ const pokeApi = () => {
   const limit = pLimit(8);
 
   const extractedIdFromUrl = (url: string) => {
+    console.log("url we are matching: ", url);
     const urlId = url.match(/\/(\d+)\/?$/);
     return urlId ? Number(urlId[1]) : null;
   }
