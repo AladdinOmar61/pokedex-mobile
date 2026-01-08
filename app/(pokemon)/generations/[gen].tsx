@@ -38,17 +38,13 @@ const AllPokemon = () => {
     }, [genPokemon, navigation])
 
     const readableColor = (pokemonType: string) => {
-        if (pokemonType === "dark" ||
-            pokemonType === "ghost" ||
-            pokemonType === "dragon" ||
-            pokemonType === "fighting" ||
-            pokemonType === "steel" ||
-            pokemonType === "poison" ||
-            pokemonType === "water" ||
-            pokemonType === "fire") {
-            return "white"
-        } else {
+        if (pokemonType === "normal" ||
+            pokemonType === "bug" ||
+            pokemonType === "grass" ||
+            pokemonType === "flying" ) {
             return "black"
+        } else {
+            return "white"
         }
     }
 

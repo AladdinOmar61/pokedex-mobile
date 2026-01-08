@@ -62,8 +62,18 @@ const Details = () => {
   const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError } = useQuery({
     queryKey: ["pokeSpecDetails", pokemonDetails?.species.name],
     queryFn: () => getPokemonSpecies(pokemonDetails!.species.name),
-    enabled: !!pokemonDetails?.species?.name
   });
+
+  // const { data: pokemonEvos, isLoading: evosLoading, isError: evosError } = useQuery({
+  //   queryKey: ["pokeEvos", extractedIdFromUrl(speciesInfo?.evolution_chain.url!)],
+  //   queryFn: () => {
+  //     console.log("evo id: ", extractedIdFromUrl(speciesInfo?.evolution_chain.url!));
+  //     getEvolutions(extractedIdFromUrl(speciesInfo?.evolution_chain.url!)!)
+  //   }
+  // })
+
+  const specId = extractedIdFromUrl(speciesInfo?.evolution_chain.url!)
+  console.log("evo id: ", specId);
 
 
   useEffect(() => {
@@ -77,7 +87,8 @@ const Details = () => {
           }
           if (speciesId) {
             const evos = await getEvolutions(speciesId);
-            console.log(evos.id)
+            console.log("species id: ", pokemonDetails?.id)
+            console.log("evolution id: ", evos.id)
             // injecting dipplin/hydrapple's evo conditions
             if (evos.id === 442) {
               evos.chain.evolves_to[2].evolution_details.push({
