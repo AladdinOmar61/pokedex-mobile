@@ -8,7 +8,6 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { PokemonSpecies, type EvolutionChain } from "pokenode-ts";
 import React, { useEffect, useState } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { Generation } from "@/interface";
@@ -37,7 +36,6 @@ const Details = () => {
 
   const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
 
-  const [pokemonEvos, setPokemonEvos] = useState<EvolutionChain>();
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
   const [evo2Img, setEvo2Img] = useState<string[]>([]);
@@ -46,56 +44,44 @@ const Details = () => {
   const [evo1Num, setEvo1Num] = useState<string[]>([]);
   const [evo2Num, setEvo2Num] = useState<string[]>([]);
 
-  const [evosLoading, setEvosLoading] = useState<boolean>(true);
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [pokemonType, setPokemonType] = useState<Generation[]>([]);
 
-  const [speciesId, setSpeciesId] = useState<number>(0);
 
   const maxVal = 255;
 
   const { data: pokemonDetails, isLoading: detailsLoading, isError: detailsError } = useQuery({
     queryKey: ["pokeDetails", pokemon],
-    queryFn: () => getPokemonDetails(pokemon!)
+    queryFn: () => getPokemonDetails(pokemon!),
+    enabled: !!pokemon,
   });
 
-  const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError, isRefetching: specRefresh } = useQuery({
-    queryKey: ["pokeSpecDetails", pokemonDetails?.species.name],
-    queryFn: () => getPokemonSpecies(pokemonDetails!.species.name),
-    enabled: !!pokemonDetails,
-    refetchInterval: 1000,
+  const pokemonDetailsName = pokemonDetails?.species.name;
+
+  const { data: speciesInfo, isLoading: speciesLoading, isError: speciesError } = useQuery({
+    queryKey: ["pokeSpecDetails", pokemonDetailsName],
+    queryFn: () => getPokemonSpecies(pokemonDetailsName!),
+    enabled: !!pokemonDetailsName,
   });
 
-  // const { data: pokemonEvos, isLoading: evosLoading, isError: evosError } = useQuery({
-  //   queryKey: ["pokeEvos", extractedIdFromUrl(speciesInfo?.evolution_chain.url!)],
-  //   queryFn: () => {
-  //     console.log("evo id: ", extractedIdFromUrl(speciesInfo?.evolution_chain.url!));
-  //     getEvolutions(extractedIdFromUrl(speciesInfo?.evolution_chain.url!)!)
-  //   }
-  // })
+  const evolutionChainUrl = speciesInfo?.evolution_chain?.url;
+  const evolutionChainId = evolutionChainUrl ? extractedIdFromUrl(evolutionChainUrl) : undefined;
 
-  // const specId = extractedIdFromUrl(speciesInfo?.evolution_chain.url!)
-  // console.log("evo id: ", specId);
+  const { data: pokemonEvos, isLoading: evosLoading, isError: evosError } = useQuery({
+    queryKey: ["pokeEvos", evolutionChainId],
+    queryFn: () => getEvolutions(evolutionChainId!),
+    enabled: !!evolutionChainId,
+  })
 
 
   useEffect(() => {
-    setEvosLoading(true);
     const pokeEvos = async () => {
       try {
         if (pokemonDetails) {
-          const pokemonSpecId = extractedIdFromUrl(pokemonDetails.species.url);
-          if (pokemonSpecId) {
-            setSpeciesId(pokemonSpecId);
-          }
-          if (speciesId) {
-            const evos = await getEvolutions(speciesId);
-            console.log("species id: ", pokemonDetails?.id)
-            console.log("evolution id: ", evos.id)
-            console.log(speciesInfo?.evolution_chain.url);
-            console.log("evo id extracted: ", extractedIdFromUrl(speciesInfo?.evolution_chain.url!))
+          if (pokemonEvos) {
             // injecting dipplin/hydrapple's evo conditions
-            if (evos.id === 442) {
-              evos.chain.evolves_to[2].evolution_details.push({
+            if (pokemonEvos.id === 442) {
+              pokemonEvos.chain.evolves_to[2].evolution_details.push({
                 gender: null,
                 held_item: null,
                 item: {
@@ -122,7 +108,7 @@ const Details = () => {
                 turn_upside_down: false
               })
 
-              evos.chain.evolves_to[2].evolves_to[0].evolution_details.push({
+              pokemonEvos.chain.evolves_to[2].evolves_to[0].evolution_details.push({
                 gender: null,
                 held_item: null,
                 item: null,
@@ -150,8 +136,8 @@ const Details = () => {
               });
             }
             // injecting duraludon/archaludon's evo conditions
-            if (evos.id === 465) {
-              evos.chain.evolves_to[0].evolution_details.push({
+            if (pokemonEvos.id === 465) {
+              pokemonEvos.chain.evolves_to[0].evolution_details.push({
                 gender: null,
                 held_item: null,
                 item: {
@@ -178,8 +164,6 @@ const Details = () => {
                 turn_upside_down: false
               })
             }
-            setPokemonEvos(evos);
-            setEvosLoading(false);
           }
         }
       } catch (err: any) {
@@ -189,14 +173,13 @@ const Details = () => {
       }
     };
     pokeEvos();
-  }, [pokemonDetails, speciesId]);
+  }, [pokemonEvos]);
 
   useEffect(() => {
     if (pokemonEvos) {
-      const speciesUrl = pokemonEvos?.chain.species.url.match(/\/(\d+)\/?$/);
-      const speciesNum = speciesUrl ? speciesUrl[1] : null;
+      const speciesNum = extractedIdFromUrl(pokemonEvos?.chain.species.url);
       if (speciesNum) {
-        setBaseNum(speciesNum);
+        setBaseNum(String(speciesNum));
       }
       const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${baseNum}.png`;
       setBaseEvo(speciesImg);
@@ -211,11 +194,9 @@ const Details = () => {
 
       if (pokemonEvos.chain.evolves_to.length > 0) {
         for (let i = 0; i < pokemonEvos.chain.evolves_to.length; i++) {
-          const speciesUrl =
-            pokemonEvos?.chain.evolves_to[i].species.url.match(/\/(\d+)\/$/);
-          const speciesNum = speciesUrl ? speciesUrl[1] : null;
+          const speciesNum = extractedIdFromUrl(pokemonEvos?.chain.evolves_to[i].species.url);
           if (speciesNum) {
-            evos1NumBucket.push(speciesNum);
+            evos1NumBucket.push(String(speciesNum));
           }
           const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
           evosBucket.push(speciesImg);
@@ -228,25 +209,19 @@ const Details = () => {
             j < pokemonEvos.chain.evolves_to[0].evolves_to.length;
             j++
           ) {
-            const speciesUrl =
-              pokemonEvos?.chain.evolves_to[0].evolves_to[j].species.url.match(
-                /\/(\d+)\/$/
-              );
-            const speciesNum = speciesUrl ? speciesUrl[1] : null;
+            const speciesNum = extractedIdFromUrl(pokemonEvos?.chain.evolves_to[0].evolves_to[j].species.url);
             if (speciesNum) {
-              evos2NumBucket.push(speciesNum);
+              evos2NumBucket.push(String(speciesNum));
             }
             const speciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
 
             // this is only really for wurmple evo line for now
             if (pokemonEvos.chain.evolves_to[1]) {
-              const speciesUrl =
-                pokemonEvos?.chain.evolves_to[1].evolves_to[
-                  j
-                ].species.url.match(/\/(\d+)\/$/);
-              const speciesNum = speciesUrl ? speciesUrl[1] : null;
+              const speciesNum = extractedIdFromUrl(pokemonEvos?.chain.evolves_to[1].evolves_to[
+                j
+              ].species.url);
               if (speciesNum) {
-                evos2NumBucket.unshift(speciesNum);
+                evos2NumBucket.unshift(String(speciesNum));
               }
               const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
               secondEvosBucket.unshift(splittingSpeciesImg);
@@ -265,13 +240,11 @@ const Details = () => {
         }
       }
       if (pokemonEvos.chain.evolves_to.length > 2 && pokemonEvos.chain.evolves_to[2].evolves_to.length > 0) {
-        const speciesUrl =
-          pokemonEvos?.chain.evolves_to[2].evolves_to[
-            0
-          ].species.url.match(/\/(\d+)\/$/);
-        const speciesNum = speciesUrl ? speciesUrl[1] : null;
+        const speciesNum = extractedIdFromUrl(pokemonEvos?.chain.evolves_to[2].evolves_to[
+          0
+        ].species.url);
         if (speciesNum) {
-          evos2NumBucket.push(speciesNum);
+          evos2NumBucket.push(String(speciesNum));
         }
         const splittingSpeciesImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${speciesNum}.png`;
         secondEvosBucket.push(splittingSpeciesImg);
@@ -1683,7 +1656,7 @@ const Details = () => {
 
           <View style={styles.card}>
             <Text style={styles.infoText}>Varieties:</Text>
-            {speciesLoading && !specRefresh ? (
+            {speciesLoading ? (
               <ActivityIndicator />
             ) : (
               <ScrollView horizontal>

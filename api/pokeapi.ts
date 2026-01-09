@@ -18,7 +18,6 @@ const pokeApi = () => {
   const limit = pLimit(8);
 
   const extractedIdFromUrl = (url: string) => {
-    console.log("url we are matching: ", url);
     const urlId = url.match(/\/(\d+)\/?$/);
     return urlId ? Number(urlId[1]) : null;
   }
@@ -74,9 +73,7 @@ const pokeApi = () => {
   };
 
   const getEvolutions = async (id: number): Promise<EvolutionChain> => {
-      const pokemonUrl = await api.pokemon.getPokemonSpeciesById(id);
-      let evolutionId = extractedIdFromUrl(pokemonUrl.evolution_chain.url);
-    const evoData = await api.evolution.getEvolutionChainById(evolutionId!);
+    const evoData = await api.evolution.getEvolutionChainById(id!);
       return evoData;
   };
 
