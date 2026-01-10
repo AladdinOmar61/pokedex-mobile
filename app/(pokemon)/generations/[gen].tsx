@@ -19,9 +19,12 @@ const AllPokemon = () => {
         getAllPokemonFromGen,
     } = pokeApi();
 
-    const { data: genPokemon, isLoading, error } = useQuery({
+    const { data: genPokemon, status: detailsStatus, isLoading, error } = useQuery({
         queryKey: ["gen", gen],
-        queryFn: () => getAllPokemonFromGen(Number(gen) - 1)
+        queryFn: () => getAllPokemonFromGen(Number(gen) - 1),
+        meta: {
+            persist: true
+        }
     })
 
     const navigation = useNavigation();

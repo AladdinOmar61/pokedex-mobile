@@ -70,9 +70,8 @@ const Details = () => {
   const { data: pokemonEvos, isLoading: evosLoading, isError: evosError } = useQuery({
     queryKey: ["pokeEvos", evolutionChainId],
     queryFn: () => getEvolutions(evolutionChainId!),
-    enabled: !!evolutionChainId,
+    enabled: !!evolutionChainId
   })
-
 
   useEffect(() => {
     const pokeEvos = async () => {
@@ -423,362 +422,414 @@ const Details = () => {
 
             {!evosLoading ? (
               <View>
-                {pokemonEvos &&
-                  pokemonEvos?.chain.evolves_to &&
+                {pokemonEvos?.chain.evolves_to &&
                   pokemonEvos?.chain.evolves_to.length > 0 &&
-                  pokemonEvos?.chain.evolves_to[0].evolution_details.length > 0 ? (
-                  <View style={styles.evolutionSection}>
-                    {baseEvo && (
-                      <Link
-                        href={`/(pokemon)/pokemonDetails/${baseNum}`}
-                        asChild
-                      >
-                        <Pressable>
-                          <Image
-                            source={{ uri: baseEvo }}
-                            style={{
-                              width: (width / 5) - 15,
-                              height: 80,
-                              padding: 5,
-                              aspectRatio: "1/1",
-                            }}
-                          />
-                        </Pressable>
-                      </Link>
-                    )}
+                  pokemonEvos?.chain.evolves_to[0].evolution_details.length > 0 && (
+                    <View style={styles.evolutionSection}>
+                      {baseEvo && (
+                        <Link
+                          href={`/(pokemon)/pokemonDetails/${baseNum}`}
+                          asChild
+                        >
+                          <Pressable>
+                            <Image
+                              source={{ uri: baseEvo }}
+                              style={{
+                                width: (width / 5) - 15,
+                                height: 80,
+                                padding: 5,
+                                aspectRatio: "1/1",
+                              }}
+                            />
+                          </Pressable>
+                        </Link>
+                      )}
 
-                    {/* first evo starts here  */}
-                    {pokemonEvos?.chain.evolves_to &&
-                      pokemonEvos?.chain.evolves_to.length > 0 && (
-                        <View>
-                          {pokemonEvos?.chain.evolves_to.map(
-                            (firstEvo, feIndex) => (
-                              <View
-                                key={feIndex}
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  justifyContent: "flex-start"
-                                }}
-                              >
+                      {/* first evo starts here  */}
+                      {pokemonEvos?.chain.evolves_to &&
+                        pokemonEvos?.chain.evolves_to.length > 0 && (
+                          <View>
+                            {pokemonEvos?.chain.evolves_to.map(
+                              (firstEvo, feIndex) => (
                                 <View
                                   key={feIndex}
                                   style={{
                                     display: "flex",
                                     flexDirection: "row",
                                     alignItems: "center",
+                                    justifyContent: "flex-start"
                                   }}
                                 >
                                   <View
+                                    key={feIndex}
                                     style={{
                                       display: "flex",
-                                      flexDirection: "column",
+                                      flexDirection: "row",
                                       alignItems: "center",
-                                      width: (width / 5) - 15
                                     }}
                                   >
-                                    <ArrowRight width={24} height={24} />
+                                    <View
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        width: (width / 5) - 15
+                                      }}
+                                    >
+                                      <ArrowRight width={24} height={24} />
 
-                                    {/* Level up trigger */}
+                                      {/* Level up trigger */}
 
-                                    {firstEvo.evolution_details[0].trigger
-                                      .name === "level-up" && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9, textAlign: 'center' },
-                                          ]}
-                                        >
-                                          {
-                                            firstEvo.evolution_details[0].trigger
-                                              .name
-                                          }
-                                        </Text>
-                                      )}
+                                      {firstEvo.evolution_details[0].trigger
+                                        .name === "level-up" && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9, textAlign: 'center' },
+                                            ]}
+                                          >
+                                            {
+                                              firstEvo.evolution_details[0].trigger
+                                                .name
+                                            }
+                                          </Text>
+                                        )}
 
-                                    {firstEvo.evolution_details[0].min_level !==
-                                      null && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9 },
-                                          ]}
-                                        >
-                                          Lvl{" "}
-                                          {
-                                            firstEvo.evolution_details[0]
-                                              .min_level
-                                          }
-                                        </Text>
-                                      )}
+                                      {firstEvo.evolution_details[0].min_level !==
+                                        null && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9 },
+                                            ]}
+                                          >
+                                            Lvl{" "}
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .min_level
+                                            }
+                                          </Text>
+                                        )}
 
-                                    {/* Item trigger */}
+                                      {/* Item trigger */}
 
-                                    {firstEvo.evolution_details[0].item !==
-                                      null && (
-                                        <View
-                                          style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          {firstEvo.evolution_details[0].item
-                                            .name === "black-augurite" || firstEvo.evolution_details[0].item.name === "tart-apple" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "tart-apple" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "sweet-apple" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "syrupy-apple" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "metal-alloy" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "auspicious-armor" || firstEvo.evolution_details[
-                                              0
-                                            ].item.name === "malicious-armor" ? (
+                                      {firstEvo.evolution_details[0].item !==
+                                        null && (
+                                          <View
+                                            style={{
+                                              display: "flex",
+                                              flexDirection: "column",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            {firstEvo.evolution_details[0].item
+                                              .name === "black-augurite" || firstEvo.evolution_details[0].item.name === "tart-apple" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "tart-apple" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "sweet-apple" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "syrupy-apple" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "metal-alloy" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "auspicious-armor" || firstEvo.evolution_details[
+                                                0
+                                              ].item.name === "malicious-armor" ? (
+                                              <Text
+                                                style={[
+                                                  styles.infoText,
+                                                  {
+                                                    fontSize: 8,
+                                                    textAlign: "center",
+                                                  },
+                                                ]}
+                                              >
+                                                {firstEvo.evolution_details[0].item
+                                                  .name.replace("-", "\n")}
+                                              </Text>
+                                            ) : <Image
+                                              alt={
+                                                firstEvo.evolution_details[0].item
+                                                  .name
+                                              }
+                                              source={{
+                                                uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].item.name}.png`,
+                                              }}
+                                              style={{ height: 20, width: 20 }}
+                                            />
+                                            }
+                                          </View>
+                                        )}
+
+                                      {/* Happiness/Friendship/Affection trigger */}
+
+                                      {!evosLoading &&
+                                        firstEvo.evolution_details[0]
+                                          .min_happiness && (
+                                          <>
+                                            <Heart width={14} height={14} />
                                             <Text
                                               style={[
                                                 styles.infoText,
-                                                {
-                                                  fontSize: 8,
-                                                  textAlign: "center",
-                                                },
+                                                { fontSize: 9 },
                                               ]}
                                             >
-                                              {firstEvo.evolution_details[0].item
-                                                .name.replace("-", "\n")}
+                                              Happiness
                                             </Text>
-                                          ) : <Image
-                                            alt={
-                                              firstEvo.evolution_details[0].item
+                                          </>
+                                        )}
+
+                                      {firstEvo.evolution_details[0]
+                                        .min_affection && (
+                                          <>
+                                            <Heart width={14} height={14} />
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                { fontSize: 9 },
+                                              ]}
+                                            >
+                                              Happiness
+                                            </Text>
+                                          </>
+                                        )}
+
+                                      {/* time of day trigger add-on */}
+
+                                      {firstEvo.evolution_details[0]
+                                        .time_of_day && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9 },
+                                            ]}
+                                          >
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .time_of_day
+                                            }
+                                          </Text>
+                                        )}
+
+                                      {/* Other evo triggers */}
+
+                                      {firstEvo.species.name === "sirfetchd" && (
+                                        <Text
+                                          style={[
+                                            styles.infoText,
+                                            { fontSize: 9 },
+                                          ]}
+                                        >
+                                          Land 3 crits {"\n"} in 1 battle
+                                        </Text>
+                                      )}
+
+                                      {firstEvo.species.name === "hitmonchan" && (
+                                        <Text
+                                          style={[
+                                            styles.infoText,
+                                            { fontSize: 9 },
+                                          ]}
+                                        >
+                                          {"def > atk"}
+                                        </Text>
+                                      )}
+
+                                      {firstEvo.species.name === "hitmonlee" && (
+                                        <Text
+                                          style={[
+                                            styles.infoText,
+                                            { fontSize: 9 },
+                                          ]}
+                                        >
+                                          {"atk > def"}
+                                        </Text>
+                                      )}
+
+                                      {firstEvo.species.name === "hitmontop" && (
+                                        <Text
+                                          style={[
+                                            styles.infoText,
+                                            { fontSize: 9 },
+                                          ]}
+                                        >
+                                          {"atk = def"}
+                                        </Text>
+                                      )}
+
+                                      {firstEvo.species.name ===
+                                        "shedinja" && (
+                                          <View
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                { fontSize: 9, textAlign: 'center' },
+                                              ]}
+                                            >
+                                              Evolve w {'\n'} party space
+                                            </Text>
+                                          </View>
+                                        )}
+
+                                      {firstEvo.species.name ===
+                                        "basculegion" && (
+                                          <View
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                { fontSize: 9, textAlign: 'center' },
+                                              ]}
+                                            >
+                                              300 dmg {'\n'} in recoil
+                                            </Text>
+                                          </View>
+                                        )}
+
+                                      {firstEvo.species.name ===
+                                        "runerigus" && (
+                                          <View
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <Text
+                                              style={[
+                                                styles.infoText,
+                                                { fontSize: 9, textAlign: 'center' },
+                                              ]}
+                                            >
+                                              49+ dmg {'\n'} dusty bowl
+                                            </Text>
+                                          </View>
+                                        )}
+
+                                      {/* Trade Evo Trigger */}
+
+                                      {firstEvo.evolution_details[0].trigger
+                                        .name === "trade" && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9 },
+                                            ]}
+                                          >
+                                            {
+                                              firstEvo.evolution_details[0].trigger
                                                 .name
                                             }
-                                            source={{
-                                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].item.name}.png`,
-                                            }}
-                                            style={{ height: 20, width: 20 }}
-                                          />
-                                          }
-                                        </View>
-                                      )}
-
-                                    {/* Happiness/Friendship/Affection trigger */}
-
-                                    {!evosLoading &&
-                                      firstEvo.evolution_details[0]
-                                        .min_happiness && (
-                                        <>
-                                          <Heart width={14} height={14} />
-                                          <Text
-                                            style={[
-                                              styles.infoText,
-                                              { fontSize: 9 },
-                                            ]}
-                                          >
-                                            Happiness
                                           </Text>
-                                        </>
-                                      )}
+                                        )}
 
-                                    {firstEvo.evolution_details[0]
-                                      .min_affection && (
-                                        <>
-                                          <Heart width={14} height={14} />
-                                          <Text
-                                            style={[
-                                              styles.infoText,
-                                              { fontSize: 9 },
-                                            ]}
-                                          >
-                                            Happiness
-                                          </Text>
-                                        </>
-                                      )}
+                                      {/* Trade with certain species trigger */}
 
-                                    {/* time of day trigger add-on */}
-
-                                    {firstEvo.evolution_details[0]
-                                      .time_of_day && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9 },
-                                          ]}
-                                        >
-                                          {
-                                            firstEvo.evolution_details[0]
-                                              .time_of_day
-                                          }
-                                        </Text>
-                                      )}
-
-                                    {/* Other evo triggers */}
-
-                                    {firstEvo.species.name === "sirfetchd" && (
-                                      <Text
-                                        style={[
-                                          styles.infoText,
-                                          { fontSize: 9 },
-                                        ]}
-                                      >
-                                        Land 3 crits {"\n"} in 1 battle
-                                      </Text>
-                                    )}
-
-                                    {firstEvo.species.name === "hitmonchan" && (
-                                      <Text
-                                        style={[
-                                          styles.infoText,
-                                          { fontSize: 9 },
-                                        ]}
-                                      >
-                                        {"def > atk"}
-                                      </Text>
-                                    )}
-
-                                    {firstEvo.species.name === "hitmonlee" && (
-                                      <Text
-                                        style={[
-                                          styles.infoText,
-                                          { fontSize: 9 },
-                                        ]}
-                                      >
-                                        {"atk > def"}
-                                      </Text>
-                                    )}
-
-                                    {firstEvo.species.name === "hitmontop" && (
-                                      <Text
-                                        style={[
-                                          styles.infoText,
-                                          { fontSize: 9 },
-                                        ]}
-                                      >
-                                        {"atk = def"}
-                                      </Text>
-                                    )}
-
-                                    {firstEvo.species.name ===
-                                      "shedinja" && (
-                                        <View
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <Text
-                                            style={[
-                                              styles.infoText,
-                                              { fontSize: 9, textAlign: 'center' },
-                                            ]}
-                                          >
-                                            Evolve w {'\n'} party space
-                                          </Text>
-                                        </View>
-                                      )}
-
-                                    {firstEvo.species.name ===
-                                      "basculegion" && (
-                                        <View
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <Text
-                                            style={[
-                                              styles.infoText,
-                                              { fontSize: 9, textAlign: 'center' },
-                                            ]}
-                                          >
-                                            300 dmg {'\n'} in recoil
-                                          </Text>
-                                        </View>
-                                      )}
-
-                                    {firstEvo.species.name ===
-                                      "runerigus" && (
-                                        <View
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <Text
-                                            style={[
-                                              styles.infoText,
-                                              { fontSize: 9, textAlign: 'center' },
-                                            ]}
-                                          >
-                                            49+ dmg {'\n'} dusty bowl
-                                          </Text>
-                                        </View>
-                                      )}
-
-                                    {/* Trade Evo Trigger */}
-
-                                    {firstEvo.evolution_details[0].trigger
-                                      .name === "trade" && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9 },
-                                          ]}
-                                        >
-                                          {
-                                            firstEvo.evolution_details[0].trigger
-                                              .name
-                                          }
-                                        </Text>
-                                      )}
-
-                                    {/* Trade with certain species trigger */}
-
-                                    {firstEvo.evolution_details[0].trade_species && (
-                                      <Text
-                                        style={[
-                                          styles.infoText,
-                                          {
-                                            fontSize: 9,
-                                            textAlign: 'center'
-                                          },
-                                        ]}
-                                      >
-                                        w
-                                        {'\n'}
-                                        {
-                                          firstEvo.evolution_details[0].trade_species.name
-                                        }
-                                      </Text>
-                                    )}
-
-                                    {/* Level up location Evo Trigger */}
-
-                                    {firstEvo.evolution_details[0].location && (
-                                      <View
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
+                                      {firstEvo.evolution_details[0].trade_species && (
                                         <Text
                                           style={[
                                             styles.infoText,
                                             {
                                               fontSize: 9,
-                                              textAlign: "center",
+                                              textAlign: 'center'
                                             },
                                           ]}
                                         >
+                                          w
+                                          {'\n'}
                                           {
-                                            firstEvo.evolution_details[0]
-                                              .location.name.replace("-", "\n")
+                                            firstEvo.evolution_details[0].trade_species.name
                                           }
                                         </Text>
-                                        {firstEvo.evolution_details[0]
-                                          .held_item && (
+                                      )}
+
+                                      {/* Level up location Evo Trigger */}
+
+                                      {firstEvo.evolution_details[0].location && (
+                                        <View
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              {
+                                                fontSize: 9,
+                                                textAlign: "center",
+                                              },
+                                            ]}
+                                          >
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .location.name.replace("-", "\n")
+                                            }
+                                          </Text>
+                                          {firstEvo.evolution_details[0]
+                                            .held_item && (
+                                              <Text
+                                                style={[
+                                                  styles.infoText,
+                                                  { fontSize: 9 },
+                                                ]}
+                                              >
+                                                +{" "}
+                                              </Text>
+                                            )}
+                                        </View>
+                                      )}
+
+                                      {/* Known Move TYPE Evo Trigger */}
+
+                                      {firstEvo.evolution_details[0]
+                                        .known_move_type && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
+
+                                            ]}
+                                          >
+                                            knowing {"\n"}{" "}
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .known_move_type.name
+                                            }{" "}
+                                            {"\n"} move
+                                          </Text>
+                                        )}
+
+                                      {/* Known Moves Evo Trigger */}
+
+                                      {firstEvo.evolution_details[0]
+                                        .known_move && (
+                                          <Text
+                                            style={[
+                                              styles.infoText,
+                                              { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
+                                            ]}
+                                          >
+                                            knowing {"\n"}{" "}
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .known_move.name
+                                            }
+                                          </Text>
+                                        )}
+
+                                      {firstEvo.evolution_details[0]
+                                        .held_item && (
+                                          <>
                                             <Text
                                               style={[
                                                 styles.infoText,
@@ -787,849 +838,797 @@ const Details = () => {
                                             >
                                               +{" "}
                                             </Text>
-                                          )}
-                                      </View>
-                                    )}
+                                            <Image
+                                              source={{
+                                                uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].held_item.name}.png`,
+                                              }}
+                                              style={{ height: 20, width: 20 }}
+                                            />
+                                          </>
+                                        )}
 
-                                    {/* Known Move TYPE Evo Trigger */}
+                                      {/* Party member evo trigger */}
 
-                                    {firstEvo.evolution_details[0]
-                                      .known_move_type && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
-
-                                          ]}
-                                        >
-                                          knowing {"\n"}{" "}
-                                          {
-                                            firstEvo.evolution_details[0]
-                                              .known_move_type.name
-                                          }{" "}
-                                          {"\n"} move
-                                        </Text>
-                                      )}
-
-                                    {/* Known Moves Evo Trigger */}
-
-                                    {firstEvo.evolution_details[0]
-                                      .known_move && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9, textAlign: "center", width: (width / 5) - 10 },
-                                          ]}
-                                        >
-                                          knowing {"\n"}{" "}
-                                          {
-                                            firstEvo.evolution_details[0]
-                                              .known_move.name
-                                          }
-                                        </Text>
-                                      )}
-
-                                    {firstEvo.evolution_details[0]
-                                      .held_item && (
-                                        <>
+                                      {firstEvo.evolution_details[0]
+                                        .party_species && (
                                           <Text
                                             style={[
                                               styles.infoText,
-                                              { fontSize: 9 },
+                                              { fontSize: 9, textAlign: "center" },
                                             ]}
                                           >
-                                            +{" "}
+                                            + {"\n"}{" "}
+                                            {
+                                              firstEvo.evolution_details[0]
+                                                .party_species.name
+                                            }{" "}
+                                            {"\n"} in team
                                           </Text>
+                                        )}
+
+                                      {/* Gender conditions*/}
+
+                                      {firstEvo.evolution_details[0].gender &&
+                                        <Text style={[
+                                          styles.infoText,
+                                          { fontSize: 9, textAlign: "center" },
+                                        ]}>{firstEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
+                                      }
+
+                                    </View>
+                                    {evo1Img[feIndex] && (
+                                      <Link
+                                        href={`/(pokemon)/pokemonDetails/${evo1Num[feIndex]}`}
+                                        asChild
+                                      >
+                                        <Pressable>
                                           <Image
-                                            source={{
-                                              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${firstEvo.evolution_details[0].held_item.name}.png`,
+                                            source={{ uri: evo1Img[feIndex] }}
+                                            style={{
+                                              width: (width / 5) - 15,
+                                              height: 80,
+                                              padding: 5,
+                                              aspectRatio: "1/1",
                                             }}
-                                            style={{ height: 20, width: 20 }}
                                           />
-                                        </>
-                                      )}
-
-                                    {/* Party member evo trigger */}
-
-                                    {firstEvo.evolution_details[0]
-                                      .party_species && (
-                                        <Text
-                                          style={[
-                                            styles.infoText,
-                                            { fontSize: 9, textAlign: "center" },
-                                          ]}
-                                        >
-                                          + {"\n"}{" "}
-                                          {
-                                            firstEvo.evolution_details[0]
-                                              .party_species.name
-                                          }{" "}
-                                          {"\n"} in team
-                                        </Text>
-                                      )}
-
-                                    {/* Gender conditions*/}
-
-                                    {firstEvo.evolution_details[0].gender &&
-                                      <Text style={[
-                                        styles.infoText,
-                                        { fontSize: 9, textAlign: "center" },
-                                      ]}>{firstEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
-                                    }
-
+                                        </Pressable>
+                                      </Link>
+                                    )}
                                   </View>
-                                  {evo1Img[feIndex] && (
-                                    <Link
-                                      href={`/(pokemon)/pokemonDetails/${evo1Num[feIndex]}`}
-                                      asChild
-                                    >
-                                      <Pressable>
-                                        <Image
-                                          source={{ uri: evo1Img[feIndex] }}
+
+                                  {/* second evos starts here */}
+
+                                  {/* evo split for complex lines like silcoon/cascoon */}
+
+                                  {pokemonEvos?.chain.evolves_to[feIndex]
+                                    .evolves_to &&
+                                    pokemonEvos?.chain.evolves_to.length > 1 ? (
+                                    <View>
+                                      {pokemonEvos?.chain.evolves_to[
+                                        feIndex
+                                      ].evolves_to.map((secEvo, seIndex) => (
+                                        <View
+                                          key={seIndex}
                                           style={{
-                                            width: (width / 5) - 15,
-                                            height: 80,
-                                            padding: 5,
-                                            aspectRatio: "1/1",
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
                                           }}
-                                        />
-                                      </Pressable>
-                                    </Link>
-                                  )}
+                                        >
+                                          {/* Level up trigger */}
+
+                                          <View>
+                                            <View
+                                              style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                width: (width / 5) - 15
+                                              }}
+                                            >
+                                              <ArrowRight
+                                                width={24}
+                                                height={24}
+                                              />
+
+                                              {secEvo.evolution_details[seIndex]
+                                                .trigger.name ===
+                                                "level-up" && (
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].trigger.name
+                                                    }
+                                                  </Text>
+                                                )}
+
+                                              {secEvo.evolution_details[seIndex]
+                                                .min_level !== null && (
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 10 },
+                                                    ]}
+                                                  >
+                                                    Lvl{" "}
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].min_level
+                                                    }
+                                                  </Text>
+                                                )}
+                                            </View>
+
+                                            {/* Item trigger */}
+
+                                            {secEvo.evolution_details[seIndex]
+                                              .item !== null && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  {secEvo.evolution_details[
+                                                    seIndex
+                                                  ].item.name === "peat-block" ? (
+                                                    <Text
+                                                      style={[
+                                                        styles.infoText,
+                                                        {
+                                                          fontSize: 9,
+                                                          textAlign: "center",
+                                                        },
+                                                      ]}
+                                                    >
+                                                      peat{"\n"}block
+                                                    </Text>
+                                                  ) : (
+                                                    <Image
+                                                      source={{
+                                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].item?.name}.png`,
+                                                      }}
+                                                      style={{
+                                                        height: 20,
+                                                        width: 20,
+                                                      }}
+                                                    />
+                                                  )}
+
+                                                </View>
+                                              )}
+
+                                            {/* other (WIP) */}
+
+                                            {secEvo.species.name ===
+                                              "annihilape" && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9, textAlign: 'center' },
+                                                    ]}
+                                                  >
+                                                    Use Rage {"\n"} Fist x20
+                                                  </Text>
+                                                </View>
+                                              )}
+
+                                            {/* Happiness trigger */}
+
+                                            {secEvo.evolution_details[seIndex]
+                                              .min_happiness != null && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Heart width={14} height={14} />
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    Happiness
+                                                  </Text>
+
+                                                  {/* Time of day add-on */}
+
+                                                  {secEvo.evolution_details[
+                                                    seIndex
+                                                  ].time_of_day && (
+                                                      <Text
+                                                        style={[
+                                                          styles.infoText,
+                                                          { fontSize: 9 },
+                                                        ]}
+                                                      >
+                                                        {
+                                                          secEvo.evolution_details[
+                                                            seIndex
+                                                          ].time_of_day
+                                                        }
+                                                      </Text>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Trade Evo Trigger */}
+
+                                            {secEvo.evolution_details[seIndex]
+                                              .trigger.name === "trade" && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].trigger.name
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    seIndex
+                                                  ].held_item && (
+                                                      <>
+                                                        <Text
+                                                          style={[
+                                                            styles.infoText,
+                                                            { fontSize: 9 },
+                                                          ]}
+                                                        >
+                                                          +{" "}
+                                                        </Text>
+                                                        <Image
+                                                          source={{
+                                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].held_item.name}.png`,
+                                                          }}
+                                                          style={{
+                                                            height: 20,
+                                                            width: 20,
+                                                          }}
+                                                        />
+                                                      </>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Level up location Evo Trigger */}
+
+                                            {secEvo.evolution_details[seIndex]
+                                              .location && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      {
+                                                        fontSize: 9,
+                                                        textAlign: "center",
+                                                      },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].trigger.name
+                                                    }{" "}
+                                                    {"\n"}{" "}
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].location.name.replace("-", "\n")
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    seIndex
+                                                  ].held_item && (
+                                                      <Text
+                                                        style={[
+                                                          styles.infoText,
+                                                          { fontSize: 9 },
+                                                        ]}
+                                                      >
+                                                        +{" "}
+                                                      </Text>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Known Moves Evo Trigger */}
+
+                                            {secEvo.evolution_details[seIndex]
+                                              .known_move && (
+                                                <>
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      {
+                                                        fontSize: 9,
+                                                        textAlign: "center",
+                                                        width: (width / 5) - 10
+                                                      },
+                                                    ]}
+                                                  >
+                                                    knowing {"\n"}{" "}
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        seIndex
+                                                      ].known_move.name.replace("-", "\n")
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    seIndex
+                                                  ].held_item && (
+                                                      <>
+                                                        <Text
+                                                          style={[
+                                                            styles.infoText,
+                                                            { fontSize: 9 },
+                                                          ]}
+                                                        >
+                                                          +{" "}
+                                                        </Text>
+                                                        <Image
+                                                          source={{
+                                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].held_item.name}.png`,
+                                                          }}
+                                                          style={{
+                                                            height: 20,
+                                                            width: 20,
+                                                          }}
+                                                        />
+                                                      </>
+                                                    )}
+                                                </>
+                                              )}
+
+                                            {/* Gender conditions*/}
+
+                                            {secEvo.evolution_details[0].gender &&
+                                              <Text style={[
+                                                styles.infoText,
+                                                { fontSize: 9, textAlign: "center" },
+                                              ]}>{secEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
+                                            }
+                                          </View>
+                                          {evo2Img[feIndex] ? (
+                                            <Link
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[feIndex]}`}
+                                              asChild
+                                            >
+                                              <Pressable>
+                                                <Image
+                                                  source={{
+                                                    uri: evo2Img[feIndex],
+                                                  }}
+                                                  style={{
+                                                    width: (width / 5) - 15,
+                                                    height: 80,
+                                                    padding: 5,
+                                                    aspectRatio: "1/1",
+                                                  }}
+                                                />
+                                              </Pressable>
+                                            </Link>
+                                          ) : (
+                                            <Link
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
+                                              asChild
+                                            >
+                                              <Pressable>
+                                                <Image
+                                                  source={{
+                                                    uri: evo2Img[seIndex],
+                                                  }}
+                                                  style={{
+                                                    width: (width / 5) - 15,
+                                                    height: 80,
+                                                    padding: 5,
+                                                    aspectRatio: "1/1",
+                                                  }}
+                                                />
+                                              </Pressable>
+                                            </Link>
+                                          )}
+                                        </View>
+                                      ))}
+                                    </View>
+                                  ) : (
+
+                                    <View>
+
+                                      {/* regular second evo splits start here */}
+
+                                      {pokemonEvos?.chain.evolves_to[
+                                        feIndex
+                                      ].evolves_to.map((secEvo, seIndex) => (
+                                        <View
+                                          key={seIndex}
+                                          style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          {/* Level up trigger */}
+
+                                          <View>
+                                            <View
+                                              style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <ArrowRight
+                                                width={24}
+                                                height={24}
+                                              />
+
+                                              {secEvo.evolution_details[feIndex]
+                                                .trigger.name ===
+                                                "level-up" && (
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        feIndex
+                                                      ].trigger.name
+                                                    }
+                                                  </Text>
+                                                )}
+
+                                              {secEvo.evolution_details[feIndex]
+                                                .min_level !== null && (
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 10 },
+                                                    ]}
+                                                  >
+                                                    Lvl{" "}
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        feIndex
+                                                      ].min_level
+                                                    }
+                                                  </Text>
+                                                )}
+                                            </View>
+
+                                            {/* Item trigger */}
+
+                                            {secEvo.evolution_details[feIndex]
+                                              .item !== null && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  {secEvo.evolution_details[
+                                                    feIndex
+                                                  ].item.name === "peat-block" ? (
+                                                    <Text
+                                                      style={[
+                                                        styles.infoText,
+                                                        {
+                                                          fontSize: 9,
+                                                          textAlign: "center",
+                                                        },
+                                                      ]}
+                                                    >
+                                                      peat{"\n"}block
+                                                    </Text>
+                                                  ) : (
+                                                    <Image
+                                                      source={{
+                                                        uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].item?.name}.png`,
+                                                      }}
+                                                      style={{
+                                                        height: 20,
+                                                        width: 20,
+                                                      }}
+                                                    />
+                                                  )}
+                                                </View>
+                                              )}
+
+                                            {/* other (WIP) */}
+
+                                            {secEvo.species.name ===
+                                              "annihilape" && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    Use Rage {"\n"} Fist x20
+                                                  </Text>
+                                                </View>
+                                              )}
+
+                                            {secEvo.species.name ===
+                                              "kingambit" && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 8, textAlign: 'center' },
+                                                    ]}
+                                                  >
+                                                    Defeat {'\n'} bisharp {'\n'} x3 & {'\n'} Lvl up + {'\n'} Leaders crest
+                                                  </Text>
+                                                </View>
+                                              )}
+
+                                            {/* Happiness trigger */}
+
+                                            {secEvo.evolution_details[feIndex]
+                                              .min_happiness != null && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Heart width={14} height={14} />
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    Happiness
+                                                  </Text>
+
+                                                  {/* Time of day add-on */}
+
+                                                  {secEvo.evolution_details[
+                                                    feIndex
+                                                  ].time_of_day && (
+                                                      <Text
+                                                        style={[
+                                                          styles.infoText,
+                                                          { fontSize: 9 },
+                                                        ]}
+                                                      >
+                                                        {
+                                                          secEvo.evolution_details[
+                                                            feIndex
+                                                          ].time_of_day
+                                                        }
+                                                      </Text>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Trade Evo Trigger */}
+
+                                            {secEvo.evolution_details[feIndex]
+                                              .trigger.name === "trade" && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      { fontSize: 9 },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        feIndex
+                                                      ].trigger.name
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    feIndex
+                                                  ].held_item && (
+                                                      <>
+                                                        <Text
+                                                          style={[
+                                                            styles.infoText,
+                                                            { fontSize: 9 },
+                                                          ]}
+                                                        >
+                                                          +{" "}
+                                                        </Text>
+                                                        <Image
+                                                          source={{
+                                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].held_item.name}.png`,
+                                                          }}
+                                                          style={{
+                                                            height: 20,
+                                                            width: 20,
+                                                          }}
+                                                        />
+                                                      </>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Level up location Evo Trigger */}
+
+                                            {secEvo.evolution_details[feIndex]
+                                              .location && (
+                                                <View
+                                                  style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                  }}
+                                                >
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      {
+                                                        fontSize: 9,
+                                                        textAlign: "center",
+                                                      },
+                                                    ]}
+                                                  >
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        feIndex
+                                                      ].location.name.replace("-", '\n')
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    feIndex
+                                                  ].held_item && (
+                                                      <Text
+                                                        style={[
+                                                          styles.infoText,
+                                                          { fontSize: 9 },
+                                                        ]}
+                                                      >
+                                                        +{" "}
+                                                      </Text>
+                                                    )}
+                                                </View>
+                                              )}
+
+                                            {/* Known Moves Evo Trigger */}
+
+                                            {secEvo.evolution_details[feIndex]
+                                              .known_move && (
+                                                <>
+                                                  <Text
+                                                    style={[
+                                                      styles.infoText,
+                                                      {
+                                                        fontSize: 9,
+                                                        textAlign: "center",
+                                                      },
+                                                    ]}
+                                                  >
+                                                    knowing {"\n"}{" "}
+                                                    {
+                                                      secEvo.evolution_details[
+                                                        feIndex
+                                                      ].known_move.name
+                                                    }
+                                                  </Text>
+                                                  {secEvo.evolution_details[
+                                                    feIndex
+                                                  ].held_item && (
+                                                      <>
+                                                        <Text
+                                                          style={[
+                                                            styles.infoText,
+                                                            { fontSize: 9 },
+                                                          ]}
+                                                        >
+                                                          +{" "}
+                                                        </Text>
+                                                        <Image
+                                                          source={{
+                                                            uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].held_item.name}.png`,
+                                                          }}
+                                                          style={{
+                                                            height: 20,
+                                                            width: 20,
+                                                          }}
+                                                        />
+                                                      </>
+                                                    )}
+                                                </>
+                                              )}
+
+                                            {/* Gender conditions*/}
+
+                                            {secEvo.evolution_details[0].gender &&
+                                              <Text style={[
+                                                styles.infoText,
+                                                { fontSize: 9, textAlign: "center" },
+                                              ]}>{secEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
+                                            }
+
+                                          </View>
+                                          {evo2Img[seIndex] && (
+                                            <Link
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
+                                              asChild
+                                            >
+                                              <Pressable>
+                                                <Image
+                                                  source={{
+                                                    uri: evo2Img[seIndex],
+                                                  }}
+                                                  style={{
+                                                    width: (width / 5) - 15,
+                                                    height: 80,
+                                                    padding: 5,
+                                                    aspectRatio: "1/1",
+                                                  }}
+                                                />
+                                              </Pressable>
+                                            </Link>
+                                          )}
+                                        </View>
+                                      ))}
+                                    </View>
+                                  )
+
+                                  }
                                 </View>
-
-                                {/* second evos starts here */}
-
-                                {/* evo split for complex lines like silcoon/cascoon */}
-
-                                {pokemonEvos?.chain.evolves_to[feIndex]
-                                  .evolves_to &&
-                                  pokemonEvos?.chain.evolves_to.length > 1 ? (
-                                  <View>
-                                    {pokemonEvos?.chain.evolves_to[
-                                      feIndex
-                                    ].evolves_to.map((secEvo, seIndex) => (
-                                      <View
-                                        key={seIndex}
-                                        style={{
-                                          display: "flex",
-                                          flexDirection: "row",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        {/* Level up trigger */}
-
-                                        <View>
-                                          <View
-                                            style={{
-                                              display: "flex",
-                                              flexDirection: "column",
-                                              alignItems: "center",
-                                              width: (width / 5) - 15
-                                            }}
-                                          >
-                                            <ArrowRight
-                                              width={24}
-                                              height={24}
-                                            />
-
-                                            {secEvo.evolution_details[seIndex]
-                                              .trigger.name ===
-                                              "level-up" && (
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].trigger.name
-                                                  }
-                                                </Text>
-                                              )}
-
-                                            {secEvo.evolution_details[seIndex]
-                                              .min_level !== null && (
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 10 },
-                                                  ]}
-                                                >
-                                                  Lvl{" "}
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].min_level
-                                                  }
-                                                </Text>
-                                              )}
-                                          </View>
-
-                                          {/* Item trigger */}
-
-                                          {secEvo.evolution_details[seIndex]
-                                            .item !== null && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  flexDirection: "column",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                {secEvo.evolution_details[
-                                                  seIndex
-                                                ].item.name === "peat-block" ? (
-                                                  <Text
-                                                    style={[
-                                                      styles.infoText,
-                                                      {
-                                                        fontSize: 9,
-                                                        textAlign: "center",
-                                                      },
-                                                    ]}
-                                                  >
-                                                    peat{"\n"}block
-                                                  </Text>
-                                                ) : (
-                                                  <Image
-                                                    source={{
-                                                      uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].item?.name}.png`,
-                                                    }}
-                                                    style={{
-                                                      height: 20,
-                                                      width: 20,
-                                                    }}
-                                                  />
-                                                )}
-
-                                              </View>
-                                            )}
-
-                                          {/* other (WIP) */}
-
-                                          {secEvo.species.name ===
-                                            "annihilape" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9, textAlign: 'center' },
-                                                  ]}
-                                                >
-                                                  Use Rage {"\n"} Fist x20
-                                                </Text>
-                                              </View>
-                                            )}
-
-                                          {/* Happiness trigger */}
-
-                                          {secEvo.evolution_details[seIndex]
-                                            .min_happiness != null && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  flexDirection: "column",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Heart width={14} height={14} />
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  Happiness
-                                                </Text>
-
-                                                {/* Time of day add-on */}
-
-                                                {secEvo.evolution_details[
-                                                  seIndex
-                                                ].time_of_day && (
-                                                    <Text
-                                                      style={[
-                                                        styles.infoText,
-                                                        { fontSize: 9 },
-                                                      ]}
-                                                    >
-                                                      {
-                                                        secEvo.evolution_details[
-                                                          seIndex
-                                                        ].time_of_day
-                                                      }
-                                                    </Text>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Trade Evo Trigger */}
-
-                                          {secEvo.evolution_details[seIndex]
-                                            .trigger.name === "trade" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].trigger.name
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  seIndex
-                                                ].held_item && (
-                                                    <>
-                                                      <Text
-                                                        style={[
-                                                          styles.infoText,
-                                                          { fontSize: 9 },
-                                                        ]}
-                                                      >
-                                                        +{" "}
-                                                      </Text>
-                                                      <Image
-                                                        source={{
-                                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].held_item.name}.png`,
-                                                        }}
-                                                        style={{
-                                                          height: 20,
-                                                          width: 20,
-                                                        }}
-                                                      />
-                                                    </>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Level up location Evo Trigger */}
-
-                                          {secEvo.evolution_details[seIndex]
-                                            .location && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    {
-                                                      fontSize: 9,
-                                                      textAlign: "center",
-                                                    },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].trigger.name
-                                                  }{" "}
-                                                  {"\n"}{" "}
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].location.name.replace("-", "\n")
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  seIndex
-                                                ].held_item && (
-                                                    <Text
-                                                      style={[
-                                                        styles.infoText,
-                                                        { fontSize: 9 },
-                                                      ]}
-                                                    >
-                                                      +{" "}
-                                                    </Text>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Known Moves Evo Trigger */}
-
-                                          {secEvo.evolution_details[seIndex]
-                                            .known_move && (
-                                              <>
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    {
-                                                      fontSize: 9,
-                                                      textAlign: "center",
-                                                      width: (width / 5) - 10
-                                                    },
-                                                  ]}
-                                                >
-                                                  knowing {"\n"}{" "}
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      seIndex
-                                                    ].known_move.name.replace("-", "\n")
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  seIndex
-                                                ].held_item && (
-                                                    <>
-                                                      <Text
-                                                        style={[
-                                                          styles.infoText,
-                                                          { fontSize: 9 },
-                                                        ]}
-                                                      >
-                                                        +{" "}
-                                                      </Text>
-                                                      <Image
-                                                        source={{
-                                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[seIndex].held_item.name}.png`,
-                                                        }}
-                                                        style={{
-                                                          height: 20,
-                                                          width: 20,
-                                                        }}
-                                                      />
-                                                    </>
-                                                  )}
-                                              </>
-                                            )}
-
-                                          {/* Gender conditions*/}
-
-                                          {secEvo.evolution_details[0].gender &&
-                                            <Text style={[
-                                              styles.infoText,
-                                              { fontSize: 9, textAlign: "center" },
-                                            ]}>{secEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
-                                          }
-                                        </View>
-                                        {evo2Img[feIndex] ? (
-                                          <Link
-                                            href={`/(pokemon)/pokemonDetails/${evo2Num[feIndex]}`}
-                                            asChild
-                                          >
-                                            <Pressable>
-                                              <Image
-                                                source={{
-                                                  uri: evo2Img[feIndex],
-                                                }}
-                                                style={{
-                                                  width: (width / 5) - 15,
-                                                  height: 80,
-                                                  padding: 5,
-                                                  aspectRatio: "1/1",
-                                                }}
-                                              />
-                                            </Pressable>
-                                          </Link>
-                                        ) : (
-                                          <Link
-                                            href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
-                                            asChild
-                                          >
-                                            <Pressable>
-                                              <Image
-                                                source={{
-                                                  uri: evo2Img[seIndex],
-                                                }}
-                                                style={{
-                                                  width: (width / 5) - 15,
-                                                  height: 80,
-                                                  padding: 5,
-                                                  aspectRatio: "1/1",
-                                                }}
-                                              />
-                                            </Pressable>
-                                          </Link>
-                                        )}
-                                      </View>
-                                    ))}
-                                  </View>
-                                ) : (
-
-                                  <View>
-
-                                    {/* regular second evo splits start here */}
-
-                                    {pokemonEvos?.chain.evolves_to[
-                                      feIndex
-                                    ].evolves_to.map((secEvo, seIndex) => (
-                                      <View
-                                        key={seIndex}
-                                        style={{
-                                          display: "flex",
-                                          flexDirection: "row",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        {/* Level up trigger */}
-
-                                        <View>
-                                          <View
-                                            style={{
-                                              display: "flex",
-                                              flexDirection: "column",
-                                              alignItems: "center",
-                                            }}
-                                          >
-                                            <ArrowRight
-                                              width={24}
-                                              height={24}
-                                            />
-
-                                            {secEvo.evolution_details[feIndex]
-                                              .trigger.name ===
-                                              "level-up" && (
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      feIndex
-                                                    ].trigger.name
-                                                  }
-                                                </Text>
-                                              )}
-
-                                            {secEvo.evolution_details[feIndex]
-                                              .min_level !== null && (
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 10 },
-                                                  ]}
-                                                >
-                                                  Lvl{" "}
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      feIndex
-                                                    ].min_level
-                                                  }
-                                                </Text>
-                                              )}
-                                          </View>
-
-                                          {/* Item trigger */}
-
-                                          {secEvo.evolution_details[feIndex]
-                                            .item !== null && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  flexDirection: "column",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                {secEvo.evolution_details[
-                                                  feIndex
-                                                ].item.name === "peat-block" ? (
-                                                  <Text
-                                                    style={[
-                                                      styles.infoText,
-                                                      {
-                                                        fontSize: 9,
-                                                        textAlign: "center",
-                                                      },
-                                                    ]}
-                                                  >
-                                                    peat{"\n"}block
-                                                  </Text>
-                                                ) : (
-                                                  <Image
-                                                    source={{
-                                                      uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].item?.name}.png`,
-                                                    }}
-                                                    style={{
-                                                      height: 20,
-                                                      width: 20,
-                                                    }}
-                                                  />
-                                                )}
-                                              </View>
-                                            )}
-
-                                          {/* other (WIP) */}
-
-                                          {secEvo.species.name ===
-                                            "annihilape" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  Use Rage {"\n"} Fist x20
-                                                </Text>
-                                              </View>
-                                            )}
-
-                                          {secEvo.species.name ===
-                                            "kingambit" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 8, textAlign: 'center' },
-                                                  ]}
-                                                >
-                                                  Defeat {'\n'} bisharp {'\n'} x3 & {'\n'} Lvl up + {'\n'} Leaders crest
-                                                </Text>
-                                              </View>
-                                            )}
-
-                                          {/* Happiness trigger */}
-
-                                          {secEvo.evolution_details[feIndex]
-                                            .min_happiness != null && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  flexDirection: "column",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Heart width={14} height={14} />
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  Happiness
-                                                </Text>
-
-                                                {/* Time of day add-on */}
-
-                                                {secEvo.evolution_details[
-                                                  feIndex
-                                                ].time_of_day && (
-                                                    <Text
-                                                      style={[
-                                                        styles.infoText,
-                                                        { fontSize: 9 },
-                                                      ]}
-                                                    >
-                                                      {
-                                                        secEvo.evolution_details[
-                                                          feIndex
-                                                        ].time_of_day
-                                                      }
-                                                    </Text>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Trade Evo Trigger */}
-
-                                          {secEvo.evolution_details[feIndex]
-                                            .trigger.name === "trade" && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    { fontSize: 9 },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      feIndex
-                                                    ].trigger.name
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  feIndex
-                                                ].held_item && (
-                                                    <>
-                                                      <Text
-                                                        style={[
-                                                          styles.infoText,
-                                                          { fontSize: 9 },
-                                                        ]}
-                                                      >
-                                                        +{" "}
-                                                      </Text>
-                                                      <Image
-                                                        source={{
-                                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].held_item.name}.png`,
-                                                        }}
-                                                        style={{
-                                                          height: 20,
-                                                          width: 20,
-                                                        }}
-                                                      />
-                                                    </>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Level up location Evo Trigger */}
-
-                                          {secEvo.evolution_details[feIndex]
-                                            .location && (
-                                              <View
-                                                style={{
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                }}
-                                              >
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    {
-                                                      fontSize: 9,
-                                                      textAlign: "center",
-                                                    },
-                                                  ]}
-                                                >
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      feIndex
-                                                    ].location.name.replace("-", '\n')
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  feIndex
-                                                ].held_item && (
-                                                    <Text
-                                                      style={[
-                                                        styles.infoText,
-                                                        { fontSize: 9 },
-                                                      ]}
-                                                    >
-                                                      +{" "}
-                                                    </Text>
-                                                  )}
-                                              </View>
-                                            )}
-
-                                          {/* Known Moves Evo Trigger */}
-
-                                          {secEvo.evolution_details[feIndex]
-                                            .known_move && (
-                                              <>
-                                                <Text
-                                                  style={[
-                                                    styles.infoText,
-                                                    {
-                                                      fontSize: 9,
-                                                      textAlign: "center",
-                                                    },
-                                                  ]}
-                                                >
-                                                  knowing {"\n"}{" "}
-                                                  {
-                                                    secEvo.evolution_details[
-                                                      feIndex
-                                                    ].known_move.name
-                                                  }
-                                                </Text>
-                                                {secEvo.evolution_details[
-                                                  feIndex
-                                                ].held_item && (
-                                                    <>
-                                                      <Text
-                                                        style={[
-                                                          styles.infoText,
-                                                          { fontSize: 9 },
-                                                        ]}
-                                                      >
-                                                        +{" "}
-                                                      </Text>
-                                                      <Image
-                                                        source={{
-                                                          uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${secEvo.evolution_details[feIndex].held_item.name}.png`,
-                                                        }}
-                                                        style={{
-                                                          height: 20,
-                                                          width: 20,
-                                                        }}
-                                                      />
-                                                    </>
-                                                  )}
-                                              </>
-                                            )}
-
-                                          {/* Gender conditions*/}
-
-                                          {secEvo.evolution_details[0].gender &&
-                                            <Text style={[
-                                              styles.infoText,
-                                              { fontSize: 9, textAlign: "center" },
-                                            ]}>{secEvo.evolution_details[0].gender === 2 ? "Male" : "Female"}</Text>
-                                          }
-
-                                        </View>
-                                        {evo2Img[seIndex] && (
-                                          <Link
-                                            href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
-                                            asChild
-                                          >
-                                            <Pressable>
-                                              <Image
-                                                source={{
-                                                  uri: evo2Img[seIndex],
-                                                }}
-                                                style={{
-                                                  width: (width / 5) - 15,
-                                                  height: 80,
-                                                  padding: 5,
-                                                  aspectRatio: "1/1",
-                                                }}
-                                              />
-                                            </Pressable>
-                                          </Link>
-                                        )}
-                                      </View>
-                                    ))}
-                                  </View>
-                                )
-
-                                }
-                              </View>
-                            )
-                          )}
-                        </View>
-                      )}
-                  </View>
-                ) : (
+                              )
+                            )}
+                          </View>
+                        )}
+                    </View>
+                  )}
+                {pokemonEvos?.chain.evolves_to.length === 0 && (
                   <View style={{
                     display: 'flex',
                     justifyContent: 'center',

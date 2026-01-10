@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
 import { useRouter, Stack, SplashScreen } from 'expo-router'
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { defaultShouldDehydrateQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -50,7 +50,7 @@ const Layout = () => {
     return (
         <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister: asyncStoragePersister }}
+            persistOptions={{ persister: asyncStoragePersister, dehydrateOptions: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) && query?.meta?.persist === true }  }}
         >
         <Stack screenOptions={{
             headerStyle: {
