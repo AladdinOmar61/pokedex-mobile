@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
 import Heart from "@/assets/Icons/Pixel-Heart.svg";
 import { useQuery } from "@tanstack/react-query";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -345,6 +346,11 @@ const Details = () => {
     );
     setIsFavorited(!isFavorited);
   };
+
+  //working on bg image
+  // const bgUrl = pokemonDetails?.types[0].type.name.charAt(0).toUpperCase + pokemonDetails?.types[0].type.name.slice(1);
+  // const pokemonBG = `@/assets/Icons/pokeTypes/${bgUrl}`;
+  // console.log(pokemonDetails?.types[0].type.name.slice(1));
 
   return (
     <ScrollView style={{ padding: 10, marginBottom: insets.bottom, flex: 1 }}>
