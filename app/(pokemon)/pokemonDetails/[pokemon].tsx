@@ -22,7 +22,7 @@ import { Image as ExpoImage } from "expo-image";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { PokeBG, PokeTypeIcon } from "@/PokeTypes";
 import { LinearGradient } from "expo-linear-gradient";
-import { PokeTypeColor } from "@/PokeTypeColor";
+import { PokeTypeColor, secondaryTypeColor } from "@/PokeTypeColor";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -412,7 +412,7 @@ const Details = () => {
             </View>
           </View>
           {/* add to color function file rbga values for type colors */}
-          <View style={[styles.card, {backgroundColor: "rgba(169, 216, 175, 0.5)"}]}>
+          <View style={[styles.card, {backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name)}]}>
             <Text style={styles.sectionHeader}>Stats</Text>
             {pokemonDetails.stats.map((item: any) => (
               <View key={item.stat.name}>
