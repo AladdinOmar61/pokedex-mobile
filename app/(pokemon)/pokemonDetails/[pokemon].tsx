@@ -433,6 +433,9 @@ const Details = () => {
                   style={{
                     height: 8,
                     width: `${(item.base_stat / maxVal) * 100}%`,
+                    borderWidth: 1,
+                    borderColor: 'black',
+                    borderStyle: 'solid',
                     backgroundColor:
                       item.base_stat <= 30
                         ? "red"
@@ -448,7 +451,7 @@ const Details = () => {
               </View>
             ))}
           </View>
-          <View style={[styles.card, { width: "100%" }]}>
+          <View style={[styles.card, { width: "100%", backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Pokedex Entry</Text>
             <Text
               style={[
@@ -461,7 +464,7 @@ const Details = () => {
                 .flavor_text.replaceAll("\n", " ")}
             </Text>
           </View>
-          <View style={[styles.card]}>
+          <View style={[styles.card, {backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name)}]}>
             <Text style={styles.sectionHeader}>Evolution Chain</Text>
 
             {!evosLoading ? (
@@ -1775,7 +1778,7 @@ const Details = () => {
             )}
           </View>
 
-          <View style={styles.card}>
+          <View style={[styles.card, {backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name)}]}>
             <Text style={styles.sectionHeader}>Varieties</Text>
             {speciesLoading ? (
               <ActivityIndicator />
@@ -1819,7 +1822,7 @@ const Details = () => {
               </ScrollView>
             )}
           </View>
-          <View style={styles.card}>
+          <View style={[styles.card, {backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name)}]}>
             <Text style={styles.sectionHeader}>Abilities</Text>
             <View
               style={{
