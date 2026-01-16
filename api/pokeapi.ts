@@ -3,13 +3,232 @@ import {
   TypeInfo,
 } from "@/interface";
 import pLimit from "p-limit";
-import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites } from "pokenode-ts";
+import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites, NamedAPIResource } from "pokenode-ts";
 
 type SinglePokemon = {
   id: number;
   name: string;
   defaultSprite: string;
   primaryType: string;
+}
+
+interface PokemonDetails {
+  id: number;
+  name: string;
+  // base_experience: number;
+  // height: number;
+  is_default: boolean;
+  // order: number;
+  // weight: number;
+  abilities: Ability2[];
+  forms: Ability[];
+  // game_indices: Gameindex[];
+  // held_items: Helditem[];
+  // location_area_encounters: string;
+  // moves: Move[];
+  species: Ability;
+  sprites: PokemonSprites;
+  // cries: Cries;
+  stats: Stat[];
+  types: Type[];
+  // past_types: Pasttype[];
+  // past_abilities: Pastability[];
+}
+
+interface Pastability {
+  generation: Ability;
+  abilities: Ability3[];
+}
+
+interface Ability3 {
+  ability: null;
+  is_hidden: boolean;
+  slot: number;
+}
+
+interface Pasttype {
+  generation: Ability;
+  types: Type[];
+}
+
+interface Type {
+  slot: number;
+  type: Ability;
+}
+
+interface Stat {
+  base_stat: number;
+  effort: number;
+  stat: Ability;
+}
+
+interface Cries {
+  latest: string;
+  legacy: string;
+}
+
+interface Sprites {
+  back_default: string;
+  back_female: null;
+  back_shiny: string;
+  back_shiny_female: null;
+  front_default: string;
+  front_female: null;
+  front_shiny: string;
+  front_shiny_female: null;
+  other: Other;
+  versions: Versions;
+}
+
+interface Versions {
+  'generation-i': Generationi;
+  'generation-ii': Generationii;
+  'generation-iii': Generationiii;
+  'generation-iv': Generationiv;
+  'generation-v': Generationv;
+  'generation-vi': Generationvi;
+  'generation-vii': Generationvii;
+  'generation-viii': Generationviii;
+}
+
+interface Generationviii {
+  icons: Dreamworld;
+}
+
+interface Generationvii {
+  icons: Dreamworld;
+  'ultra-sun-ultra-moon': Home;
+}
+
+interface Generationvi {
+  'omegaruby-alphasapphire': Home;
+  'x-y': Home;
+}
+
+interface Generationv {
+  'black-white': Blackwhite;
+}
+
+interface Blackwhite {
+  animated: Showdown;
+  back_default: string;
+  back_female: null;
+  back_shiny: string;
+  back_shiny_female: null;
+  front_default: string;
+  front_female: null;
+  front_shiny: string;
+  front_shiny_female: null;
+}
+
+interface Generationiv {
+  'diamond-pearl': Showdown;
+  'heartgold-soulsilver': Showdown;
+  platinum: Showdown;
+}
+
+interface Generationiii {
+  emerald: Officialartwork;
+  'firered-leafgreen': Crystal;
+  'ruby-sapphire': Crystal;
+}
+
+interface Generationii {
+  crystal: Crystal;
+  gold: Crystal;
+  silver: Crystal;
+}
+
+interface Crystal {
+  back_default: string;
+  back_shiny: string;
+  front_default: string;
+  front_shiny: string;
+}
+
+interface Generationi {
+  'red-blue': Redblue;
+  yellow: Redblue;
+}
+
+interface Redblue {
+  back_default: string;
+  back_gray: string;
+  front_default: string;
+  front_gray: string;
+}
+
+interface Other {
+  dream_world: Dreamworld;
+  home: Home;
+  'official-artwork': Officialartwork;
+  showdown: Showdown;
+}
+
+interface Showdown {
+  back_default: string;
+  back_female: null;
+  back_shiny: string;
+  back_shiny_female: null;
+  front_default: string;
+  front_female: null;
+  front_shiny: string;
+  front_shiny_female: null;
+}
+
+interface Officialartwork {
+  front_default: string;
+  front_shiny: string;
+}
+
+interface Home {
+  front_default: string;
+  front_female: null;
+  front_shiny: string;
+  front_shiny_female: null;
+}
+
+interface Dreamworld {
+  front_default: string;
+  front_female: null;
+}
+
+interface Move {
+  move: Ability;
+  version_group_details: Versiongroupdetail[];
+}
+
+interface Versiongroupdetail {
+  level_learned_at: number;
+  version_group: Ability;
+  move_learn_method: Ability;
+  order: number;
+}
+
+interface Helditem {
+  item: Ability;
+  version_details: Versiondetail[];
+}
+
+interface Versiondetail {
+  rarity: number;
+  version: Ability;
+}
+
+interface Gameindex {
+  game_index: number;
+  version: Ability;
+}
+
+interface Ability2 {
+  is_hidden: boolean;
+  slot: number;
+  ability: Ability;
+}
+
+interface Ability {
+  name: string;
+  url: string;
 }
 
 const pokeApi = () => {
@@ -59,9 +278,20 @@ const pokeApi = () => {
     });
   };
 
-  const getPokemonDetails = async (name: string): Promise<Pokemon> => {
-    return await api.pokemon.getPokemonByName(name);
-  }
+  const getPokemonDetails = async (name: string): Promise<PokemonDetails> => {
+    const detailData = await api.pokemon.getPokemonByName(name);
+    return {
+      id: detailData.id,
+      name:detailData.name,
+      is_default: detailData.is_default,
+      abilities: detailData.abilities,
+      forms: detailData.forms,
+      species: detailData.species,
+      sprites: detailData.sprites,
+      stats: detailData.stats,
+      types: detailData.types
+    }
+  };
 
   const getDefaultSprite = async (name: string): Promise<string> => {
     const pokemonDetails = await api.pokemon.getPokemonByName(name);

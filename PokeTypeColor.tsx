@@ -46,37 +46,37 @@ export const secondaryTypeColor = (type: string): string => {
         case "grass":
             return "rgba(169, 216, 175, 0.5)"
         case "fire" : 
-            return "rgba(247, 149, 81, 0.5)"
+            return "rgba(251, 174, 70, 0.3)"
         case "water" :
-            return "rgba(74, 123, 215, 0.5)"
+            return "rgba(85, 178, 224, 0.3)"
         case "bug":
-            return "rgba(144, 194, 62, 0.5)"
+            return "rgba(144, 194, 62, 0.3)"
         case "normal":
-            return "rgba(171, 182, 196, 0.5)"
+            return "rgba(171, 182, 196, 0.3)"
         case "poison":
-            return "rgba(172, 98, 194, 0.5)"
+            return "rgba(172, 98, 194, 0.3)"
         case "electric":
-            return "rgba(215, 196, 69, 0.5)"
+            return "rgba(234, 217, 109, 0.3)"
         case "ground":
-            return "rgba(189, 107, 58, 0.5)"
+            return "rgba(223, 151, 109, 0.3)"
         case "fairy":
-            return "rgba(208, 127, 201, 0.5)"
+            return "rgba(234, 200, 231, 0.6)"
         case "fighting":
-            return "rgba(209, 46, 62, 0.5)"
+            return "rgba(209, 46, 62, 0.3)"
         case "psychic":
-            return "rgba(236, 110, 111, 0.5)"
+            return "rgba(236, 110, 111, 0.3)"
         case "rock":
-            return "rgba(189, 173, 131, 0.5)"
+            return "rgba(189, 173, 131, 0.1)"
         case "steel":
-            return "rgba(78, 128, 149, 0.5)"
+            return "rgba(78, 128, 149, 0.3)"
         case "ghost":
-            return "rgba(79, 101, 165, 0.5)"
+            return "rgba(91, 111, 170, 0.3)"
         case "dragon":
-            return "rgba(10, 101, 190, 0.5)"
+            return "rgba(10, 101, 190, 0.35)"
         case "ice":
-            return "rgba(109, 195, 181, 0.5)"
+            return "rgba(109, 195, 181, 0.2)"
         case "dark":
-            return "rgba(93, 92, 101, 0.5)"
+            return "rgba(93, 92, 101, 0.3)"
         case "flying":
             return "rgba(140, 162, 211, 0.5)"
         default:

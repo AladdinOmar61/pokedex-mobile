@@ -18,11 +18,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
 import Heart from "@/assets/Icons/Pixel-Heart.svg";
 import { useQuery } from "@tanstack/react-query";
-import { Image as ExpoImage } from "expo-image";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { PokeBG, PokeTypeIcon } from "@/PokeTypes";
-import { LinearGradient } from "expo-linear-gradient";
-import { PokeTypeColor, secondaryTypeColor } from "@/PokeTypeColor";
+import { PokeBG } from "@/PokeTypes";
+import { secondaryTypeColor } from "@/PokeTypeColor";
 
 const Details = () => {
   const { width } = useWindowDimensions();
@@ -63,6 +61,8 @@ const Details = () => {
     queryFn: () => getPokemonDetails(pokemon!),
     enabled: !!pokemon,
   });
+
+  console.log("poke details: ", pokemonDetails);
 
   const pokemonDetailsName = pokemonDetails?.species.name;
 
@@ -368,7 +368,7 @@ const Details = () => {
               }}
             >
               <Image
-                source={{ uri: pokemonDetails.sprites.front_default! }}
+                source={{ uri: pokemonDetails.sprites!.front_default! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -377,7 +377,7 @@ const Details = () => {
                 }}
               />
               <Image
-                source={{ uri: pokemonDetails.sprites.front_shiny! }}
+                source={{ uri: pokemonDetails.sprites!.front_shiny! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -456,7 +456,7 @@ const Details = () => {
             <Text
               style={[
                 styles.infoText,
-                { fontSize: 11, textAlign: "center", padding: 5 },
+                { fontSize: 12, textAlign: "center", padding: 5 },
               ]}
             >
               {speciesInfo?.flavor_text_entries
@@ -1754,7 +1754,7 @@ const Details = () => {
                     }}
                   >
                     <Image
-                      source={{ uri: pokemonDetails.sprites.front_default! }}
+                      source={{ uri: pokemonDetails.sprites!.front_default! }}
                       style={{
                         width: width,
                         height: 80,
@@ -1863,9 +1863,6 @@ const Details = () => {
                       position: "absolute",
                       right: 5,
                       top: "15%",
-                      borderWidth: 1,
-                      borderStyle: "solid",
-                      borderColor: ability.is_hidden ? "white" : "black",
                     }}
                     name="information"
                     size={17}

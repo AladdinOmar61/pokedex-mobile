@@ -64,50 +64,51 @@ export const PokeTypeIcon = (type: string) => {
 export const PokeBG = (type: string) => {
     switch (type) {
         case 'grass':
-            return <GrassType width={550} height={550} style={styles.background} />
+            return <GrassType width={560} height={560} style={styles.background} />
         case 'fire':
-            return <FireType width={550} height={550} style={styles.background} />
+            return <FireType width={560} height={560} style={styles.background} />
         case 'water':
-            return <WaterType width={550} height={550} style={styles.background} />
+            return <WaterType width={560} height={560} style={styles.background} />
         case 'bug':
-            return <BugType width={550} height={550} style={styles.background} />
+            return <BugType width={560} height={560} style={styles.background} />
         case 'dark':
-            return <DarkType width={550} height={550} style={styles.background} />
+            return <DarkType width={560} height={560} style={styles.background} />
         case 'dragon':
-            return <DragonType width={550} height={550} style={styles.background} />
+            return <DragonType width={560} height={560} style={styles.background} />
         case 'electric':
-            return <ElectricType width={550} height={550} style={styles.background} />
+            return <ElectricType width={560} height={560} style={styles.background} />
         case 'ice':
-            return <IceType width={550} height={550} style={styles.background} />
+            return <IceType width={560} height={560} style={styles.background} />
         case 'steel':
-            return <SteelType width={550} height={550} style={styles.background} />
+            return <SteelType width={560} height={560} style={styles.background} />
         case 'fairy':
-            return <FairyType width={550} height={550} style={styles.background} />
+            return <FairyType width={560} height={560} style={styles.background} />
         case 'fighting':
-            return <FightingType width={550} height={550} style={styles.background} />
+            return <FightingType width={560} height={560} style={styles.background} />
         case 'flying':
-            return <FlyingType width={550} height={550} style={styles.background} />
+            return <FlyingType width={560} height={560} style={styles.background} />
         case 'ghost':
-            return <GhostType width={550} height={550} style={styles.background} />
+            return <GhostType width={560} height={560} style={styles.background} />
         case 'ground':
-            return <GroundType width={550} height={550} style={styles.background} />
+            return <GroundType width={560} height={560} style={styles.background} />
         case 'Normal':
-            return <NormalType width={550} height={550} style={styles.background} />
+            return <NormalType width={560} height={560} style={styles.background} />
         case 'poison':
-            return <PoisonType width={550} height={550} style={styles.background} />
+            return <PoisonType width={560} height={560} style={styles.background} />
         case 'psychic':
-            return <PsychicType width={550} height={550} style={styles.background} />
+            return <PsychicType width={560} height={560} style={styles.background} />
         case 'rock':
-            return <RockType width={550} height={550} style={styles.background} />
+            return <RockType width={560} height={560} style={styles.background} />
         default:
-            return <NormalType width={550} height={550} style={styles.background} />    
+            return <NormalType width={560} height={560} style={styles.background} />    
     }
 }
 
 const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
-        transform: [{translateX: "-16%"}, {translateY: "-30%"}]
+        transform: [{ translateX: "-16%" }, { translateY: "-30%" }],
+        opacity: 0.75
         // zIndex: 4
     }
 })
