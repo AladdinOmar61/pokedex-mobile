@@ -2,8 +2,7 @@ import { MainClient } from "pokenode-ts";
 import {
   TypeInfo,
 } from "@/interface";
-import pLimit from "p-limit";
-import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites, NamedAPIResource } from "pokenode-ts";
+import type { Pokemon, EvolutionChain, PokemonSpecies, PokemonSprites } from "pokenode-ts";
 
 type SinglePokemon = {
   id: number;
@@ -234,8 +233,6 @@ interface Ability {
 const pokeApi = () => {
   const api = new MainClient();
 
-  const limit = pLimit(8);
-
   const extractedIdFromUrl = (url: string) => {
     const urlId = url.match(/\/(\d+)\/?$/);
     return urlId ? Number(urlId[1]) : null;
@@ -245,16 +242,17 @@ const pokeApi = () => {
     const genData = await api.game.getGenerationById(gen);
     const getPokemonFromGen = await Promise.all(
       genData.pokemon_species.map(async (res) => {
-        const pokemonSpec = await api.pokemon.getPokemonSpeciesById(
-          extractedIdFromUrl(res.url)!
-        );
         const pokemon = await api.pokemon.getPokemonById(
           extractedIdFromUrl(res.url)!
         );
-        let pokemonName = pokemonSpec.varieties.filter((pkm) => pkm.is_default);
+        // const pokemonSpec = await api.pokemon.getPokemonSpeciesById(
+        //   extractedIdFromUrl(res.url)!
+        // );
+        // console.log("pokemon ", pokemon.name);
+        // let pokemonName = pokemonSpec.varieties.filter((pkm) => pkm.is_default);
         return {
           id: pokemon.id,
-          name: pokemonName[0].pokemon.name,
+          name: pokemon.name,
           primaryType: pokemon.types[0].type.name,
           defaultSprite: pokemon.sprites.front_default!,
         };
@@ -282,7 +280,7 @@ const pokeApi = () => {
     const detailData = await api.pokemon.getPokemonByName(name);
     return {
       id: detailData.id,
-      name:detailData.name,
+      name: detailData.name,
       is_default: detailData.is_default,
       abilities: detailData.abilities,
       forms: detailData.forms,
@@ -304,7 +302,95 @@ const pokeApi = () => {
 
   const getEvolutions = async (id: number): Promise<EvolutionChain> => {
     const evoData = await api.evolution.getEvolutionChainById(id!);
-      return evoData;
+    // injecting dipplin/hydrapple's evo conditions
+    if (evoData.id === 442) {
+      evoData.chain.evolves_to[2].evolution_details.push({
+        gender: null,
+        held_item: null,
+        item: {
+          name: "syrupy-apple",
+          url: "https://pokeapi.co/api/v2/item/1174/",
+        },
+        known_move: null,
+        known_move_type: null,
+        location: null,
+        min_affection: null,
+        min_beauty: null,
+        min_happiness: null,
+        min_level: null,
+        needs_overworld_rain: false,
+        party_species: null,
+        party_type: null,
+        relative_physical_stats: null,
+        time_of_day: "",
+        trade_species: null,
+        trigger: {
+          name: "use-item",
+          url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+        },
+        turn_upside_down: false,
+      });
+
+      evoData.chain.evolves_to[2].evolves_to[0].evolution_details.push(
+        {
+          gender: null,
+          held_item: null,
+          item: null,
+          known_move: {
+            name: "dragon-cheer",
+            url: "https://pokeapi.co/api/v2/move/246/",
+          },
+          known_move_type: null,
+          location: null,
+          min_affection: null,
+          min_beauty: null,
+          min_happiness: null,
+          min_level: null,
+          needs_overworld_rain: false,
+          party_species: null,
+          party_type: null,
+          relative_physical_stats: null,
+          time_of_day: "",
+          trade_species: null,
+          trigger: {
+            name: "level-up",
+            url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+          },
+          turn_upside_down: false,
+        }
+      );
+    }
+
+    // injecting duraludon/archaludon's evo conditions
+    if (evoData.id === 465) {
+      evoData.chain.evolves_to[0].evolution_details.push({
+        gender: null,
+        held_item: null,
+        item: {
+          name: "metal-alloy",
+          url: "https://pokeapi.co/api/v2/item/1174/",
+        },
+        known_move: null,
+        known_move_type: null,
+        location: null,
+        min_affection: null,
+        min_beauty: null,
+        min_happiness: null,
+        min_level: null,
+        needs_overworld_rain: false,
+        party_species: null,
+        party_type: null,
+        relative_physical_stats: null,
+        time_of_day: "",
+        trade_species: null,
+        trigger: {
+          name: "use-item",
+          url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+        },
+        turn_upside_down: false,
+      });
+    }
+    return evoData;
   };
 
   const getPokemonSpecies = async (name: string): Promise<PokemonSpecies> => {
