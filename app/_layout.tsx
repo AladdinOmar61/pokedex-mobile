@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
-import { useRouter, Stack, SplashScreen } from 'expo-router'
+import { useRouter, Stack, SplashScreen, Tabs } from 'expo-router'
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
 import { defaultShouldDehydrateQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
@@ -8,6 +8,9 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { useFonts } from 'expo-font'
+import SearchIcon from '@/assets/Icons/SearchIcon.svg';
+import FilterIcon from '@/assets/Icons/FilterIcon.svg';
+import SortIcon from '@/assets/Icons/SortIcon.svg';
 
 const asyncStoragePersister = createAsyncStoragePersister({
     storage: AsyncStorage,
@@ -28,47 +31,111 @@ const Layout = () => {
     const [loaded, error] = useFonts({
         "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
     });
-    
+
     useEffect(() => {
         if (loaded || error) {
-          SplashScreen.hideAsync();
+            SplashScreen.hideAsync();
         }
-      }, [loaded, error]);
-    
-      if (!loaded && !error) {
+    }, [loaded, error]);
+
+    if (!loaded && !error) {
         return null;
-      }
+    }
 
     const router = useRouter();
 
     const pixelBackArrow = () => (
-        <TouchableOpacity onPress={() => { router.back() }}>
+        <TouchableOpacity style={{marginLeft: 15}} onPress={() => { router.back() }}>
             <BackArrow width={24} height={24} />
         </TouchableOpacity>
     )
 
     return (
         <PersistQueryClientProvider
-        client={queryClient}
-            persistOptions={{ persister: asyncStoragePersister, dehydrateOptions: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) && query?.meta?.persist === true }  }}
+            client={queryClient}
+            persistOptions={{ persister: asyncStoragePersister, dehydrateOptions: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) && query?.meta?.persist === true } }}
         >
-        <Stack screenOptions={{
+            {/* <Stack screenOptions={{
             headerStyle: {
                 backgroundColor: "#F4511E"
             },
             headerTintColor: "#FFF"
         }}>
             <Stack.Screen name='index' options={{ title: "select generation", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 } }} />
-            <Stack.Screen name='(pokemon)/pokemonDetails/[pokemon]' options={{
+            <Stack.Screen name='pokemon/pokemonDetails/[pokemon]' options={{
                 title: "", headerLeft: pixelBackArrow
             }} />
-            <Stack.Screen name="(pokemon)/all" options={{
+            <Stack.Screen name="pokemon/all" options={{
                 title: "All Pokemon", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 }, headerLeft: pixelBackArrow
             }} />
-            <Stack.Screen name="(pokemon)/generations/[gen]" options={{
+            <Stack.Screen name="pokemon/generations/[gen]" options={{
                 title: "", headerLeft: pixelBackArrow
             }} />
-        </Stack>
+        </Stack> */}
+            <Tabs screenOptions={{
+                    headerStyle: {
+                        backgroundColor: "#F4511E",
+                    },
+                    headerTitleAlign: 'center',
+                    headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
+                    tabBarStyle: {
+                        backgroundColor: "#F4511E",
+                },
+                    tabBarShowLabel: false,
+                    headerTintColor: "#FFF"
+            }}>
+                
+                {/* Hidden tabs */}
+                <Tabs.Screen
+                    name="index"
+                    options={{
+                        title: "Select Generation",
+                        href: null,
+                    }}
+                />
+                <Tabs.Screen
+                    name="pokemon/generations/[gen]"
+                    options={{
+                        href: null,
+                        headerLeft: pixelBackArrow
+                    }}
+                />
+                <Tabs.Screen
+                    name="pokemon/pokemonDetails/[pokemon]"
+                    options={{
+                        href: null,
+                        headerLeft: pixelBackArrow
+                    }}
+                />
+                <Tabs.Screen
+                    name="pokemon/all"
+                    options={{
+                        title: "Loading...",
+                        href: null,
+                    }}
+                />
+                <Tabs.Screen
+                    name="search"
+                    options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: () => <SearchIcon width={30} height={30} style={{marginTop: 10}} />,
+                    }}
+                />
+                <Tabs.Screen
+                    name="filter"
+                    options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: () => <FilterIcon width={30} height={30} style={{ marginTop: 10 }} />,
+                    }}
+                />
+                <Tabs.Screen
+                    name="sort"
+                    options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: () => <SortIcon width={30} height={30} style={{ marginTop: 10 }} />,
+                    }}
+                />
+            </Tabs>
         </PersistQueryClientProvider>
     )
 }

@@ -42,12 +42,12 @@ const AllPokemon = () => {
   useEffect(() => {
     if (genPokemon) {
       navigation.setOptions({
-        title: `Generation ${Number(gen) - 1}`,
+        title: gen ? `Generation ${Number(gen) - 1}` : "loading...",
         headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
         headerTitleAlign: "center",
       });
     }
-  }, [genPokemon, navigation]);
+  }, [genPokemon, navigation, gen]);
 
   const readableColor = (pokemonType: string) => {
     if (
@@ -87,7 +87,7 @@ const AllPokemon = () => {
           keyExtractor={(item) => String(item?.id || "unknown")}
           renderItem={({ item, index }) => (
             <Link
-              href={`/(pokemon)/pokemonDetails/${item.name}`}
+              href={`/pokemon/pokemonDetails/${item.name}`}
               key={index}
               asChild
             >
