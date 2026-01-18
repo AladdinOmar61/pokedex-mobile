@@ -39,10 +39,10 @@ const AllPokemon = () => {
       {pokemon ? (
         pokemon.map((p) => {
           return (
-          <Link href={`/pokemon/pokemonDetails/${p.id}`} key={p.id} asChild>
+          <Link href={`/(pokemon)/pokemonDetails/${p.id}`} key={p.id} asChild>
             <TouchableOpacity>
               <View style={styles.item}>
-                {/* <Image source={{ uri: p.image }} style={styles.preview} /> */}
+                <Image source={{ uri: p.image }} style={styles.preview} />
                 <Text style={styles.itemText}>
                   #{p.id} {p.name}
                 </Text>

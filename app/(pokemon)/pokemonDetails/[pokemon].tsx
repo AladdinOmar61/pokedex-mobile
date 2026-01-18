@@ -332,14 +332,13 @@ const Details = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable onPress={toggleFavorite}>
+        <Text onPress={toggleFavorite}>
           <Ionicons
             name={isFavorited ? "star" : "star-outline"}
             size={22}
             color="white"
-            style={{marginRight: 15}}
           />
-        </Pressable>
+        </Text>
       ),
     });
   }, [isFavorited]);
@@ -353,7 +352,7 @@ const Details = () => {
   };
 
   return (
-    <ScrollView style={{ padding: 10, flex: 1 }}>
+    <ScrollView style={{ padding: 10, marginBottom: insets.bottom, flex: 1 }}>
       {pokemonDetails && (
         <>
           <View style={[styles.card, { overflow: "hidden" }]}>
@@ -477,7 +476,7 @@ const Details = () => {
                     <View style={styles.evolutionSection}>
                       {baseEvo && (
                         <Link
-                          href={`/pokemon/pokemonDetails/${baseNum}`}
+                          href={`/(pokemon)/pokemonDetails/${baseNum}`}
                           asChild
                         >
                           <Pressable>
@@ -968,7 +967,7 @@ const Details = () => {
                                     </View>
                                     {evo1Img[feIndex] && (
                                       <Link
-                                        href={`/pokemon/pokemonDetails/${evo1Num[feIndex]}`}
+                                        href={`/(pokemon)/pokemonDetails/${evo1Num[feIndex]}`}
                                         asChild
                                       >
                                         <Pressable>
@@ -1327,7 +1326,7 @@ const Details = () => {
                                           </View>
                                           {evo2Img[feIndex] ? (
                                             <Link
-                                              href={`/pokemon/pokemonDetails/${evo2Num[feIndex]}`}
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[feIndex]}`}
                                               asChild
                                             >
                                               <Pressable>
@@ -1346,7 +1345,7 @@ const Details = () => {
                                             </Link>
                                           ) : (
                                             <Link
-                                              href={`/pokemon/pokemonDetails/${evo2Num[seIndex]}`}
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
                                               asChild
                                             >
                                               <Pressable>
@@ -1716,7 +1715,7 @@ const Details = () => {
                                           </View>
                                           {evo2Img[seIndex] && (
                                             <Link
-                                              href={`/pokemon/pokemonDetails/${evo2Num[seIndex]}`}
+                                              href={`/(pokemon)/pokemonDetails/${evo2Num[seIndex]}`}
                                               asChild
                                             >
                                               <Pressable>
@@ -1797,7 +1796,7 @@ const Details = () => {
                     >
                       {varietyImgs && varietyImgs?.length > 0 && (
                         <Link
-                          href={`/pokemon/pokemonDetails/${variety.pokemon.name}`}
+                          href={`/(pokemon)/pokemonDetails/${variety.pokemon.name}`}
                           asChild
                         >
                           <Pressable>
