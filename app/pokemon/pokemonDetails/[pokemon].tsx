@@ -62,6 +62,8 @@ const Details = () => {
     enabled: !!pokemon,
   });
 
+  console.log("poke details: ", pokemonDetails);
+
   const pokemonDetailsName = pokemonDetails?.species.name;
 
   const {
@@ -88,6 +90,109 @@ const Details = () => {
     queryFn: () => getEvolutions(evolutionChainId!),
     enabled: !!evolutionChainId,
   });
+
+  useEffect(() => {
+    const pokeEvos = async () => {
+      try {
+        if (pokemonDetails) {
+          if (pokemonEvos) {
+            // injecting dipplin/hydrapple's evo conditions
+            if (pokemonEvos.id === 442) {
+              pokemonEvos.chain.evolves_to[2].evolution_details.push({
+                gender: null,
+                held_item: null,
+                item: {
+                  name: "syrupy-apple",
+                  url: "https://pokeapi.co/api/v2/item/1174/",
+                },
+                known_move: null,
+                known_move_type: null,
+                location: null,
+                min_affection: null,
+                min_beauty: null,
+                min_happiness: null,
+                min_level: null,
+                needs_overworld_rain: false,
+                party_species: null,
+                party_type: null,
+                relative_physical_stats: null,
+                time_of_day: "",
+                trade_species: null,
+                trigger: {
+                  name: "use-item",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+                },
+                turn_upside_down: false,
+              });
+
+              pokemonEvos.chain.evolves_to[2].evolves_to[0].evolution_details.push(
+                {
+                  gender: null,
+                  held_item: null,
+                  item: null,
+                  known_move: {
+                    name: "dragon-cheer",
+                    url: "https://pokeapi.co/api/v2/move/246/",
+                  },
+                  known_move_type: null,
+                  location: null,
+                  min_affection: null,
+                  min_beauty: null,
+                  min_happiness: null,
+                  min_level: null,
+                  needs_overworld_rain: false,
+                  party_species: null,
+                  party_type: null,
+                  relative_physical_stats: null,
+                  time_of_day: "",
+                  trade_species: null,
+                  trigger: {
+                    name: "level-up",
+                    url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+                  },
+                  turn_upside_down: false,
+                }
+              );
+            }
+            // injecting duraludon/archaludon's evo conditions
+            if (pokemonEvos.id === 465) {
+              pokemonEvos.chain.evolves_to[0].evolution_details.push({
+                gender: null,
+                held_item: null,
+                item: {
+                  name: "metal-alloy",
+                  url: "https://pokeapi.co/api/v2/item/1174/",
+                },
+                known_move: null,
+                known_move_type: null,
+                location: null,
+                min_affection: null,
+                min_beauty: null,
+                min_happiness: null,
+                min_level: null,
+                needs_overworld_rain: false,
+                party_species: null,
+                party_type: null,
+                relative_physical_stats: null,
+                time_of_day: "",
+                trade_species: null,
+                trigger: {
+                  name: "use-item",
+                  url: "https://pokeapi.co/api/v2/evolution-trigger/3/",
+                },
+                turn_upside_down: false,
+              });
+            }
+          }
+        }
+      } catch (err: any) {
+        console.error("axios error:", err.response?.status, err.response?.data);
+        console.error("requested url:", err.config?.url);
+        console.error("Could not retrieve pokemon", err);
+      }
+    };
+    pokeEvos();
+  }, [pokemonEvos]);
 
   useEffect(() => {
     if (pokemonEvos) {
