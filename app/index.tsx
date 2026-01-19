@@ -3,12 +3,13 @@ import React from 'react'
 import { Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen'
+import BottomOptions from '@/components/BottomOptions';
 
 SplashScreen.preventAutoHideAsync();
 
 const Home = () => {
 
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   // const tabHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
 
@@ -22,7 +23,7 @@ const Home = () => {
 
   return (
     <View>
-      <ScrollView style={{ marginBottom: insets.bottom }}>
+      <ScrollView style={{ marginBottom: height / 10 }}>
         <Link href={`(pokemon)/all`} asChild>
           <TouchableOpacity>
             {/* <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
