@@ -328,15 +328,15 @@ const Details = () => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Text onPress={toggleFavorite}>
-          <Ionicons
-            name={isFavorited ? "star" : "star-outline"}
-            size={22}
-            color="white"
-          />
-        </Text>
-      ),
+      // headerRight: () => (
+      //   <Pressable onPress={toggleFavorite} style={{marginRight: 30}}>
+      //     <Ionicons
+      //       name={isFavorited ? "star" : "star-outline"}
+      //       size={22}
+      //       color="white"
+      //     />
+      //   </Pressable>
+      // ),
     });
   }, [isFavorited]);
 

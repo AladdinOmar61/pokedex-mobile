@@ -5,7 +5,7 @@ import {
 import pLimit from "p-limit";
 import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites, NamedAPIResource } from "pokenode-ts";
 
-type SinglePokemon = {
+export type SinglePokemon = {
   id: number;
   name: string;
   defaultSprite: string;
@@ -263,19 +263,28 @@ const pokeApi = () => {
     return getPokemonFromGen.sort((a, b) => a.id - b.id);
   };
 
-  const getPokemon = async (): Promise<Pokemon[]> => {
+  const getPokemon = async (): Promise<SinglePokemon[]> => {
     const data = await api.game.getPokedexById(1);
     const pokemon = await Promise.all(
       data.pokemon_entries.map(async (res) => {
-        return api.pokemon.getPokemonById(res.entry_number);
-      })
+        const pokemonSpecies = await api.pokemon.getPokemonSpeciesById(
+          extractedIdFromUrl(res.pokemon_species.url)!,
+        );
+        const pokemonData = await api.pokemon.getPokemonById(
+          extractedIdFromUrl(res.pokemon_species.url)!,
+        );
+        let pokemonName = pokemonSpecies.varieties.filter(
+          (pkm) => pkm.is_default,
+        );
+        return {
+          id: pokemonData.id,
+          name: pokemonName[0].pokemon.name,
+          primaryType: pokemonData.types[0].type.name,
+          defaultSprite: pokemonData.sprites.front_default!,
+        };
+      }),
     );
-    return pokemon.map((item) => {
-      return {
-        ...item,
-        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${item.id}.png`,
-      };
-    });
+    return pokemon.sort((a, b) => a.id - b.id);
   };
 
   const getPokemonDetails = async (name: string): Promise<PokemonDetails> => {

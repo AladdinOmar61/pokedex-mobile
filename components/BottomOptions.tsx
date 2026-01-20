@@ -1,7 +1,6 @@
-import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
+import { View, StyleSheet, useWindowDimensions, Pressable, Text, TextInput } from "react-native";
 import React from "react";
 import FilterIcon from "@/assets/Icons/FilterIcon.svg";
-import SearchIcon from "@/assets/Icons/SearchIcon.svg";
 import SortIcon from "@/assets/Icons/SortIcon.svg";
 import SettingsIcon from "@/assets/Icons/SettingsIcon.svg";
 import MenuArrow from "@/assets/Icons/MenuArrow.svg";
@@ -29,28 +28,28 @@ const BottomOptions = () => {
       optionYpos.value = clamp(
         prevOptionYpos.value + event.translationY,
         0,
-        tabHeight 
+        tabHeight
       );
     })
     .onEnd((event) => {
-    // use swipe speed to determine position
-    const velocityThreshold = 500;
-    
-    if (event.velocityY < -velocityThreshold) {
-      // Snap to show options when fast swipe up
-      optionYpos.value = withSpring(0);
-      optionOpen.value = true;
-    } else if (event.velocityY > velocityThreshold) {
-      // Snap to tabheight when fast swipe down
-      optionYpos.value = withSpring(tabHeight);
-      optionOpen.value = false;
-    } else {
-      // Something weird happened? Unexpected behavior? Determines its
-      // position and move it based on the thresholds below
-      const snapToTop = optionYpos.value < tabHeight / 2;
-      optionYpos.value = withSpring(snapToTop ? 0 : tabHeight);
-      optionOpen.value = snapToTop ? true : false;
-    }
+      // use swipe speed to determine position
+      const velocityThreshold = 500;
+
+      if (event.velocityY < -velocityThreshold) {
+        // Snap to show options when fast swipe up
+        optionYpos.value = withSpring(0);
+        optionOpen.value = true;
+      } else if (event.velocityY > velocityThreshold) {
+        // Snap to tabheight when fast swipe down
+        optionYpos.value = withSpring(tabHeight);
+        optionOpen.value = false;
+      } else {
+        // Something weird happened? Unexpected behavior? Determines its
+        // position and move it based on the thresholds below
+        const snapToTop = optionYpos.value < tabHeight / 2;
+        optionYpos.value = withSpring(snapToTop ? 0 : tabHeight);
+        optionOpen.value = snapToTop ? true : false;
+      }
     })
 
   const animatedMenuStyles = useAnimatedStyle(() => ({
@@ -58,7 +57,7 @@ const BottomOptions = () => {
   }));
 
   const animatedArrowStyles = useAnimatedStyle(() => ({
-    transform: [{rotate: optionOpen.value ? withSpring('180deg') : withSpring('0deg')}]
+    transform: [{ rotate: optionOpen.value ? withSpring('180deg') : withSpring('0deg') }]
   }));
 
   return (
@@ -72,21 +71,20 @@ const BottomOptions = () => {
           },
           animatedMenuStyles,
         ]}
-      >
+        >
         <View style={styles.menuArea}>
           <View style={styles.menuArrowView}>
             <Animated.View style={animatedArrowStyles}>
-            <MenuArrow />
+              <MenuArrow />
             </Animated.View>
           </View>
-        <View style={styles.icons}>
-          <SearchIcon width={25} height={25} />
-          <SettingsIcon width={25} height={25} />
-          <FilterIcon width={25} height={25} />
-          <SortIcon width={25} height={25} />
+          <View style={styles.icons}>
+            <SettingsIcon width={25} height={25} />
+            <FilterIcon width={25} height={25} />
+            <SortIcon width={25} height={25} />
+          </View>
         </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
     </GestureDetector>
   );
 };
@@ -107,6 +105,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     backgroundColor: "#F4511E",
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    borderStyle: 'solid'
   },
   icons: {
     position: "absolute",
@@ -115,6 +116,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: "100%",
+  },
+  infoText: {
+    fontFamily: "Silkscreen",
+    color: 'white'
   },
 });
 
