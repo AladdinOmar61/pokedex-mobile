@@ -1,76 +1,120 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
-import { useRouter, Stack, SplashScreen } from 'expo-router'
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { useRouter, Stack, SplashScreen } from "expo-router";
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
-import { defaultShouldDehydrateQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useReactQueryDevTools } from '@dev-plugins/react-query';
-import { useFonts } from 'expo-font'
+import {
+  defaultShouldDehydrateQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useReactQueryDevTools } from "@dev-plugins/react-query";
+import { useFonts } from "expo-font";
+import BottomOptions from "@/components/BottomOptions";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const asyncStoragePersister = createAsyncStoragePersister({
-    storage: AsyncStorage,
+  storage: AsyncStorage,
 });
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            gcTime: 1000 * 60 * 60 * 24, // 24 hours
-            staleTime: 1000 * 60 * 5,
-        },
+  defaultOptions: {
+    queries: {
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      staleTime: 1000 * 60 * 5,
     },
-})
+  },
+});
 
 const Layout = () => {
-    useReactQueryDevTools(queryClient);
+  useReactQueryDevTools(queryClient);
 
-    const [loaded, error] = useFonts({
-        "Silkscreen": require("../assets/Fonts/Silkscreen-Regular.ttf"),
-    });
-    
-    useEffect(() => {
-        if (loaded || error) {
-          SplashScreen.hideAsync();
-        }
-      }, [loaded, error]);
-    
-      if (!loaded && !error) {
-        return null;
-      }
+  const [loaded, error] = useFonts({
+    Silkscreen: require("../assets/Fonts/Silkscreen-Regular.ttf"),
+  });
 
-    const router = useRouter();
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
 
-    const pixelBackArrow = () => (
-        <TouchableOpacity onPress={() => { router.back() }}>
-            <BackArrow width={24} height={24} />
-        </TouchableOpacity>
-    )
+  if (!loaded && !error) {
+    return null;
+  }
 
-    return (
-        <PersistQueryClientProvider
-        client={queryClient}
-            persistOptions={{ persister: asyncStoragePersister, dehydrateOptions: { shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) && query?.meta?.persist === true }  }}
-        >
-        <Stack screenOptions={{
-            headerStyle: {
-                backgroundColor: "#F4511E"
-            },
-            headerTintColor: "#FFF"
-        }}>
-            <Stack.Screen name='index' options={{ title: "select generation", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 } }} />
-            <Stack.Screen name='(pokemon)/pokemonDetails/[pokemon]' options={{
-                title: "", headerLeft: pixelBackArrow
-            }} />
-            <Stack.Screen name="(pokemon)/all" options={{
-                title: "All Pokemon", headerTitleAlign: 'center', headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 }, headerLeft: pixelBackArrow
-            }} />
-            <Stack.Screen name="(pokemon)/generations/[gen]" options={{
-                title: "", headerLeft: pixelBackArrow
-            }} />
-        </Stack>
-        </PersistQueryClientProvider>
-    )
-}
+  const router = useRouter();
 
-export default Layout
+  const pixelBackArrow = () => (
+    <TouchableOpacity
+      onPress={() => {
+        router.back();
+      }}
+    >
+      <BackArrow width={24} height={24} />
+    </TouchableOpacity>
+  );
+
+  return (
+    <GestureHandlerRootView>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: asyncStoragePersister,
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) =>
+            defaultShouldDehydrateQuery(query) && query?.meta?.persist === true,
+        },
+      }}
+    >
+      
+        <BottomOptions />
+      
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#F4511E",
+          },
+          headerTintColor: "#FFF",
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: "select generation",
+            headerTitleAlign: "center",
+            headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
+          }}
+        />
+        <Stack.Screen
+          name="(pokemon)/pokemonDetails/[pokemon]"
+          options={{
+            title: "",
+            headerLeft: pixelBackArrow,
+          }}
+        />
+        <Stack.Screen
+          name="(pokemon)/all"
+          options={{
+            title: "All Pokemon",
+            headerTitleAlign: "center",
+            headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
+            headerLeft: pixelBackArrow,
+          }}
+        />
+        <Stack.Screen
+          name="(pokemon)/generations/[gen]"
+          options={{
+            title: "",
+            headerLeft: pixelBackArrow,
+          }}
+        />
+      </Stack>
+    </PersistQueryClientProvider>
+    </GestureHandlerRootView>
+  );
+};
+
+export default Layout;
