@@ -14,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aladdino.pokedexmobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,25 +30,27 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-font",
-      {
-      "fonts": [
-        "./assets/Fonts/Silkscreen-Regular.ttf"
-      ],
-      "android": {
-        "fonts": [
-          {
-            "fontFamily": "Silkscreen",
-            "fontDefinitions": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/Fonts/Silkscreen-Regular.ttf"
+          ],
+          "android": {
+            "fonts": [
               {
-                "path": "./assets/Fonts/Silkscreen-Bold.ttf",
-                "weight": 700
+                "fontFamily": "Silkscreen",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/Fonts/Silkscreen-Bold.ttf",
+                    "weight": 700
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
-    }]
+        }
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true

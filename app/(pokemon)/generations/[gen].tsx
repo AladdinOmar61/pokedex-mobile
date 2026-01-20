@@ -82,7 +82,7 @@ const AllPokemon = () => {
         </View>
       ) : (
         <FlashList
-          style={{ marginBottom: insets.bottom, height: "100%", width: "100%" }}
+          style={{ marginBottom: height / 10, height: "100%", width: "100%" }}
           data={genPokemon}
           keyExtractor={(item) => String(item?.id || "unknown")}
           renderItem={({ item, index }) => (

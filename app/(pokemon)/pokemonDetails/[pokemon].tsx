@@ -18,12 +18,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ArrowRight from "@/assets/Icons/Arrow-Right.svg";
 import Heart from "@/assets/Icons/Pixel-Heart.svg";
 import { useQuery } from "@tanstack/react-query";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { PokeBG } from "@/PokeTypes";
 import { secondaryTypeColor } from "@/PokeTypeColor";
 
 const Details = () => {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const {
@@ -61,8 +60,6 @@ const Details = () => {
     queryFn: () => getPokemonDetails(pokemon!),
     enabled: !!pokemon,
   });
-
-  console.log("poke details: ", pokemonDetails);
 
   const pokemonDetailsName = pokemonDetails?.species.name;
 
@@ -352,7 +349,7 @@ const Details = () => {
   };
 
   return (
-    <ScrollView style={{ padding: 10, marginBottom: insets.bottom, flex: 1 }}>
+    <ScrollView style={{ padding: 10, marginBottom: (height / 10), flex: 1 }}>
       {pokemonDetails && (
         <>
           <View style={[styles.card, { overflow: "hidden" }]}>
