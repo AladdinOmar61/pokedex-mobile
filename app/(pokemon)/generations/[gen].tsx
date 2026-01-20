@@ -54,7 +54,9 @@ const AllPokemon = () => {
       pokemonType === "normal" ||
       pokemonType === "bug" ||
       pokemonType === "grass" ||
-      pokemonType === "flying"
+      pokemonType === "flying" ||
+      pokemonType === "electric" ||
+      pokemonType === "rock"
     ) {
       return "black";
     } else {

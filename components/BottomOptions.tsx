@@ -3,12 +3,13 @@ import React from "react";
 import FilterIcon from "@/assets/Icons/FilterIcon.svg";
 import SearchIcon from "@/assets/Icons/SearchIcon.svg";
 import SortIcon from "@/assets/Icons/SortIcon.svg";
+import SettingsIcon from "@/assets/Icons/SettingsIcon.svg";
+import MenuArrow from "@/assets/Icons/MenuArrow.svg";
 import Animated, {
   clamp,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
@@ -17,7 +18,7 @@ const BottomOptions = () => {
   const tabHeight = height / 2 - height / 10;
   const prevOptionYpos = useSharedValue<number>(tabHeight);
   const optionYpos = useSharedValue<number>(tabHeight);
-  const offset = useSharedValue<number>(tabHeight);
+  const optionOpen = useSharedValue<boolean>(false);
 
   const menuPan = Gesture.Pan()
     .minDistance(1)
@@ -38,19 +39,26 @@ const BottomOptions = () => {
     if (event.velocityY < -velocityThreshold) {
       // Snap to show options when fast swipe up
       optionYpos.value = withSpring(0);
+      optionOpen.value = true;
     } else if (event.velocityY > velocityThreshold) {
       // Snap to tabheight when fast swipe down
       optionYpos.value = withSpring(tabHeight);
+      optionOpen.value = false;
     } else {
-      // Something weird happened? Determine its
+      // Something weird happened? Unexpected behavior? Determines its
       // position and move it based on the thresholds below
       const snapToTop = optionYpos.value < tabHeight / 2;
       optionYpos.value = withSpring(snapToTop ? 0 : tabHeight);
+      optionOpen.value = snapToTop ? true : false;
     }
     })
 
-  const animatedStyles = useAnimatedStyle(() => ({
+  const animatedMenuStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: optionYpos.value }],
+  }));
+
+  const animatedArrowStyles = useAnimatedStyle(() => ({
+    transform: [{rotate: optionOpen.value ? withSpring('180deg') : withSpring('0deg')}]
   }));
 
   return (
@@ -62,13 +70,21 @@ const BottomOptions = () => {
             height: height / 2,
             width: width,
           },
-          animatedStyles,
+          animatedMenuStyles,
         ]}
       >
+        <View style={styles.menuArea}>
+          <View style={styles.menuArrowView}>
+            <Animated.View style={animatedArrowStyles}>
+            <MenuArrow />
+            </Animated.View>
+          </View>
         <View style={styles.icons}>
-          <SearchIcon width={30} height={30} />
-          <FilterIcon width={30} height={30} />
-          <SortIcon width={30} height={30} />
+          <SearchIcon width={25} height={25} />
+          <SettingsIcon width={25} height={25} />
+          <FilterIcon width={25} height={25} />
+          <SortIcon width={25} height={25} />
+        </View>
         </View>
       </Animated.View>
     </GestureDetector>
@@ -76,6 +92,16 @@ const BottomOptions = () => {
 };
 
 const styles = StyleSheet.create({
+  menuArea: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  menuArrowView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 5
+  },
   options: {
     zIndex: 1000,
     position: "absolute",
@@ -84,7 +110,7 @@ const styles = StyleSheet.create({
   },
   icons: {
     position: "absolute",
-    top: 10,
+    top: 17,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
