@@ -18,24 +18,36 @@ const BottomOptions = () => {
   const prevOptionYpos = useSharedValue<number>(tabHeight);
   const optionYpos = useSharedValue<number>(tabHeight);
   const offset = useSharedValue<number>(tabHeight);
-  const pressed = useSharedValue(false);
 
   const menuPan = Gesture.Pan()
     .minDistance(1)
     .onStart(() => {
-      prevOptionYpos.value = optionYpos.value;
+      prevOptionYpos.value = optionYpos.value
     })
     .onUpdate((event) => {
-      optionYpos.value = event.translationY;
+      optionYpos.value = clamp(
+        prevOptionYpos.value + event.translationY,
+        0,
+        tabHeight 
+      );
     })
-    .onEnd(() => {
-      if (optionYpos.value > tabHeight) {
-        optionYpos.value = withSpring(-(height / 2 - tabHeight * 1.25));
-      } else {
-        optionYpos.value = withSpring(tabHeight);
-      }
+    .onEnd((event) => {
+    // use swipe speed to determine position
+    const velocityThreshold = 500;
+    
+    if (event.velocityY < -velocityThreshold) {
+      // Snap to show options when fast swipe up
+      optionYpos.value = withSpring(0);
+    } else if (event.velocityY > velocityThreshold) {
+      // Snap to tabheight when fast swipe down
+      optionYpos.value = withSpring(tabHeight);
+    } else {
+      // Something weird happened? Determine its
+      // position and move it based on the thresholds below
+      const snapToTop = optionYpos.value < tabHeight / 2;
+      optionYpos.value = withSpring(snapToTop ? 0 : tabHeight);
+    }
     })
-    .runOnJS(true);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: optionYpos.value }],
