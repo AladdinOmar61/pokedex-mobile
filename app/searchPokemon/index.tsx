@@ -77,7 +77,8 @@ const index = () => {
                     <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>
                 </View>
             )}
-            {searchResults?.length === 0 ? (
+            
+            {searchResults?.length === 0 ? ( 
                 <FlashList
                     style={{ marginBottom: height / 10, height: "100%", width: "100%" }}
                     data={allPokemon}

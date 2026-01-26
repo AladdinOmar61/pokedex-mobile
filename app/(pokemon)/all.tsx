@@ -9,15 +9,13 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link } from "expo-router";
-import { Pokemon } from "@/interface";
-import { Ionicons } from "@expo/vector-icons";
-import pokeApi from "@/api/pokeapi";
+import pokeApi, { SinglePokemon } from "@/api/pokeapi";
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
 
 const AllPokemon = () => {
   const { getPokemon } = pokeApi();
 
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
+  const [pokemon, setPokemon] = useState<SinglePokemon[]>([]);
 
   const retrievePokemon = async () => {
     try {
@@ -42,7 +40,7 @@ const AllPokemon = () => {
           <Link href={`/(pokemon)/pokemonDetails/${p.id}`} key={p.id} asChild>
             <TouchableOpacity>
               <View style={styles.item}>
-                <Image source={{ uri: p.image }} style={styles.preview} />
+                <Image source={{ uri: p.defaultSprite }} style={styles.preview} />
                 <Text style={styles.itemText}>
                   #{p.id} {p.name}
                 </Text>
