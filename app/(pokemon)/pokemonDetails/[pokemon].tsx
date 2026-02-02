@@ -20,11 +20,9 @@ import Heart from "@/assets/Icons/Pixel-Heart.svg";
 import { useQuery } from "@tanstack/react-query";
 import { PokeBG } from "@/PokeTypes";
 import { secondaryTypeColor } from "@/PokeTypeColor";
-import * as FileSystem from 'expo-file-system';
 
 const Details = () => {
   const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
 
   const {
     getPokemonDetails,
@@ -43,9 +41,10 @@ const Details = () => {
   const navigation = useNavigation();
 
   const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
+  const [varietyIds, setVarietyIds] = useState <number[]>([]);
 
-  const [singleImgSize, setSingleImgSize] = useState<WidthAndHeight>({width: 0, height: 0});
   const [imgSizes, setImgSizes] = useState<WidthAndHeight[]>([]);
+  const [sizesLoading, setSizesLoading] = useState<boolean>(true);
 
   const [baseEvo, setBaseEvo] = useState<string>("");
   const [evo1Img, setEvo1Img] = useState<string[]>([]);
@@ -96,6 +95,7 @@ const Details = () => {
     queryFn: () => getEvolutions(evolutionChainId!),
     enabled: !!evolutionChainId,
   });
+
 
   useEffect(() => {
     const pokeEvos = async () => {
@@ -289,24 +289,43 @@ const Details = () => {
   useEffect(() => {
     if (speciesInfo) {
       let varietiesBucket = [];
-      let imgSizesBucket: WidthAndHeight[] = [];
       for (let i = 0; i < speciesInfo.varieties.length; i++) {
         let varietyUrl = extractedIdFromUrl(
           speciesInfo.varieties[i].pokemon.url
         );
         const speciesVarietyImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${varietyUrl}.png`;
-        if (speciesVarietyImg) {
-          Image.getSize(speciesVarietyImg, (width, height) => { setSingleImgSize({ width, height }) })
-          imgSizesBucket.push(singleImgSize);
-        }
         varietiesBucket.push(speciesVarietyImg);
       }
-      setImgSizes(imgSizesBucket);
       setVarietyImgs(varietiesBucket);
     }
   }, [speciesInfo]);
 
-  console.log(imgSizes[0]);
+  useEffect(() => {
+    const fetchImageSizes = async () => {
+
+      if (varietyImgs.length === 0) return;
+
+      setSizesLoading(true);
+
+      let varietyIdBucket: number[] = [];
+
+      const sizePromises = varietyImgs.map((uri, index) => {
+        return new Promise<WidthAndHeight>((resolve) => {
+          Image.getSize(uri, (width, height) => resolve({ width, height }), () => resolve({ width: 0, height: 0 }))
+          const speciesVarietyUrl = speciesInfo?.varieties[index].pokemon.url!
+          const varietyId = speciesVarietyUrl ? extractedIdFromUrl(speciesVarietyUrl) : undefined;
+          varietyIdBucket.push(varietyId!);
+        })
+      })
+
+      const sizes = await Promise.all(sizePromises);
+      setImgSizes(sizes);
+      setVarietyIds(varietyIdBucket);
+      setSizesLoading(false);
+    }
+
+    fetchImageSizes();
+  }, [varietyImgs])
 
   useEffect(() => {
     if (pokemonDetails) {
@@ -1799,7 +1818,7 @@ const Details = () => {
             ) : (
               <ScrollView horizontal>
                 {speciesInfo?.varieties.length! > 1 ? (
-                    speciesInfo?.varieties.map((variety, index) => {
+                  speciesInfo?.varieties.map((variety, index) => {
                     return (
                       <View
                         key={index}
@@ -1816,16 +1835,19 @@ const Details = () => {
                             asChild
                           >
                             <Pressable>
+                              {sizesLoading ? (
+                                <ActivityIndicator />
+                              ) : (
                               <Image
                                 source={{
                                   uri:
-                                    // imgSizes[index].width > 0 ?
-                                      varietyImgs[index]
-                                      // :
-                                      // pokemonDetails.sprites.other?.["official-artwork"].front_default!
+                                    imgSizes[index].width > 0 ?
+                                    varietyImgs[index]
+                                  :
+                                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${varietyIds[index]}.png`
                                 }}
                                 style={{ width: 80, height: 80 }}
-                              />
+                              /> )}
                             </Pressable>
                           </Link>
                         )}

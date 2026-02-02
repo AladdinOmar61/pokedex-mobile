@@ -234,8 +234,6 @@ interface Ability {
 const pokeApi = () => {
   const api = new MainClient();
 
-  const limit = pLimit(8);
-
   const extractedIdFromUrl = (url: string) => {
     const urlId = url.match(/\/(\d+)\/?$/);
     return urlId ? Number(urlId[1]) : null;

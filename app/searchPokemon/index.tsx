@@ -17,6 +17,8 @@ const index = () => {
     const insets = useSafeAreaInsets();
     const [searchText] = useAtom(searchAtom);
 
+    const [searchResults, setSearchResults] = useState<SinglePokemon[]>([]);
+
     const { getPokemon } = pokeApi();
 
     const { data: allPokemon, isLoading: resultLoading, error: searchErr } = useQuery({
@@ -27,20 +29,17 @@ const index = () => {
         },
     })
 
-    const { data: searchResults } = useQuery({
-        queryKey: ["pokeSearch"],
-        queryFn: () => handleSearch(),
-    })
-
-    const handleSearch = () => {
-        if (searchText.length > 2) {
-            console.log("searching...");
-            return allPokemon?.filter((pkm) => pkm.name.includes(searchText))
-        } else {
-            console.log(searchText.length);
-            return [];
+    useEffect(() => {
+        const handleSearch = () => {
+            if (searchText.length > 2) {
+                const filteredPokemon = allPokemon?.filter((pkm) => pkm.name.includes(searchText.toLocaleLowerCase()));
+                setSearchResults(filteredPokemon!);
+            } else {
+                setSearchResults([]);
+            }
         }
-    }
+        handleSearch();
+    }, [searchText])
 
 
     const readableColor = (pokemonType: string) => {
