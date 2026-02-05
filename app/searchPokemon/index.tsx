@@ -15,7 +15,7 @@ import { useAtom } from 'jotai';
 const index = () => {
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const [searchText] = useAtom(searchAtom);
+    const [searchText, setSearchText] = useAtom(searchAtom);
 
     const [searchResults, setSearchResults] = useState<SinglePokemon[]>([]);
 
@@ -70,7 +70,7 @@ const index = () => {
             )}
             {resultLoading && (
                 <View
-                    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+                    style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}
                 >
                     {/* TODO: Maybe add spinning pokeball loading animation */}
                     <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>

@@ -41,7 +41,7 @@ const Details = () => {
   const navigation = useNavigation();
 
   const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
-  const [varietyIds, setVarietyIds] = useState <number[]>([]);
+  const [varietyIds, setVarietyIds] = useState<number[]>([]);
 
   const [imgSizes, setImgSizes] = useState<WidthAndHeight[]>([]);
   const [sizesLoading, setSizesLoading] = useState<boolean>(true);
@@ -386,12 +386,19 @@ const Details = () => {
 
   return (
     <ScrollView style={{ paddingHorizontal: 10, marginTop: 5, marginBottom: (height / 10), flex: 1 }}>
-      {pokemonDetails && (
+      {detailsLoading ? (
+        <View
+          style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}
+        >
+          {/* TODO: Maybe add spinning pokeball loading animation */}
+          <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>
+        </View>
+      ) : (
         <>
           <View style={[styles.card, { overflow: "hidden" }]}>
-            {PokeBG(pokemonDetails.types[0].type.name)}
+            {PokeBG(pokemonDetails!.types[0].type.name)}
             <Text style={styles.pokemonName}>
-              #{pokemonDetails.id} {pokemonDetails.name}
+              #{pokemonDetails!.id} {pokemonDetails!.name}
             </Text>
             <View
               style={{
@@ -401,7 +408,7 @@ const Details = () => {
               }}
             >
               <Image
-                source={{ uri: pokemonDetails.sprites!.front_default! }}
+                source={{ uri: pokemonDetails!.sprites!.front_default! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -410,7 +417,7 @@ const Details = () => {
                 }}
               />
               <Image
-                source={{ uri: pokemonDetails.sprites!.front_shiny! }}
+                source={{ uri: pokemonDetails!.sprites!.front_shiny! }}
                 style={{
                   width: width / 2.33,
                   height: 200,
@@ -445,9 +452,9 @@ const Details = () => {
             </View>
           </View>
           {/* add to color function file rbga values for type colors */}
-          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
+          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails!.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Stats</Text>
-            {pokemonDetails.stats.map((item: any) => (
+            {pokemonDetails!.stats.map((item: any) => (
               <View key={item.stat.name}>
                 <View style={{ display: "flex", flexDirection: "row" }}>
                   <Text
@@ -484,7 +491,7 @@ const Details = () => {
               </View>
             ))}
           </View>
-          <View style={[styles.card, { width: "100%", backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
+          <View style={[styles.card, { width: "100%", backgroundColor: secondaryTypeColor(pokemonDetails!.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Pokedex Entry</Text>
             <Text
               style={[
@@ -497,7 +504,7 @@ const Details = () => {
                 .flavor_text.replaceAll("\n", " ")}
             </Text>
           </View>
-          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
+          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails!.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Evolution Chain</Text>
 
             {!evosLoading ? (
@@ -1787,7 +1794,7 @@ const Details = () => {
                     }}
                   >
                     <Image
-                      source={{ uri: pokemonDetails.sprites!.front_default! }}
+                      source={{ uri: pokemonDetails!.sprites!.front_default! }}
                       style={{
                         width: width,
                         height: 80,
@@ -1811,7 +1818,7 @@ const Details = () => {
             )}
           </View>
 
-          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
+          <View style={[styles.card, { backgroundColor: secondaryTypeColor(pokemonDetails!.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Varieties</Text>
             {speciesLoading ? (
               <ActivityIndicator />
@@ -1838,16 +1845,16 @@ const Details = () => {
                               {sizesLoading ? (
                                 <ActivityIndicator />
                               ) : (
-                              <Image
-                                source={{
-                                  uri:
-                                    imgSizes[index].width > 0 ?
-                                    varietyImgs[index]
-                                  :
-                                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${varietyIds[index]}.png`
-                                }}
-                                style={{ width: 80, height: 80 }}
-                              /> )}
+                                <Image
+                                  source={{
+                                    uri:
+                                      imgSizes[index].width > 0 ?
+                                        varietyImgs[index]
+                                        :
+                                        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${varietyIds[index]}.png`
+                                  }}
+                                  style={{ width: 80, height: 80 }}
+                                />)}
                             </Pressable>
                           </Link>
                         )}
@@ -1867,7 +1874,7 @@ const Details = () => {
               </ScrollView>
             )}
           </View>
-          <View style={[styles.card, { marginBottom: 10, backgroundColor: secondaryTypeColor(pokemonDetails.types[0].type.name) }]}>
+          <View style={[styles.card, { marginBottom: 10, backgroundColor: secondaryTypeColor(pokemonDetails!.types[0].type.name) }]}>
             <Text style={styles.sectionHeader}>Abilities</Text>
             <View
               style={{
@@ -1879,7 +1886,7 @@ const Details = () => {
                 gap: 10,
               }}
             >
-              {pokemonDetails.abilities.map((ability, index) => (
+              {pokemonDetails!.abilities.map((ability, index) => (
                 <View
                   key={index}
                   style={{

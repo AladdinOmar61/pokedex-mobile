@@ -39,7 +39,7 @@ const Layout = () => {
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
 
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
-  
+  const [searchText, setSearchText] = useAtom(searchAtom);
 
   const [loaded, error] = useFonts({
     Silkscreen: require("../assets/Fonts/Silkscreen-Regular.ttf"),
@@ -69,6 +69,7 @@ const Layout = () => {
     <TouchableOpacity
       onPress={() => {
         router.back();
+        setSearchText("");
       }}
     >
       <BackArrow width={24} height={24} />
