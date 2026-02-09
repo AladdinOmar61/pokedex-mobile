@@ -37,4 +37,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # other files
-android/
+.android/
