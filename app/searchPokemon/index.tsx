@@ -15,9 +15,9 @@ import { useAtom } from 'jotai';
 const index = () => {
     const { width, height } = useWindowDimensions();
     const insets = useSafeAreaInsets();
-    const [searchText, setSearchText] = useAtom(searchAtom);
 
-    const [searchResults, setSearchResults] = useState<SinglePokemon[]>([]);
+    const [searchText, setSearchText] = useAtom(searchAtom);
+    const [searchResults, setSearchResults] = useState<SinglePokemon[]>();
 
     const { getPokemon } = pokeApi();
 
@@ -29,12 +29,12 @@ const index = () => {
         },
     })
 
-    const filteredPokemon = allPokemon?.filter((pkm) => pkm.name.includes(searchText.toLocaleLowerCase()));
+    const filteredPokemon = allPokemon?.filter((pkm) => pkm.name.includes(searchText.toLowerCase()));
 
     useEffect(() => {
         const handleSearch = () => {
             if (searchText.length > 2) { 
-                setSearchResults(filteredPokemon!);
+                setSearchResults(filteredPokemon);
             } else {
                 setSearchResults([]);
             }
