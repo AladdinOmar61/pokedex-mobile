@@ -23,10 +23,10 @@ module.exports = {
   ...defaultConfig,
   transformer: {
     ...defaultConfig.transformer,
-    ...config.transformer,
+    babelTransformerPath: require.resolve("react-native-svg-transformer"),
   },
   resolver: {
-    ...defaultConfig.resolver,
-    ...config.resolver,
+    assetExts: assetExts.filter((ext) => ext !== "svg"),
+    sourceExts: [...sourceExts, "svg"],
   },
 };
