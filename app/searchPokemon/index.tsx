@@ -29,10 +29,11 @@ const index = () => {
         },
     })
 
+    const filteredPokemon = allPokemon?.filter((pkm) => pkm.name.includes(searchText.toLocaleLowerCase()));
+
     useEffect(() => {
         const handleSearch = () => {
-            if (searchText.length > 2) {
-                const filteredPokemon = allPokemon?.filter((pkm) => pkm.name.includes(searchText.toLocaleLowerCase()));
+            if (searchText.length > 2) { 
                 setSearchResults(filteredPokemon!);
             } else {
                 setSearchResults([]);
@@ -40,7 +41,6 @@ const index = () => {
         }
         handleSearch();
     }, [searchText])
-
 
     const readableColor = (pokemonType: string) => {
         if (
