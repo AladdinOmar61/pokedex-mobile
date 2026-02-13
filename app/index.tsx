@@ -3,7 +3,6 @@ import React from 'react'
 import { Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen'
-import BottomOptions from '@/components/BottomOptions';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,10 +21,9 @@ const Home = () => {
 
 
   return (
-    <View>
-      <ScrollView style={{ marginBottom: height / 10 }}>
+      <ScrollView style={{ marginBottom: (height / 10) }}>
         <Link href={`(pokemon)/all`} asChild>
-          <TouchableOpacity>
+          {/* <TouchableOpacity> */}
             {/* <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
               <ImageBackground
                 source={require("../assets/GenBGs/All-Gens-bg.png")}
@@ -46,7 +44,7 @@ const Home = () => {
                 <Text style={styles.allGensText}>ALL</Text>
               </ImageBackground>
             </View> */}
-          </TouchableOpacity>
+          {/* </TouchableOpacity> */}
         </Link>
         <View style={styles.genGrid}>
           <Link href={`(pokemon)/generations/${2}`} asChild>
@@ -198,7 +196,6 @@ const Home = () => {
           </Link>
         </View>
       </ScrollView>
-    </View>
   )
 }
 

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Pressable, TextInput } from "react-native";
+import { TouchableOpacity, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter, Stack, SplashScreen, useLocalSearchParams } from "expo-router";
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
@@ -26,10 +26,10 @@ const asyncStoragePersister = createAsyncStoragePersister({
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    // queries: {
-    //   gcTime: 1000 * 60 * 60 * 24, // 24 hours
-    //   staleTime: 1000 * 60 * 5,
-    // },
+    queries: {
+      gcTime: Infinity,
+      staleTime: 1000 * 60 * 60 * 24,
+    },
   },
 });
 

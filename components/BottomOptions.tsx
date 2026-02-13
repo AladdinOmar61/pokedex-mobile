@@ -1,4 +1,4 @@
-import { View, StyleSheet, useWindowDimensions, Pressable, Text, TextInput } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import React from "react";
 import FilterIcon from "@/assets/Icons/FilterIcon.svg";
 import SortIcon from "@/assets/Icons/SortIcon.svg";
@@ -11,10 +11,12 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const BottomOptions = () => {
   const { width, height } = useWindowDimensions();
-  const tabHeight = height / 2 - height / 10;
+  const insets = useSafeAreaInsets();
+  const tabHeight = (height / 2) - (insets.bottom * 2);
   const prevOptionYpos = useSharedValue<number>(tabHeight);
   const optionYpos = useSharedValue<number>(tabHeight);
   const optionOpen = useSharedValue<boolean>(false);
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
   },
   icons: {
     position: "absolute",
-    top: 17,
+    top: 23,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",

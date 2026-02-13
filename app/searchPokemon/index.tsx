@@ -38,6 +38,7 @@ const index = () => {
             } else {
                 setSearchResults([]);
             }
+            
         }
         handleSearch();
     }, [searchText])

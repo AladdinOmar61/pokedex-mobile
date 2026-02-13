@@ -43,7 +43,7 @@
                 "fontDefinitions": [
                   {
                     "path": "./assets/Fonts/Silkscreen-Bold.ttf",
-                    "weight": 700
+                    "weight": 400
                   }
                 ]
               }
