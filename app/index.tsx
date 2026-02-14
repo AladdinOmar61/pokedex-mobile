@@ -21,7 +21,7 @@ const Home = () => {
 
 
   return (
-      <ScrollView style={{ marginBottom: (height / 10) }}>
+      <ScrollView style={{ marginBottom: (height / 8.7) }}>
         <Link href={`(pokemon)/all`} asChild>
           {/* <TouchableOpacity> */}
             {/* <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
