@@ -42,7 +42,7 @@
                 "fontFamily": "Silkscreen",
                 "fontDefinitions": [
                   {
-                    "path": "./assets/Fonts/Silkscreen-Bold.ttf",
+                    "path": "./assets/Fonts/Silkscreen-Regular.ttf",
                     "weight": 400
                   }
                 ]

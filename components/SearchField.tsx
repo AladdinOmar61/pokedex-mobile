@@ -8,9 +8,9 @@ const SearchField = () => {
     const [searchText, setSearchText] = useAtom(searchAtom);
 
   return (
-      <View>
+      <View style={{width: '100%', height: '100%'}}>
           <TextInput
-              style={{ backgroundColor: 'white', width: '90%', marginHorizontal: 'auto', fontFamily: 'Silkscreen' }}
+              style={{ backgroundColor: 'white', width: '90%', marginHorizontal: 'auto', height: '95%', fontFamily: 'Silkscreen', paddingLeft: 5 }}
               onChangeText={setSearchText}
               value={searchText}
           />
@@ -18,7 +18,6 @@ const SearchField = () => {
               <Text style={{ position: 'absolute', top: 11, left: 20, fontFamily: 'Silkscreen', fontSize: 13, opacity: 0.7 }}>Search pokemon by name</Text>
           }
       </View>
-      
   )
 }
 
