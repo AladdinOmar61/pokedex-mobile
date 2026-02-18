@@ -1,6 +1,6 @@
-import { TouchableOpacity, Pressable } from "react-native";
+import { TouchableOpacity, StatusBar } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useRouter, Stack, SplashScreen, useLocalSearchParams } from "expo-router";
+import { useRouter, Stack, SplashScreen } from "expo-router";
 import BackArrow from "@/assets/Icons/Arrow-Left.svg";
 import {
   defaultShouldDehydrateQuery,
@@ -11,11 +11,8 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { useFonts } from "expo-font";
-import BottomOptions from "@/components/BottomOptions";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Search from "@/components/SearchButton";
-import BookMarkOutline from '@/assets/Icons/BookMarkOutline.svg';
-import BookMarkFilled from '@/assets/Icons/BookMarkFilled.svg';
 import { useAtom } from "jotai";
 import { searchAtom } from "@/atoms";
 import SearchField from "@/components/SearchField";
@@ -36,8 +33,6 @@ const queryClient = new QueryClient({
 const Layout = () => {
   useReactQueryDevTools(queryClient);
 
-  const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
-
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const [searchText, setSearchText] = useAtom(searchAtom);
 
@@ -45,13 +40,13 @@ const Layout = () => {
     Silkscreen: require("../assets/Fonts/Silkscreen-Regular.ttf"),
   });
 
-  const toggleFavorite = async () => {
-    await AsyncStorage.setItem(
-      `favorite-${pokemon}`,
-      !isFavorited ? "true" : "false"
-    );
-    setIsFavorited(!isFavorited);
-  };
+  // const toggleFavorite = async () => {
+  //   await AsyncStorage.setItem(
+  //     `favorite-${pokemon}`,
+  //     !isFavorited ? "true" : "false"
+  //   );
+  //   setIsFavorited(!isFavorited);
+  // };
 
   useEffect(() => {
     if (loaded || error) {
@@ -88,8 +83,7 @@ const Layout = () => {
           },
         }}
       >
-        <BottomOptions />
-
+          <StatusBar backgroundColor={"#F4511E"} />
         <Stack
           screenOptions={{
             headerStyle: {
@@ -114,17 +108,6 @@ const Layout = () => {
             options={{
               title: "",
               headerLeft: pixelBackArrow,
-              headerRight: () => (
-                <>
-                  <Pressable onPress={toggleFavorite} style={{ marginRight: 20 }}>
-                    {isFavorited ?
-                      <BookMarkFilled /> :
-                      <BookMarkOutline />
-                    }
-                  </Pressable>
-                  <Search />
-                </>
-              )
             }}
           />
           <Stack.Screen
@@ -156,7 +139,7 @@ const Layout = () => {
               )
             }}
           />
-        </Stack>
+          </Stack>
       </PersistQueryClientProvider>
     </GestureHandlerRootView>
   );

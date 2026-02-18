@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect } from "react";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import pokeApi from "@/api/pokeapi";
 import ForwardChev from "@/assets/Icons/Forward-Chevron.svg";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,6 +16,7 @@ import { PokeTypeColor } from "@/PokeTypeColor";
 import { PokeTypeIcon } from "@/PokeTypes";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 const AllPokemon = () => {
   const { gen } = useLocalSearchParams<{ gen: string }>();
@@ -66,7 +67,7 @@ const AllPokemon = () => {
 
   return (
     <View
-      style={{ height: height - (insets.bottom + insets.top), width: width }}
+        style={{ height: height - insets.bottom, width: width}}
     >
       {error && (
         <View>
@@ -127,7 +128,7 @@ const AllPokemon = () => {
           )}
         />
       )}
-    </View>
+      </View>
   );
 };
 

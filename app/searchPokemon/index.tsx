@@ -60,7 +60,7 @@ const index = () => {
 
     return (
         <View
-            style={{ height: height - (insets.bottom + insets.top), width: width }}
+            style={{ height: height - (insets.bottom), width: width }}
         >
             {searchErr && (
                 <View>
@@ -71,7 +71,7 @@ const index = () => {
             )}
             {resultLoading && (
                 <View
-                    style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}
+                    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
                 >
                     {/* TODO: Maybe add spinning pokeball loading animation */}
                     <Text style={{ fontFamily: "Silkscreen" }}>Loading...</Text>

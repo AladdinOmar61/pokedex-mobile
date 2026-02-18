@@ -39,6 +39,7 @@ const Details = () => {
 
   const { pokemon } = useLocalSearchParams<{ pokemon: string }>();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const [varietyImgs, setVarietyImgs] = useState<string[]>([]);
   const [varietyIds, setVarietyIds] = useState<number[]>([]);
@@ -362,19 +363,19 @@ const Details = () => {
     }
   }, [pokemonType]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      // headerRight: () => (
-      //   <Pressable onPress={toggleFavorite} style={{marginRight: 30}}>
-      //     <Ionicons
-      //       name={isFavorited ? "star" : "star-outline"}
-      //       size={22}
-      //       color="white"
-      //     />
-      //   </Pressable>
-      // ),
-    });
-  }, [isFavorited]);
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <Pressable onPress={toggleFavorite} style={{marginRight: 30}}>
+  //         <Ionicons
+  //           name={isFavorited ? "star" : "star-outline"}
+  //           size={22}
+  //           color="white"
+  //         />
+  //       </Pressable>
+  //     ),
+  //   });
+  // }, [isFavorited]);
 
   const toggleFavorite = async () => {
     await AsyncStorage.setItem(
@@ -385,7 +386,7 @@ const Details = () => {
   };
 
   return (
-    <ScrollView style={{ paddingHorizontal: 10, marginTop: 5, marginBottom: (height / 10), flex: 1 }}>
+    <ScrollView style={{ paddingHorizontal: 10, paddingTop: 5, marginBottom: insets.bottom, flex: 1 }}>
       {detailsLoading ? (
         <View
           style={{ display: 'flex', justifyContent: "center", alignItems: "center" }}

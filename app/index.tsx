@@ -9,42 +9,12 @@ SplashScreen.preventAutoHideAsync();
 const Home = () => {
 
   const { width, height } = useWindowDimensions();
-  // const tabHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
-
-  // useEffect(() => {
-  //   queryClient.prefetchQuery({
-  //     queryKey: ['gen', 2],
-  //     queryFn: () => getAllPokemonFromGen(2),
-  //   })
-  //  }, [])
 
 
   return (
-      <ScrollView style={{ marginBottom: (height / 8.7) }}>
+    <ScrollView style={{ overflow: 'hidden', marginBottom: insets.bottom }}>
         <Link href={`(pokemon)/all`} asChild>
-          {/* <TouchableOpacity> */}
-            {/* <View style={[styles.genGridItem, { overflow: 'visible', alignItems: 'center' }]}>
-              <ImageBackground
-                source={require("../assets/GenBGs/All-Gens-bg.png")}
-                style={styles.backgroundImageSize}
-                resizeMode='cover'
-              >
-                <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: 'center', alignItems: 'center', transform: [{translateX: -7}] }}>
-                  <Image source={require("../assets/AllPokemon/Dragapult.png")} style={{ height: 69, width: 62 }} />
-                  <Image source={require("../assets/AllPokemon/Talonflame.png")} style={{ height: 78, width: 79, zIndex: 1, marginTop: 5, marginHorizontal: -27 }} />
-                  <Image source={require("../assets/AllPokemon/Lucario.png")} style={{ height: 56, width: 41, zIndex: 2, marginTop: 20 }} />
-                  <Image source={require("../assets/AllPokemon/Tyranitar.png")} style={{ height: 68, width: 67, zIndex: 3, marginTop: 30, marginHorizontal: -20 }} />
-                  <Image source={require("../assets/AllPokemon/Pikachu.png")} style={{ height: 41, width: 35, zIndex: 4, marginTop: 60 }} />
-                  <Image source={require("../assets/AllPokemon/Gardevior.png")} style={{ height: 64, width: 60, zIndex: 3, marginTop: 30, marginHorizontal: -25 }} />
-                  <Image source={require("../assets/AllPokemon/Zoroark.png")} style={{ height: 56, width: 59, zIndex: 2, marginTop: 20 }} />
-                  <Image source={require("../assets/AllPokemon/Mimikyu.png")} style={{ height: 43, width: 34, zIndex: 1, marginTop: 20, marginHorizontal: -20 }} />
-                  <Image source={require("../assets/AllPokemon/Ceruledge.png")} style={{ height: 71, width: 64 }} />
-                </View>
-                <Text style={styles.allGensText}>ALL</Text>
-              </ImageBackground>
-            </View> */}
-          {/* </TouchableOpacity> */}
         </Link>
         <View style={styles.genGrid}>
           <Link href={`(pokemon)/generations/${2}`} asChild>

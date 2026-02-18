@@ -64,50 +64,50 @@ export const PokeTypeIcon = (type: string) => {
 export const PokeBG = (type: string) => {
     switch (type) {
         case 'grass':
-            return <GrassType width={560} height={560} style={styles.background} />
+            return <GrassType width={'100%'} height={'100%'} style={styles.background} />
         case 'fire':
-            return <FireType width={560} height={560} style={styles.background} />
+            return <FireType width={'100%'} height={'100%'} style={styles.background} />
         case 'water':
-            return <WaterType width={560} height={560} style={styles.background} />
+            return <WaterType width={'100%'} height={'100%'} style={styles.background} />
         case 'bug':
-            return <BugType width={560} height={560} style={styles.background} />
+            return <BugType width={'100%'} height={'100%'} style={styles.background} />
         case 'dark':
-            return <DarkType width={560} height={560} style={styles.background} />
+            return <DarkType width={'100%'} height={'100%'} style={styles.background} />
         case 'dragon':
-            return <DragonType width={560} height={560} style={styles.background} />
+            return <DragonType width={'100%'} height={'100%'} style={styles.background} />
         case 'electric':
-            return <ElectricType width={560} height={560} style={styles.background} />
+            return <ElectricType width={'100%'} height={'100%'} style={styles.background} />
         case 'ice':
-            return <IceType width={560} height={560} style={styles.background} />
+            return <IceType width={'100%'} height={'100%'} style={styles.background} />
         case 'steel':
-            return <SteelType width={560} height={560} style={styles.background} />
+            return <SteelType width={'100%'} height={'100%'} style={styles.background} />
         case 'fairy':
-            return <FairyType width={560} height={560} style={styles.background} />
+            return <FairyType width={'100%'} height={'100%'} style={styles.background} />
         case 'fighting':
-            return <FightingType width={560} height={560} style={styles.background} />
+            return <FightingType width={'100%'} height={'100%'} style={styles.background} />
         case 'flying':
-            return <FlyingType width={560} height={560} style={styles.background} />
+            return <FlyingType width={'100%'} height={'100%'} style={styles.background} />
         case 'ghost':
-            return <GhostType width={560} height={560} style={styles.background} />
+            return <GhostType width={'100%'} height={'100%'} style={styles.background} />
         case 'ground':
-            return <GroundType width={560} height={560} style={styles.background} />
+            return <GroundType width={'100%'} height={'100%'} style={styles.background} />
         case 'Normal':
-            return <NormalType width={560} height={560} style={styles.background} />
+            return <NormalType width={'100%'} height={'100%'} style={styles.background} />
         case 'poison':
-            return <PoisonType width={560} height={560} style={styles.background} />
+            return <PoisonType width={'100%'} height={'100%'} style={styles.background} />
         case 'psychic':
-            return <PsychicType width={560} height={560} style={styles.background} />
+            return <PsychicType width={'100%'} height={'100%'} style={styles.background} />
         case 'rock':
-            return <RockType width={560} height={560} style={styles.background} />
+            return <RockType width={'100%'} height={'100%'} style={styles.background} />
         default:
-            return <NormalType width={560} height={560} style={styles.background} />    
+            return <NormalType width={'100%'} height={'100%'} style={styles.background} />    
     }
 }
 
 const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
-        transform: [{ translateX: "-16%" }, { translateY: "-30%" }],
+        transform: [{ translateX: "2.5%" }, { translateY: "4%" }, { scale: 3 }],
         opacity: 0.75
         // zIndex: 4
     }
