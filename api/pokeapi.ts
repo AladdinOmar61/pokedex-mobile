@@ -1,16 +1,21 @@
 import { MainClient } from "pokenode-ts";
-import {
-  TypeInfo,
-} from "@/interface";
+import { TypeInfo } from "@/interface";
 import pLimit from "p-limit";
-import type { Pokemon, EvolutionChain, PokemonSpecies, Generation, PokemonSprites, NamedAPIResource } from "pokenode-ts";
+import type {
+  Pokemon,
+  EvolutionChain,
+  PokemonSpecies,
+  Generation,
+  PokemonSprites,
+  NamedAPIResource,
+} from "pokenode-ts";
 
 export type SinglePokemon = {
   id: number;
   name: string;
   defaultSprite: string;
   primaryType: string;
-}
+};
 
 interface PokemonDetails {
   id: number;
@@ -81,14 +86,14 @@ interface Sprites {
 }
 
 interface Versions {
-  'generation-i': Generationi;
-  'generation-ii': Generationii;
-  'generation-iii': Generationiii;
-  'generation-iv': Generationiv;
-  'generation-v': Generationv;
-  'generation-vi': Generationvi;
-  'generation-vii': Generationvii;
-  'generation-viii': Generationviii;
+  "generation-i": Generationi;
+  "generation-ii": Generationii;
+  "generation-iii": Generationiii;
+  "generation-iv": Generationiv;
+  "generation-v": Generationv;
+  "generation-vi": Generationvi;
+  "generation-vii": Generationvii;
+  "generation-viii": Generationviii;
 }
 
 interface Generationviii {
@@ -97,16 +102,16 @@ interface Generationviii {
 
 interface Generationvii {
   icons: Dreamworld;
-  'ultra-sun-ultra-moon': Home;
+  "ultra-sun-ultra-moon": Home;
 }
 
 interface Generationvi {
-  'omegaruby-alphasapphire': Home;
-  'x-y': Home;
+  "omegaruby-alphasapphire": Home;
+  "x-y": Home;
 }
 
 interface Generationv {
-  'black-white': Blackwhite;
+  "black-white": Blackwhite;
 }
 
 interface Blackwhite {
@@ -122,15 +127,15 @@ interface Blackwhite {
 }
 
 interface Generationiv {
-  'diamond-pearl': Showdown;
-  'heartgold-soulsilver': Showdown;
+  "diamond-pearl": Showdown;
+  "heartgold-soulsilver": Showdown;
   platinum: Showdown;
 }
 
 interface Generationiii {
   emerald: Officialartwork;
-  'firered-leafgreen': Crystal;
-  'ruby-sapphire': Crystal;
+  "firered-leafgreen": Crystal;
+  "ruby-sapphire": Crystal;
 }
 
 interface Generationii {
@@ -147,7 +152,7 @@ interface Crystal {
 }
 
 interface Generationi {
-  'red-blue': Redblue;
+  "red-blue": Redblue;
   yellow: Redblue;
 }
 
@@ -161,7 +166,7 @@ interface Redblue {
 interface Other {
   dream_world: Dreamworld;
   home: Home;
-  'official-artwork': Officialartwork;
+  "official-artwork": Officialartwork;
   showdown: Showdown;
 }
 
@@ -237,28 +242,44 @@ const pokeApi = () => {
   const extractedIdFromUrl = (url: string) => {
     const urlId = url.match(/\/(\d+)\/?$/);
     return urlId ? Number(urlId[1]) : null;
-  }
+  };
 
-  const getAllPokemonFromGen = async (gen: number): Promise<SinglePokemon[]> => {
+  const pokemonCache = new Map<number, SinglePokemon[]>();
+
+  const getAllPokemonFromGen = async (
+    gen: number,
+  ): Promise<SinglePokemon[]> => {
+
+    if (pokemonCache.has(gen)) {
+      return pokemonCache.get(gen)!;
+    }
+
+    const limit = pLimit(5);
     const genData = await api.game.getGenerationById(gen);
     const getPokemonFromGen = await Promise.all(
-      genData.pokemon_species.map(async (res) => {
-        const pokemonSpec = await api.pokemon.getPokemonSpeciesById(
-          extractedIdFromUrl(res.url)!
-        );
-        const pokemon = await api.pokemon.getPokemonById(
-          extractedIdFromUrl(res.url)!
-        );
-        let pokemonName = pokemonSpec.varieties.filter((pkm) => pkm.is_default);
-        return {
-          id: pokemon.id,
-          name: pokemonName[0].pokemon.name,
-          primaryType: pokemon.types[0].type.name,
-          defaultSprite: pokemon.sprites.front_default!,
-        };
-      })
+      genData.pokemon_species.map(async (res) =>
+        limit(async () => {
+          const pokemonSpec = await api.pokemon.getPokemonSpeciesById(
+            extractedIdFromUrl(res.url)!,
+          );
+          const pokemon = await api.pokemon.getPokemonById(
+            extractedIdFromUrl(res.url)!,
+          );
+          let pokemonName = pokemonSpec.varieties.filter(
+            (pkm) => pkm.is_default,
+          );
+          return {
+            id: pokemon.id,
+            name: pokemonName[0].pokemon.name,
+            primaryType: pokemon.types[0].type.name,
+            defaultSprite: pokemon.sprites.front_default!,
+          };
+        }),
+      ),
     );
-    return getPokemonFromGen.sort((a, b) => a.id - b.id);
+    const result = getPokemonFromGen.sort((a, b) => a.id - b.id);
+    pokemonCache.set(gen, result);
+    return result;
   };
 
   const getPokemon = async (): Promise<SinglePokemon[]> => {
@@ -289,15 +310,15 @@ const pokeApi = () => {
     const detailData = await api.pokemon.getPokemonByName(name);
     return {
       id: detailData.id,
-      name:detailData.name,
+      name: detailData.name,
       is_default: detailData.is_default,
       abilities: detailData.abilities,
       forms: detailData.forms,
       species: detailData.species,
       sprites: detailData.sprites,
       stats: detailData.stats,
-      types: detailData.types
-    }
+      types: detailData.types,
+    };
   };
 
   const getDefaultSprite = async (name: string): Promise<string> => {
@@ -311,13 +332,13 @@ const pokeApi = () => {
 
   const getEvolutions = async (id: number): Promise<EvolutionChain> => {
     const evoData = await api.evolution.getEvolutionChainById(id!);
-      return evoData;
+    return evoData;
   };
 
   const getPokemonSpecies = async (name: string): Promise<PokemonSpecies> => {
     const pokemonSpecies = await api.pokemon.getPokemonSpeciesByName(name);
     return pokemonSpecies;
-  }
+  };
 
   // Helper that fetches a URL, validates the response, and parses JSON.
   // If the response is not JSON (or returns a non-OK status), it throws
@@ -327,7 +348,7 @@ const pokeApi = () => {
     const text = await resp.text();
     if (!resp.ok) {
       throw new Error(
-        `Request to ${url} failed with status ${resp.status} ${resp.statusText}: ${text}`
+        `Request to ${url} failed with status ${resp.status} ${resp.statusText}: ${text}`,
       );
     }
     try {
@@ -336,7 +357,7 @@ const pokeApi = () => {
       // include the beginning of the response text to diagnose non-JSON payloads
       const snippet = text ? text.slice(0, 300) : "<empty response>";
       throw new Error(
-        `Failed to parse JSON from ${url}: ${err.message}. Response start: ${snippet}`
+        `Failed to parse JSON from ${url}: ${err.message}. Response start: ${snippet}`,
       );
     }
   }
