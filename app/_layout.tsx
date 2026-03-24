@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
     queries: {
       gcTime: Infinity,
       staleTime: 1000 * 60 * 60 * 24,
-      refetchOnMount: true,
+      refetchOnMount: false,
     },
   },
 });
@@ -108,15 +108,6 @@ const Layout = () => {
             name="(pokemon)/pokemonDetails/[pokemon]"
             options={{
               title: "",
-              headerLeft: pixelBackArrow,
-            }}
-          />
-          <Stack.Screen
-            name="(pokemon)/all"
-            options={{
-              title: "All Pokemon",
-              headerTitleAlign: "center",
-              headerTitleStyle: { fontFamily: "Silkscreen", fontSize: 16 },
               headerLeft: pixelBackArrow,
             }}
           />
